@@ -1,33 +1,30 @@
+import dotenv from 'dotenv';
 import express, { Request, Response} from 'express';
-import { auth } from 'express-openid-connect';
+import cors from 'cors';
+import  user from './db/username';
 
-import loginRouter from './auth/login';
+dotenv.config();
+
+import { getDb } from './db/conn';
 
 export const app = express();
 
 
+
 const port = process.env.PORT || 3000; 
 
+app.use(cors({
+    origin: "*"
+}))
+app.use('/user', user);
 
-const config = {
-    authRequired: false,
-    auth0Logout: true,
-    baseURL: 'http://localhost:3000',
-    clientID: 'orOyhWBXxDG7qTWCoioD20WUd4IdTaoI',
-    issuerBaseURL: 'https://dev-l1w6f4a5siq1k5px.us.auth0.com',
-    secret: '4aHq5IJJGi-lWVX-kydD9Gqci4PEJzlcRKAz3j5AqcaV_EtzQF4Bbbvad_r5Oq-a'
-};
-
-app.use(auth(config));
-app.use(loginRouter)
-
-
-app.get('/', (req, res) => {
-    res.send('ok')
+app.get('/', async (req, res) => {
+    res.send(JSON.stringify({msg: 'ok'}))
 })
 
-app.listen(port, () => {
+app.listen(port, async () => {
     console.log(`app listening on port ${port}`)
+    await getDb();
 })
 
 console.log('changing hello after time');
