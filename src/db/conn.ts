@@ -13,15 +13,14 @@ async function connect() {
         console.log('connected to database');
         // Query for a movie that has the title 'Back to the Future'
 
-      } finally {
-        // Ensures that the client will close when you finish/error
-        await client.close();
+      } catch (err) {
+        console.error(err);
       }
 }
 
 async function getDb<Db>() {
     if(!_db) {
-        await connect();
+        await connect();  
     }
     return _db;
 }
