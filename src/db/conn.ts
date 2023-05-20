@@ -1,28 +1,12 @@
-import { MongoClient, Db } from 'mongodb';
+import mongoose from "mongoose";
 
-const client = new MongoClient(process.env.ATLAS_URI);
-
-let _db:Db;
-
-async function connect() {
+export async function connect() {
     try {
 
-        const db = await client.db('social_media');
-        _db = db;
-
-        console.log('connected to database');
-        // Query for a movie that has the title 'Back to the Future'
+        const db = await mongoose.connect(process.env.ATLAS_URI);
+        if(db) console.log('connected to database')
 
       } catch (err) {
         console.error(err);
       }
 }
-
-async function getDb<Db>() {
-    if(!_db) {
-        await connect();  
-    }
-    return _db;
-}
-
-export { getDb };

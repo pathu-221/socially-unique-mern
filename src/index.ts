@@ -5,9 +5,9 @@ dotenv.config();
 import express, { Request, Response} from 'express';
 import cors from 'cors';
 import  user from './db/username';
-import auth from './routes/user';
+import auth from './routes/auth';
 
-import { getDb } from './db/conn';
+import { connect } from './db/conn';
 
 export const app = express();
 
@@ -20,7 +20,7 @@ app.use(cors({
 
 app.use(express.json())
 
-app.use('/user', auth);
+app.use('/auth', auth);
 
 app.get('/', async (req:Request, res: Response) => {
     res.send(JSON.stringify({msg: 'ok'}))
@@ -28,7 +28,7 @@ app.get('/', async (req:Request, res: Response) => {
 
 app.listen(port, async () => {
     console.log(`app listening on port ${port}`)
-    await getDb();
+    await connect();
 })
 
 console.log('changing hello after time');
