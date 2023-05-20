@@ -2,8 +2,9 @@ import { Request, Response } from 'express';
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { authenticate, request } from "../middleware/authenticate";
+import { authenticate, IRequest } from "../middleware/authenticate";
 import { CreateUserDto } from '../dto/Create-User.dto';
+import { LoginDto } from '../dto/Login.dto';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { User } from "../Models/User";
@@ -15,22 +16,26 @@ const router = Router();
 
 router.post('/login', async (req: Request, res: Response) => {
 
+    const loginDto = plainToClass(LoginDto, req.body);
+    const errors = await validate(loginDto);
+
+    if(errors.length) return res.send({ msg: "There was some error", errors})
+
     try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email: loginDto.email });
         if(user){
             //match password
-            const match = await bcrypt.compare(password, user.password);
+            const match = await bcrypt.compare(loginDto.password, user.password);
             if(!match){
                 res.send({
                     msg: 'Incorrect Password',
                 })
                 return 
             } else {
-                const token = jwt.sign({ user }, process.env.JWT_SECRET);
+                const token = jwt.sign({ user: { _id: user._id} }, process.env.JWT_SECRET);
                 res.send({
                     msg: 'logged in successfully',
-                    access_token: token
+                    data: { access_token: token }
                 })
             }
         } else {
@@ -44,6 +49,15 @@ router.post('/login', async (req: Request, res: Response) => {
         console.error(err);
     }
 });
+
+
+router.get('/authenticate', authenticate, async (req: IRequest, res: Response) => {
+    const user = await User.findOne({ _id: req.user._id });
+    res.send({
+        msg: "Token Verified",
+        data: user
+    })
+})
 
 router.post('/register',  async (req: Request, res: Response) => {
 
@@ -67,13 +81,13 @@ router.post('/register',  async (req: Request, res: Response) => {
 
         const newUser = new User({
             ...createUserDto,
-            photoURL: createUserDto.photoURL || `https://api.dicebear.com/6.x/initials/svg?seed=${createUserDto.displayName}`
+            photoUrl: `https://api.dicebear.com/6.x/initials/svg?seed=${createUserDto.displayName}`
         })
 
         await newUser.save();
         res.send({
             msg: 'User registered successfully',
-            newUser,
+            data: {user: newUser },
         });        
 
     } catch (err) {

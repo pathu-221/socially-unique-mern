@@ -1,11 +1,15 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
+import { UploadedFile } from 'express-fileupload'
 
-export interface request extends Request {
-    user: any
+export interface IRequest extends Request {
+    user:  { _id: string },
+    files?: {
+        [ key: string]: UploadedFile
+    }
 }
 
-export const authenticate = (req: request, res: Response, next: NextFunction) => {
+export const authenticate = (req: IRequest, res: Response, next: NextFunction) => {
     const token = req.header('auth-token');
     if(!token){
         res.send({

@@ -4,10 +4,12 @@ dotenv.config();
 
 import express, { Request, Response} from 'express';
 import cors from 'cors';
-import  user from './db/username';
 import auth from './routes/auth';
-
+import posts from './routes/Posts';
+import fileUpload from 'express-fileupload';
 import { connect } from './db/conn';
+import { v2 } from 'cloudinary';
+
 
 export const app = express();
 
@@ -18,9 +20,21 @@ app.use(cors({
     origin: "*"
 }))
 
+v2.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET_KEY
+    
+})
+
 app.use(express.json())
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: '/tmp'
+}))
 
 app.use('/auth', auth);
+app.use('/posts', posts);
 
 app.get('/', async (req:Request, res: Response) => {
     res.send(JSON.stringify({msg: 'ok'}))
