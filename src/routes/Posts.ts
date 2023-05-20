@@ -1,5 +1,4 @@
 import { Router, Request, Response } from "express";
-import { User } from "../Models/User";
 import { Posts } from "../Models/Posts";
 import { IRequest, authenticate } from "../middleware/authenticate";
 import { plainToClass } from "class-transformer";

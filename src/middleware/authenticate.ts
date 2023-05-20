@@ -12,7 +12,7 @@ export interface IRequest extends Request {
 export const authenticate = (req: IRequest, res: Response, next: NextFunction) => {
     const token = req.header('auth-token');
     if(!token){
-        res.send({
+        res.status(400).send({
             msg: 'No token... Access Denied',
         })
         return
@@ -23,7 +23,7 @@ export const authenticate = (req: IRequest, res: Response, next: NextFunction) =
         req.user = decoded.user;
         next();
     } catch (err) {
-        res.send({
+        res.status(401).send({
             msg: 'invalid token',
             err
         })

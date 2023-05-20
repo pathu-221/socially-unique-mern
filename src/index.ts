@@ -4,8 +4,12 @@ dotenv.config();
 
 import express, { Request, Response} from 'express';
 import cors from 'cors';
+
+
 import auth from './routes/auth';
 import posts from './routes/Posts';
+import users from './routes/User';
+
 import fileUpload from 'express-fileupload';
 import { connect } from './db/conn';
 import { v2 } from 'cloudinary';
@@ -35,6 +39,8 @@ app.use(fileUpload({
 
 app.use('/auth', auth);
 app.use('/posts', posts);
+app.use('/user', users);
+
 
 app.get('/', async (req:Request, res: Response) => {
     res.send(JSON.stringify({msg: 'ok'}))
