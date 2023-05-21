@@ -3,7 +3,7 @@
 function PostContent() {
     return (
         <>
-            <div className="card max-w-full bg-base-100 shadow-xl">
+            <div className="card max-w-full bg-base-100 shadow-xl max-h-[520px]">
                 <div className="card-body pb-3">
                     <div className="flex gap-3 items-center justify-start" >
                     <img className='rounded-full w-12 h-12' src="https://api.dicebear.com/6.x/fun-emoji/svg?seed=Kiki" />
@@ -15,7 +15,7 @@ function PostContent() {
                     <p>If a dog chews shoes whose shoes does he choose?</p>
                 </div>
                 <figure>
-                    <img src="https://images.unsplash.com/photo-1683380381470-8bb7e42aa5b0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw4fHx8ZW58MHx8fHx8&auto=format&fit=crop&w=500&q=60" alt="unsplash" />
+                    <img className="w-full object-cover max-h-full" src="https://source.unsplash.com/random/?city,night" alt="unsplash" />
                 </figure>
             </div>
         </>

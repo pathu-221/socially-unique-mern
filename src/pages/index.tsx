@@ -3,8 +3,8 @@ import PostFeed from "@/components/PostFeed"
 export default function Home() {
   return (
     <>
-    <main className="flex items-center overflow-hidden justify-center">
-      <div className="max-w-1/2 h-full bg-neutral-focus p-5 ">
+    <main className="main-page">
+      <div className="main-page-content">
         <PostFeed />
       </div>
     </main>
