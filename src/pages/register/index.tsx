@@ -15,6 +15,7 @@ interface formFields {
 function SignUpPage() {
 
     const formRef = useRef(null);
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<formFields>({
         displayName: '', email: '', password: '', confirmPassword: '' 
     });
@@ -44,10 +45,12 @@ function SignUpPage() {
         const form = new FormData()
         form.append('displayName', formData.displayName);
         form.append('email', formData.email);
-        form.append('profile', formData.profile);
+        form.append('photo', formData.profile);
         form.append('password', formData.password);
 
+        setLoading(true);
         const data = await register(form);
+        setLoading(false);
     } 
     return (
         <main className="main-page items-center h-[calc(100vh-66px)]"  >
@@ -123,7 +126,9 @@ function SignUpPage() {
                         <Link className="underline hover:no-underline" href="/login"> Login
                         </Link>
                     </span>
-                    <button type='submit' className="btn btn-secondary">Create Account</button>
+                    <button 
+                    disabled={loading}
+                    type='submit' className="btn btn-secondary">Create Account</button>
                 </form>
             </section>
         </main>

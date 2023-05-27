@@ -19,13 +19,17 @@ export async function logOut(){
 }
 
 export async function register(formData: any) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_ADDRESS}/auth/register`, {
-        method: "POST",
-        body: formData
-    })
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_ADDRESS}/auth/register`, {
+            method: "POST",
+            body: formData
+        })
+        
+        const data = await res.json();
     
-    const data = await res.json();
-
-    console.log({res,data, formData});
-    return data;
+        console.log({res,data, formData});
+        return data;
+    } catch (err){
+        console.error(err);
+    }
 }

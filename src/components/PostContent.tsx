@@ -15,7 +15,9 @@ function PostContent() {
                     <p>If a dog chews shoes whose shoes does he choose?</p>
                 </div>
                 <figure>
-                    <img className="w-full object-cover max-h-full" src="https://source.unsplash.com/random/?city,night" alt="unsplash" />
+                    <img className="w-full object-cover max-h-full" 
+                    loading="lazy"
+                    src="https://source.unsplash.com/random/?city,night" alt="unsplash" />
                 </figure>
             </div>
         </>
