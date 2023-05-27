@@ -21,7 +21,8 @@ export const app = express();
 const port = process.env.PORT || 3000; 
 
 app.use(cors({
-    origin: "*"
+    origin: "*",
+    allowedHeaders: "*",
 }))
 
 v2.config({

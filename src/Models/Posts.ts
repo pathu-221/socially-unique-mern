@@ -20,7 +20,7 @@ const PostsSchema = new Schema({
     picture: {
         type: String
     },
-    user: {
+    userId: {
         type: Schema.Types.ObjectId,
         ref: 'user',
         required: true

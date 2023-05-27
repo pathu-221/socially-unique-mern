@@ -8,6 +8,8 @@ import { LoginDto } from '../dto/Login.dto';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 import { User } from "../Models/User";
+import { UploadApiResponse, v2 } from 'cloudinary';
+import { ObjectId } from 'mongodb';
 
 const salts = 10;
 
@@ -66,6 +68,22 @@ router.post('/register',  async (req: Request, res: Response) => {
 
     if(errors.length) return res.status(401).json(errors);
 
+    const id = new ObjectId();
+    let imageUrl: string;
+
+    if(req.files['photo']){
+        //if multiple files check if they are array..
+
+        const file = Array.isArray(req.files['photo']) ? req.files['photo'][0] : req.files['photo'];
+            
+        const image = await v2.uploader.upload(file.tempFilePath, {
+            public_id: `userProfiles/${id}`,
+        });
+        console.log({image, file});
+
+        imageUrl = image.url;
+    }
+
     try {
 
         const hashedPassword = await bcrypt.hash(createUserDto.password, salts);
@@ -81,7 +99,8 @@ router.post('/register',  async (req: Request, res: Response) => {
 
         const newUser = new User({
             ...createUserDto,
-            photoUrl: `https://api.dicebear.com/6.x/initials/svg?seed=${createUserDto.displayName}`
+            _id: id,
+            photoUrl:  imageUrl || `https://api.dicebear.com/6.x/initials/svg?seed=${createUserDto.displayName}`
         })
 
         await newUser.save();

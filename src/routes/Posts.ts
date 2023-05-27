@@ -25,7 +25,6 @@ router.post('/create', authenticate, async (req: IRequest, res: Response) => {
 
     if(errors.length) return res.send({ msg: "There is some error", errors})
 
-
     try {
 
         let url;
@@ -39,7 +38,7 @@ router.post('/create', authenticate, async (req: IRequest, res: Response) => {
         const post = new Posts({
             ...createPostsDto,
             picture: url,
-            user: req.user._id
+            userId: req.user._id
         });
         await post.save();
 
@@ -56,6 +55,16 @@ router.post('/create', authenticate, async (req: IRequest, res: Response) => {
             err
         })
     }
+})
+
+router.get('/usersPosts', authenticate, async (req: IRequest, res: Response) => {
+
+    const posts = await Posts.find({ userId: req.user._id  });
+    res.status(200).send(JSON.stringify({
+        msg: "Users posts fetched",
+        data: posts
+    }))
+
 })
 
 export default router;

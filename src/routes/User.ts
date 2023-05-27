@@ -9,8 +9,8 @@ import { validate } from "class-validator";
 
 const router = Router();
 
-router.get('/username', authenticate, async(req: IRequest, res: Response) => {
-    const createUsernameDto = plainToClass(CreateUsernameDto, req.body);
+router.get('/username/:username', authenticate, async(req: IRequest, res: Response) => {
+    const createUsernameDto = plainToClass(CreateUsernameDto, req.params);
     const errors = await validate(createUsernameDto);
 
     if(errors.length) return res.send({ msg:"Something Went Wrong", err: errors})
@@ -19,9 +19,9 @@ router.get('/username', authenticate, async(req: IRequest, res: Response) => {
 
         const username = await Username.findOne({ username: createUsernameDto.username });
         if(username) {
-            return res.send({ msg: "Username Taken!", data: username })
+            return res.send({ msg: "Username Taken!", data: { available: false, username} })
         } else {
-            return res.send({ msg: "Username Available", data: username })
+            return res.send({ msg: "Username Available", data: { available: true, username } })
         }
 
     } catch (err) {
