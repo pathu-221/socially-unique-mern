@@ -1,9 +1,13 @@
 import { useUser } from "@/Hooks/useUser";
+import { logOut } from "@/apis/auth";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 
 function Navbar() {
     const user = useUser();
+    const router = useRouter();
+
     
     return (
         <nav className="navbar bg-neutral lg:px-[110px] sticky top-0 z-10">
@@ -34,7 +38,10 @@ function Navbar() {
                                 </a>
                             </li>
                             <li><a>Settings</a></li>
-                            <li><a>Logout</a></li>
+                            <li onClick={() => {
+                                logOut();
+                                router.reload();
+                            }}><a>Logout</a></li>
                         </ul>
                     }
                 </div>

@@ -5,7 +5,9 @@ import { useState, useEffect } from "react";
 export function useUser() {
     const [user, setUser] = useState<User>();
 
-    useEffect(() => {}, []);
+    useEffect(() => {
+        fetchUser();
+    }, []);
 
     const fetchUser = async () => {
         const token = localStorage.getItem('token');
@@ -14,6 +16,7 @@ export function useUser() {
 
         const data = await getUser(token);
 
+        console.log('in use user', data)
         setUser(data.data);
 
         
