@@ -1,24 +1,35 @@
+import { Post } from "@/interfaces/post";
+import { FC } from "react";
 
+interface PostContentProps {
+    post: Post
+}
 
-function PostContent() {
+const PostContent: FC<PostContentProps> = ({ post }) => {
+    const uploadDate = new Date(post.createdAt).toLocaleDateString('en-us',{
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      })
     return (
         <>
-            <div className="card max-w-full bg-base-100 shadow-xl max-h-[520px]">
-                <div className="card-body pb-3">
+            <div className="card max-w-full bg-base-100 shadow-xl">
+                <div className="card-body p-3 pb-3">
                     <div className="flex gap-3 items-center justify-start" >
-                    <img className='rounded-full w-12 h-12' src="https://api.dicebear.com/6.x/fun-emoji/svg?seed=Kiki" />
-                        <span className="flex flex-col gap-1">
-                            <h2 className='card-title'>Hello There!</h2>
-                            <h3>3 Dec 2022</h3>
+                    <img className='rounded-full w-12 h-12' src={ post.userId.photoUrl } />
+                        <span className="flex flex-col">
+                            <h2 className='card-title text-base'>{post.userId.displayName}</h2>
+                            <h3 className="text-base">{uploadDate}</h3>
                         </span>
                     </div>
-                    <p>If a dog chews shoes whose shoes does he choose?</p>
+                    <h5 className="text-lg font-bold">{post.title}</h5>
                 </div>
                 <figure>
-                    <img className="w-full object-cover max-h-full" 
+                    <img className="w-full aspect-auto max-h-[500px] object-contain max-w-full rounded-md" 
                     loading="lazy"
-                    src="https://source.unsplash.com/random/?city,night" alt="unsplash" />
+                    src={post.picture} alt={ post.title } />
                 </figure>
+
             </div>
         </>
     );

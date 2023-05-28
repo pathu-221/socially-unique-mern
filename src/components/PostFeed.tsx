@@ -1,13 +1,20 @@
+import { Post } from "@/interfaces/post";
 import PostContent from "./PostContent";
+import { FC } from "react";
 
+interface PostFeedProps {
+    posts: Post[] | null
+}
 
-function PostFeed() {
+const PostFeed: FC<PostFeedProps> = ( { posts }) => {
     return ( 
     <>
     <div className="flex flex-col gap-3">
-        <PostContent />
-        <PostContent />
-        <PostContent />
+      {
+        posts && posts.map(( post ) => (
+            <PostContent post={post}/>
+        ))
+      }
     </div>
     </>
      );
