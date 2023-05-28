@@ -1,6 +1,8 @@
+import { useUser } from "@/Hooks/useUser";
 import { register } from "@/apis/auth";
 import Link from "next/link";
-import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 
 
 interface formFields {
@@ -14,12 +16,21 @@ interface formFields {
 
 function SignUpPage() {
 
+    const user = useUser();
     const formRef = useRef(null);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<formFields>({
         displayName: '', email: '', password: '', confirmPassword: '' 
     });
 
+    const router = useRouter();
+
+    useEffect(() => {
+
+        if(user){
+            router.push('/');
+        }
+    }, [])
 
     const onChange = (e: ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -51,6 +62,7 @@ function SignUpPage() {
         setLoading(true);
         const data = await register(form);
         setLoading(false);
+        router.push('/login')
     } 
     return (
         <main className="main-page items-center h-[calc(100vh-66px)]"  >
@@ -128,7 +140,11 @@ function SignUpPage() {
                     </span>
                     <button 
                     disabled={loading}
-                    type='submit' className="btn btn-secondary">Create Account</button>
+                    type='submit' className="btn btn-secondary">
+                        {
+                            loading ? "Saving..." : "Create Account"
+                        }
+                    </button>
                 </form>
             </section>
         </main>
