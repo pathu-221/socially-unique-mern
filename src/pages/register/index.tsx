@@ -1,13 +1,12 @@
 import { useUser } from "@/Hooks/useUser";
 import { register } from "@/apis/auth";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 
 
 interface formFields {
-
-    displayName: string;
     email: string;
     profile?: any | null;
     password: string;
@@ -20,7 +19,7 @@ function SignUpPage() {
     const formRef = useRef(null);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<formFields>({
-        displayName: '', email: '', password: '', confirmPassword: '' 
+       email: '', password: '', confirmPassword: '' 
     });
 
     const router = useRouter();
@@ -30,7 +29,7 @@ function SignUpPage() {
         if(user){
             router.push('/');
         }
-    }, [])
+    }, [user])
 
     const onChange = (e: ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -54,7 +53,6 @@ function SignUpPage() {
         e.preventDefault();
 
         const form = new FormData()
-        form.append('displayName', formData.displayName);
         form.append('email', formData.email);
         form.append('photo', formData.profile);
         form.append('password', formData.password);
@@ -66,22 +64,12 @@ function SignUpPage() {
     } 
     return (
         <main className="main-page items-center h-[calc(100vh-66px)]"  >
+            <Head>
+                <title>Register</title>
+            </Head>
             <section className="items-center max-w-[40%] main-page-content bg-neutral-focus text-center">
             <h1 className="mb-5 text-3xl">Create Account</h1>
                 <form ref={formRef} onSubmit={onSubmit} className="flex flex-col gap-2">
-                <div className="flex flex-col gap-1">
-                        <label className="label">
-                            <span className="label-text text-lg">Display Name*: </span>
-                        </label>
-                        <input 
-                        type='text' 
-                        name="displayName"
-                        onChange={onChange}
-                        required
-                        placeholder="John Doe" 
-                        className="input input-bordered w-full"
-                        />
-                    </div>
                     <div className="flex flex-col gap-2">
                         <label className="label">
                             <span className="label-text text-lg">Email*: </span>
