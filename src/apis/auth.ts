@@ -10,6 +10,7 @@ export async function login(formData: { email: string, password: string }) {
     });
 
     const data = await res.json();
+    
     return data;
 }
 
@@ -27,9 +28,10 @@ export async function register(formData: any) {
         
         const data = await res.json();
     
-        console.log({res,data, formData});
         return data;
+
     } catch (err){
+
         console.error(err);
     }
 }

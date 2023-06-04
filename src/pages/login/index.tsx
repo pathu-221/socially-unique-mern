@@ -4,6 +4,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useUser } from "@/Hooks/useUser";
 import Head from 'next/head';
+import { showToast } from "@/common/toast";
 
 
 function LoginPage() {
@@ -28,13 +29,18 @@ function LoginPage() {
         try {
             setLoading(true);
             const data = await login(formData);
+            setLoading(false);
+            
+            if(!data.status) return showToast('error', data.msg);
+
+            showToast('success', data.msg);
 
             if (data.data.access_token) {
                 localStorage.setItem('token', data.data.access_token);
-                router.push('/');
                 router.reload();
+                router.push('/');
             }
-            setLoading(false);
+
         } catch (error) {
 
             console.error(error);

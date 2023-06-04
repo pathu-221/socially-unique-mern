@@ -1,5 +1,6 @@
 import { useUser } from "@/Hooks/useUser";
 import { register } from "@/apis/auth";
+import { showToast } from "@/common/toast";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -60,6 +61,12 @@ function SignUpPage() {
         setLoading(true);
         const data = await register(form);
         setLoading(false);
+
+        if(!data.status) return showToast('error', data.msg);
+        
+        else showToast('success', data.msg);
+
+
         router.push('/login')
     } 
     return (
