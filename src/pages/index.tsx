@@ -2,6 +2,7 @@ import PostFeed from "@/components/PostFeed"
 import { GetServerSideProps, InferGetServerSidePropsType } from "next"
 import { getPosts } from "@/apis/posts";
 import { Post } from "@/interfaces/post";
+import { showToast } from "@/common/toast";
 
 export const getServerSideProps: GetServerSideProps<{ posts: Post[] | null}> = async () => {
   const data = await getPosts();
@@ -20,7 +21,7 @@ export const getServerSideProps: GetServerSideProps<{ posts: Post[] | null}> = a
 
 
 export default function Home({ posts }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  console.log({posts});
+
   return (
     <>
     <main className="main-page">

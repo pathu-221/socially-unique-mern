@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useUser } from "@/Hooks/useUser";
-
+import Head from 'next/head';
 
 
 function LoginPage() {
@@ -49,6 +49,9 @@ function LoginPage() {
 
     return (
         <main className="main-page items-center h-[calc(100vh-66px)]"  >
+            <Head>
+                <title>Login</title>
+            </Head>
             <section className="items-center max-w-[40%] main-page-content bg-neutral-focus text-center">
                 <h1 className="mb-5 text-3xl">Login</h1>
                 <form onSubmit={onSubmit} className="flex flex-col gap-3">
