@@ -66,12 +66,15 @@ router.post('/register',  async (req: Request, res: Response) => {
     const createUserDto = plainToClass(CreateUserDto, req.body);
     const errors = await validate(createUserDto);
 
-    if(errors.length) return res.status(401).json(errors);
+    if(errors.length) {
+        const firstErrorMessage = Object.values(errors[0].constraints)[0];
+        return res.status(401).json({ msg: firstErrorMessage });
+    }
 
     const id = new ObjectId();
     let imageUrl: string;
 
-    if(req.files['photo']){
+    if(req.files && req.files['photo']){
         //if multiple files check if they are array..
 
         const file = Array.isArray(req.files['photo']) ? req.files['photo'][0] : req.files['photo'];
@@ -100,7 +103,7 @@ router.post('/register',  async (req: Request, res: Response) => {
         const newUser = new User({
             ...createUserDto,
             _id: id,
-            photoUrl:  imageUrl || `https://api.dicebear.com/6.x/initials/svg?seed=${createUserDto.displayName}`
+            photoUrl:  imageUrl || `https://api.dicebear.com/6.x/bottts-neutra/svg?seed=${createUserDto.email}`
         })
 
         await newUser.save();

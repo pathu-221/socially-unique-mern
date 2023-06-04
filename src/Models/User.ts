@@ -2,7 +2,8 @@ import { model, Schema } from "mongoose";
 
 const UserSchema = new Schema({
     username: {
-        type: String
+        type: Schema.Types.ObjectId,
+        ref: 'username'
     },
     email: {
         required: true,
@@ -11,10 +12,6 @@ const UserSchema = new Schema({
     password: {
         required: true,
         type: String,
-    },
-    displayName: {
-        required: true,
-        type: String
     },
     photoUrl: {
         type: String,

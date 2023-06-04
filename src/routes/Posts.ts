@@ -11,7 +11,7 @@ const router = Router();
 
 
 router.get('/', async (req:Request, res: Response) => {
-    const posts = await Posts.find({}).populate("user", "displayName photoUrl");
+    const posts = await Posts.find({}).populate("userId", "displayName photoUrl");
 
     res.send({
         msg: "All Posts fetched successfully",
