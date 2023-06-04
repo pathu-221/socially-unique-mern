@@ -14,6 +14,7 @@ router.get('/', async (req:Request, res: Response) => {
     const posts = await Posts.find({}).populate("userId", "displayName photoUrl");
 
     res.send({
+        status: 1,
         msg: "All Posts fetched successfully",
         data: posts
     })
@@ -23,7 +24,10 @@ router.post('/create', authenticate, async (req: IRequest, res: Response) => {
     const createPostsDto = plainToClass(CreatePostsDto, req.body);
     const errors = await validate(createPostsDto);
 
-    if(errors.length) return res.send({ msg: "There is some error", errors})
+    if(errors.length) {
+        const firstErrorMessage = Object.values(errors[0].constraints)[0];
+        return res.status(401).json({ status: 0, msg: firstErrorMessage });
+    }
 
     try {
 
@@ -43,7 +47,8 @@ router.post('/create', authenticate, async (req: IRequest, res: Response) => {
         await post.save();
 
         res.send({
-            msg: 'Post saved successfullt',
+            status: 1,
+            msg: 'Post saved successfully!',
             data: post
         })
 
@@ -51,8 +56,8 @@ router.post('/create', authenticate, async (req: IRequest, res: Response) => {
     } catch ( err ) {
         console.error({ err });
         res.status(501).send({
+            status: 0,
             msg:"Something went wrong",
-            err
         })
     }
 })
@@ -60,10 +65,11 @@ router.post('/create', authenticate, async (req: IRequest, res: Response) => {
 router.get('/usersPosts', authenticate, async (req: IRequest, res: Response) => {
 
     const posts = await Posts.find({ userId: req.user._id  });
-    res.status(200).send(JSON.stringify({
+    res.status(200).send({
+        status: 1,
         msg: "Users posts fetched",
         data: posts
-    }))
+    })
 
 })
 

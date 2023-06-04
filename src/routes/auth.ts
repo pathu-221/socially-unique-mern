@@ -21,7 +21,11 @@ router.post('/login', async (req: Request, res: Response) => {
     const loginDto = plainToClass(LoginDto, req.body);
     const errors = await validate(loginDto);
 
-    if(errors.length) return res.send({ msg: "There was some error", errors})
+    if(errors.length) {
+        const firstErrorMessage = Object.values(errors[0].constraints)[0];
+        return res.status(401).json({ status: 0, msg: firstErrorMessage });
+    }
+
 
     try {
         const user = await User.findOne({ email: loginDto.email });
@@ -30,18 +34,21 @@ router.post('/login', async (req: Request, res: Response) => {
             const match = await bcrypt.compare(loginDto.password, user.password);
             if(!match){
                 res.send({
+                    status: 0,
                     msg: 'Incorrect Password',
                 })
                 return 
             } else {
                 const token = jwt.sign({ user: { _id: user._id} }, process.env.JWT_SECRET);
                 res.send({
-                    msg: 'logged in successfully',
+                    status: 1,
+                    msg: 'Logged in successfully!',
                     data: { access_token: token }
                 })
             }
         } else {
             res.send({
+                status: 0,
                 msg: 'User doesnt exist',
             })
         }
@@ -49,6 +56,7 @@ router.post('/login', async (req: Request, res: Response) => {
     } catch (err) {
 
         console.error(err);
+        res.send({ status: 0, msg: 'Something went wrong!'})
     }
 });
 
@@ -56,6 +64,7 @@ router.post('/login', async (req: Request, res: Response) => {
 router.get('/authenticate', authenticate, async (req: IRequest, res: Response) => {
     const user = await User.findOne({ _id: req.user._id });
     res.send({
+        status: 1,
         msg: "Token Verified",
         data: user
     })
@@ -68,7 +77,7 @@ router.post('/register',  async (req: Request, res: Response) => {
 
     if(errors.length) {
         const firstErrorMessage = Object.values(errors[0].constraints)[0];
-        return res.status(401).json({ msg: firstErrorMessage });
+        return res.status(401).json({ status: 0, msg: firstErrorMessage });
     }
 
     const id = new ObjectId();
@@ -82,7 +91,6 @@ router.post('/register',  async (req: Request, res: Response) => {
         const image = await v2.uploader.upload(file.tempFilePath, {
             public_id: `userProfiles/${id}`,
         });
-        console.log({image, file});
 
         imageUrl = image.url;
     }
@@ -95,7 +103,8 @@ router.post('/register',  async (req: Request, res: Response) => {
         const exists = await User.findOne({ email: createUserDto.email });
         if(exists){
             res.send({
-                msg: 'user already exists',
+                status: 0,
+                msg: 'User already exists!',
             })
             return
         }
@@ -108,13 +117,14 @@ router.post('/register',  async (req: Request, res: Response) => {
 
         await newUser.save();
         res.send({
-            msg: 'User registered successfully',
-            data: {user: newUser },
+            status: 1,
+            msg: 'User registered successfully!',
+            data: { user: newUser },
         });        
 
     } catch (err) {
         console.error(err);
-        res.send(err);
+        res.send({ status: 0, msg: 'Something went Wrong!' });
     }
 })
 
