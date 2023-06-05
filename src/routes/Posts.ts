@@ -11,13 +11,20 @@ const router = Router();
 
 
 router.get('/', async (req:Request, res: Response) => {
-    const posts = await Posts.find({}).populate("userId", "displayName photoUrl");
+    
+    try {
+        const posts = await Posts.find({}).populate("user", "username photoUrl");
 
-    res.send({
-        status: 1,
-        msg: "All Posts fetched successfully",
-        data: posts
-    })
+        res.send({
+            status: 1,
+            msg: "All Posts fetched successfully",
+            data: posts
+        })
+
+    } catch (error) {
+        console.error(error);
+        res.send({ status: 0, msg: "Something went wrong!"})
+    }
 })
 
 router.post('/create', authenticate, async (req: IRequest, res: Response) => {
@@ -32,6 +39,7 @@ router.post('/create', authenticate, async (req: IRequest, res: Response) => {
     try {
 
         let url;
+
         if(req.files){
             const image = await v2.uploader.upload(req.files.image.tempFilePath, {
                 public_id: `${req.user._id}/${req.files.image.name}`
@@ -42,7 +50,7 @@ router.post('/create', authenticate, async (req: IRequest, res: Response) => {
         const post = new Posts({
             ...createPostsDto,
             picture: url,
-            userId: req.user._id
+            user: req.user._id
         });
         await post.save();
 

@@ -7,8 +7,8 @@ import cors from 'cors';
 
 
 import auth from './routes/auth';
-import posts from './routes/Posts';
-import users from './routes/User';
+import posts from './routes/posts';
+import users from './routes/user';
 
 import fileUpload from 'express-fileupload';
 import { connect } from './db/conn';

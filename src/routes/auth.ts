@@ -112,7 +112,7 @@ router.post('/register',  async (req: Request, res: Response) => {
         const newUser = new User({
             ...createUserDto,
             _id: id,
-            photoUrl:  imageUrl || `https://api.dicebear.com/6.x/bottts-neutra/svg?seed=${createUserDto.email}`
+            photoUrl:  imageUrl || `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${createUserDto.email}`
         })
 
         await newUser.save();

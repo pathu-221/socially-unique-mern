@@ -54,9 +54,13 @@ router.post('/username', authenticate, async(req: IRequest, res: Response) => {
             return res.send({ status: 0, msg: "Username Taken!", data: username })
         } else {
 
-            const newUsername = new Username({ username: createUsernameDto.username});
-            await newUsername.save();
-            await User.updateOne({_id: req.user._id }, { usernameText: newUsername.usernameText })
+            const newUsername = await new Username({ 
+                usernameText: createUsernameDto.username,
+                user: req.user._id,
+            });
+            newUsername.save();
+            
+            await User.updateOne({ _id: req.user._id }, { username: newUsername.usernameText })
 
             return res.send({ status: 1, msg: "Username Saved!", data: newUsername })
         }
