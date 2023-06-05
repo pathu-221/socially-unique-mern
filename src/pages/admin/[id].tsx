@@ -1,6 +1,8 @@
 
 
-export 
+export async function getStaticParams() {
+    
+}
 
 
 function AdminPage() {
