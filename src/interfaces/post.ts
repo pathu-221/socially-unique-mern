@@ -5,7 +5,7 @@ export interface Post {
     title:   string;
     content: string;
     picture: string;
-    userId:    User;
+    user:    User;
     likes:   number;
     createdAt: Date,
     updatedAt: Date
@@ -13,6 +13,6 @@ export interface Post {
 
 export interface User {
     _id:         string;
-    displayName: string;
+    username: string;
     photoUrl:    string;
 }

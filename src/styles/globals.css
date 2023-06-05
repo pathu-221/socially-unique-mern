@@ -11,5 +11,5 @@
 }
 
 .main-page-content {
-    @apply lg:w-[50%] max-w-[600px] rounded-lg bg-neutral-focus p-5 sm:w-[95%] xsm:w-[95%]
+    @apply lg:w-[50%] max-w-[600px] bg-neutral-focus rounded-lg p-5 sm:w-[95%] xsm:w-[95%]
 }

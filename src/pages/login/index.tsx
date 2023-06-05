@@ -66,6 +66,7 @@ function LoginPage() {
                             <span className="label-text text-xl">Email: </span>
                         </label>
                         <input 
+                        required
                         type='email' 
                         name='email'
                         onChange={onChange}
@@ -78,6 +79,7 @@ function LoginPage() {
                             <span className="label-text text-xl">Password: </span>
                         </label>
                         <input 
+                        required
                         type='password' 
                         name='password'
                         onChange={onChange}
@@ -93,7 +95,7 @@ function LoginPage() {
                     <button 
                     disabled={loading}
                     type='submit' className="btn btn-secondary">
-                        { loading ? 'Loading..' : 'Login' }
+                        { loading ? 'Loading...' : 'Login' }
                     </button>
                 </form>
             </section>

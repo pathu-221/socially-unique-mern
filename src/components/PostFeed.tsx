@@ -12,7 +12,7 @@ const PostFeed: FC<PostFeedProps> = ( { posts }) => {
     <div className="flex flex-col gap-3">
       {
         posts && posts.map(( post ) => (
-            <PostContent post={post}/>
+            <PostContent key={post._id} post={post}/>
         ))
       }
     </div>
