@@ -12,4 +12,8 @@ export class CreateUserDto {
     @IsString()
     @IsOptional()
     photoUrl: string
+
+    @IsString()
+    @IsOptional()
+    username: string
 }

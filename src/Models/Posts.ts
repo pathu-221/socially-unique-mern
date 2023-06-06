@@ -14,11 +14,15 @@ const PostsSchema = new Schema({
         type: String
     },
     content: {
-        requred: true,
         type: String
     },
     picture: {
         type: String
+    },
+    published:{
+        required: true,
+        type: Boolean,
+        default: false,
     },
     user: {
         type: Schema.Types.ObjectId,

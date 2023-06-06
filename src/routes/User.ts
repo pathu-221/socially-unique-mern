@@ -3,13 +3,14 @@ import { IRequest, authenticate } from "../middleware/authenticate";
 import { Username } from "../Models/Username";
 import { User } from '../Models/User';
 import { plainToClass } from "class-transformer";
-import { CreateUsernameDto } from "../dto/Username.dto";
+import { CreateUsernameDto } from "../dto/username.dto";
 import { validate } from "class-validator";
 
 
 const router = Router();
 
 router.get('/username/:username', authenticate, async(req: IRequest, res: Response) => {
+
     const createUsernameDto = plainToClass(CreateUsernameDto, req.params);
     const errors = await validate(createUsernameDto);
 
@@ -23,9 +24,9 @@ router.get('/username/:username', authenticate, async(req: IRequest, res: Respon
         const username = await Username.findOne({ username: createUsernameDto.username });
 
         if(username) {
-            return res.send({ status: 0, msg: "Username Taken!", data: { available: false }})
+            return res.send({ status: 0, msg: "Username Taken!"})
         } else {
-            return res.send({ status: 1, msg: "Username Available", data: { available: true }})
+            return res.send({ status: 1, msg: "Username Available!"})
         }
 
     } catch (err) {
@@ -55,12 +56,13 @@ router.post('/username', authenticate, async(req: IRequest, res: Response) => {
         } else {
 
             const newUsername = await new Username({ 
-                usernameText: createUsernameDto.username,
+                username: createUsernameDto.username,
                 user: req.user._id,
             });
+
             newUsername.save();
             
-            await User.updateOne({ _id: req.user._id }, { username: newUsername.usernameText })
+            await User.updateOne({ _id: req.user._id }, { username: newUsername.username })
 
             return res.send({ status: 1, msg: "Username Saved!", data: newUsername })
         }
