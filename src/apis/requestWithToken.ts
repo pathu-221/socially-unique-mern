@@ -2,7 +2,7 @@
 export async function requestWithToken(url: string, options: RequestInit){
 
     const token = localStorage.getItem('token');
-    if(!token ) return
+    if(!token ) throw new Error('Token Not Available!')
 
     const res = await fetch(url, {
         ...options,

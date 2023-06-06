@@ -24,11 +24,13 @@ const PostContent: FC<PostContentProps> = ({ post }) => {
                     </div>
                     <h5 className="text-lg font-bold">{post.title}</h5>
                 </div>
-                <figure>
+                {
+                    post.picture && <figure>
                     <img className="w-full aspect-auto max-h-[600px] object-contain max-w-full rounded-md" 
                     loading="lazy"
                     src={post.picture} alt={ post.title } />
                 </figure>
+                }
 
             </div>
         </>
