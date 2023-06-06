@@ -4,12 +4,10 @@
 
 
 
-
-
 .main-page {
     @apply flex items-center overflow-hidden justify-center 
 }
 
 .main-page-content {
-    @apply lg:w-[50%] max-w-[600px] bg-neutral-focus rounded-lg p-5 sm:w-[95%] xsm:w-[95%]
+    @apply lg:w-[50%]  max-w-[600px] bg-neutral-focus rounded-lg p-5 sm:w-[95%] xsm:w-[95%] 
 }

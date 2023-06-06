@@ -16,7 +16,7 @@ const PostContent: FC<PostContentProps> = ({ post }) => {
             <div className="card max-w-full bg-base-100 shadow-xl">
                 <div className="card-body p-3 pb-3">
                     <div className="flex gap-3 items-center justify-start" >
-                    <img className='rounded-full w-12 h-12' src={ post.user.photoUrl } />
+                    <img className='rounded-full w-12 h-12' src={ post.user.photoUrl } alt={post.user.username}/>
                         <span className="flex flex-col">
                             <h2 className='card-title text-base'>{post.user.username}</h2>
                             <h3 className="text-base">{uploadDate}</h3>

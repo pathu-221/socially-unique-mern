@@ -25,7 +25,7 @@ function Navbar() {
                 <div className="dropdown dropdown-end">
                     <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                         <div className="w-10 rounded-full">
-                            <img src={ user?.photoUrl || "https://api.dicebear.com/6.x/fun-emoji/svg?seed=Kiki"} />
+                            <img src={ user?.photoUrl || "https://api.dicebear.com/6.x/fun-emoji/svg?seed=Kiki"} alt='user-profile' />
                         </div>
                     </label>
                     {
