@@ -19,7 +19,8 @@ function Navbar() {
             <div className="flex-none gap-2">
             <div className="flex-1">
                 {
-                    user ? <Link href={`/admin/${user._id}`} className="btn btn-ghost normal-case text-xl">Your Posts</Link> : <Link href='/login' className="btn btn-ghost normal-case text-xl">Login</Link>
+                        user ? <Link href={`/admin
+                    `} className="btn btn-ghost normal-case text-xl">Your Posts</Link> : <Link href='/login' className="btn btn-ghost normal-case text-xl">Login</Link>
                 }
             </div>
                 <div className="dropdown dropdown-end">

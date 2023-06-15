@@ -3,24 +3,20 @@ import { User } from "@/interfaces/user";
 import { useState, useEffect } from "react";
 
 export function useUser() {
-    const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<User>();
 
-    useEffect(() => {
-        fetchUser();
-    }, []);
+  useEffect(() => {
+    if (!user) fetchUser();
+  }, []);
 
-    const fetchUser = async () => {
-        const token = localStorage.getItem('token');
+  const fetchUser = async () => {
+    const token = localStorage.getItem("token");
 
-        if(!token) return
+    if (!token) return;
 
-        const data = await getUser(token);
+    const data = await getUser(token);
+    setUser(data.data);
+  };
 
-        console.log('in use user', data)
-        setUser(data.data);
-
-        
-    }
-
-    return user;
+  return user;
 }

@@ -6,7 +6,7 @@ export async function getUser (token: string) {
         method: "GET",
         headers: {
             'content-type': "application/json",
-            'auth-token': token
+            'authorization': `Bearer ${token}`
         }
     });
     const data = await res.json();
@@ -15,12 +15,7 @@ export async function getUser (token: string) {
 
 }
 
-
-export async function getUsersPost() {
-    const data = await requestWithToken(`${process.env.NEXT_PUBLIC_API_ADDRESS}/posts/usersPosts`, {
-        method: 'GET',
-        headers: {
-            'content-type': 'application/json'
-        }
-    })
+export async function checkUsernameAvailability(username: string) {
+    const data = await requestWithToken(`${process.env.NEXT_PUBLIC_API_ADDRESS}/user/username/${username}`);
+    return data;
 }
