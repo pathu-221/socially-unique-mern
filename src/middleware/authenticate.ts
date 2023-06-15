@@ -10,9 +10,12 @@ export interface IRequest extends Request {
 }
 
 export const authenticate = (req: IRequest, res: Response, next: NextFunction) => {
-    const token = req.header('auth-token');
+    const authorizationHeader = req.header('authorization');
+    const token = authorizationHeader.split(' ')[1];
+
     if(!token){
         res.status(400).send({
+            status: 0,
             msg: 'No token... Access Denied',
         })
         return
@@ -24,7 +27,8 @@ export const authenticate = (req: IRequest, res: Response, next: NextFunction) =
         next();
     } catch (err) {
         res.status(401).send({
-            msg: 'invalid token',
+            status: 0,
+            msg: 'Invalid token',
             err
         })
     }

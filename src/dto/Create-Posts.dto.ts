@@ -7,8 +7,3 @@ export class CreatePostsDto {
     title: string
     
 }
-
-export class UpdatePostsDto {
-    @IsString()
-    content: string
-}
