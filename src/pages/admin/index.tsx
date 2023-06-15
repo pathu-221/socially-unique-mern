@@ -1,13 +1,14 @@
 import { useUser } from "@/Hooks/useUser";
-import { getPostsbyId, newPost } from "@/apis/posts";
+import { getPostsbyId, getUsersPost, newPost } from "@/apis/posts";
 import { showToast } from "@/common/toast";
 import Modal from "@/components/Modal";
 import PostFeed from "@/components/PostFeed";
 import { Post } from "@/interfaces/post";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import UsernameForm from "@/components/UsernameForm";
+
 
 export const getServerSideProps: GetServerSideProps<{
   posts: Post[] | null;
@@ -15,7 +16,7 @@ export const getServerSideProps: GetServerSideProps<{
   let posts = null;
 
   if (params && params.id) {
-    const data = await getPostsbyId(params.id as string);
+    const data = await getUsersPost();
 
     if (data.status === 1) {
       posts = data.data;
@@ -29,15 +30,15 @@ export const getServerSideProps: GetServerSideProps<{
   };
 };
 
-function AdminPage({
-  posts,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+function AdminPage() {
+
   const user = useUser();
   const [title, setTitle] = useState("");
   const [saving, setSaving] = useState(false);
-  const router = useRouter();
+  const [posts, setPosts] = useState<Post[] | undefined>()
 
-  const isCurrentUser = user && user._id === router.query.id;
+  const router = useRouter();
+  const isCurrentUser = user && user._id;
 
   const savePost = async () => {
     console.log({ title });
@@ -54,6 +55,16 @@ function AdminPage({
     router.replace(router.asPath);
   };
 
+  useEffect(() => {
+    fetchPosts();
+  }, [])
+
+  const fetchPosts = async () => {
+    const data = await getUsersPost();
+    setPosts(data.data);
+  }
+
+ 
   if (isCurrentUser && !user?.username) return <UsernameForm user={user} />;
 
   return (

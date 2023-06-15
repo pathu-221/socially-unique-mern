@@ -10,11 +10,7 @@ export function useUser() {
   }, []);
 
   const fetchUser = async () => {
-    const token = localStorage.getItem("token");
-
-    if (!token) return;
-
-    const data = await getUser(token);
+    const data = await getUser();
     setUser(data.data);
   };
 

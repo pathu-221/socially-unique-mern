@@ -1,4 +1,3 @@
-import { Post } from "@/interfaces/post";
 import { requestWithToken } from "./requestWithToken";
 
 export async function getPosts(){
@@ -39,6 +38,20 @@ export async function newPost(title: string){
 
         return data;
 
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export async function getUsersPost() {
+    try {
+        const data = await requestWithToken(`${process.env.NEXT_PUBLIC_API_ADDRESS}/posts/user`, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
+        return data;
     } catch (error) {
         console.error(error);
     }
