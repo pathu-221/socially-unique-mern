@@ -3,16 +3,17 @@ import PostContent from "./PostContent";
 import { FC } from "react";
 
 interface PostFeedProps {
-    posts: Post[] | null
+  posts: Post[] | null,
+  isAdmin?: boolean
 }
 
-const PostFeed: FC<PostFeedProps> = ( { posts }) => {
+const PostFeed: FC<PostFeedProps> = ( { posts, isAdmin }) => {
     return ( 
     <>
     <div className="flex flex-col gap-3">
       {
         posts && posts.map(( post ) => (
-            <PostContent key={post._id} post={post}/>
+            <PostContent isAdmin={isAdmin} key={post._id} post={post}/>
         ))
       }
     </div>

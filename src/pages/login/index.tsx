@@ -7,7 +7,7 @@ import Head from "next/head";
 import { showToast } from "@/common/toast";
 
 function LoginPage() {
-	const user = useUser();
+	const {user} = useUser();
 	const router = useRouter();
 	const [formData, setFormData] = useState({ email: "", password: "" });
 	const [loading, setLoading] = useState(false);

@@ -16,7 +16,7 @@ interface formFields {
 
 function SignUpPage() {
 
-    const user = useUser();
+    const {user} = useUser();
     const formRef = useRef(null);
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<formFields>({

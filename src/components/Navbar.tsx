@@ -6,11 +6,8 @@ import { useEffect } from "react";
 
 
 function Navbar() {
-    const user = useUser();
+    const { user } = useUser();
     const router = useRouter();
-
-    console.log({ user });
-    useEffect(() => {}, [user])
     
     return (
         <nav className="navbar bg-neutral lg:px-[110px] sticky top-0 z-10">

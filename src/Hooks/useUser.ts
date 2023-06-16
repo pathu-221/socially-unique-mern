@@ -7,13 +7,15 @@ function useUser() {
 
   const [user, setUser] = useState<User>();
 
-  const { data } = useSWR<any>(
+  const { data, isLoading } = useSWR<any>(
 		`${process.env.NEXT_PUBLIC_API_ADDRESS}/auth/authenticate`,
 		getUser
 	);
 
   useEffect(() => {
     
+    console.log({ data });
+
     if (!data) return 
 
     setUser(data.data);
@@ -22,7 +24,7 @@ function useUser() {
 
 
 
-  return user;
+  return {user, isLoading};
 }
 
 export default useUser;

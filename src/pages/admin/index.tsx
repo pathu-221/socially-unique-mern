@@ -1,5 +1,6 @@
 import useUser from "@/Hooks/useUser";
-import { getPostsbyId, getUsersPost, newPost } from "@/apis/posts";
+import { getUsersPost, newPost } from "@/apis/posts";
+import { HiPlus } from "react-icons/hi";
 import { showToast } from "@/common/toast";
 import Modal from "@/components/Modal";
 import PostFeed from "@/components/PostFeed";
@@ -32,7 +33,7 @@ export const getServerSideProps: GetServerSideProps<{
 
 function AdminPage() {
 
-  const user = useUser();
+  const {user, isLoading} = useUser();
   const [title, setTitle] = useState("");
   const [saving, setSaving] = useState(false);
   const [posts, setPosts] = useState<Post[] | undefined>()
@@ -56,8 +57,10 @@ function AdminPage() {
   };
 
   useEffect(() => {
-    fetchPosts();
-  }, [])
+
+    if (user) fetchPosts();
+    
+  }, [user])
 
   const fetchPosts = async () => {
     const data = await getUsersPost();
@@ -68,51 +71,56 @@ function AdminPage() {
   if (isCurrentUser && !user?.username) return <UsernameForm user={user} />;
 
   return (
-    <div className="main-page">
-      <div className="main-page-content flex flex-col gap-3">
-        {isCurrentUser && (
-          <label htmlFor="create-post-modal" className="btn btn-secondary">
-            New Post
-          </label>
-        )}
+		<div className="main-page">
+			<div className="main-page-content flex flex-col gap-3">
+				<div className="flex">
+					{isCurrentUser && (
+						<label
+							htmlFor="create-post-modal"
+							className="btn btn-secondary flex aspect-square text-white"
+						>
+							<HiPlus size={40} color="#fff" />
+						</label>
+					)}
+				</div>
 
-        {posts && posts.length ? (
-          <PostFeed posts={posts} />
-        ) : (
-          <h1>You Haven't Posted Yet</h1>
-        )}
+				{posts && posts.length ? (
+					<PostFeed posts={posts} isAdmin />
+				) : (
+					<h1>You Haven't Posted Yet</h1>
+				)}
 
-        <Modal id="create-post-modal">
-          <div className="flex flex-col items-center justify-center gap-5">
-            <h3 className="text-xl">Choose an interesting title</h3>
-            <input
-              className="input input-bordered w-full"
-              placeholder="Title"
-              type="text"
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                setTitle(e.target.value);
-              }}
-              value={title}
-            />
+				<Modal id="create-post-modal">
+					<div className="flex flex-col items-center justify-center gap-5">
+						<h3 className="text-xl">Choose an interesting title</h3>
+						<input
+							className="input input-bordered w-full"
+							placeholder="Title"
+							type="text"
+							onChange={(e: ChangeEvent<HTMLInputElement>) => {
+								setTitle(e.target.value);
+							}}
+							value={title}
+						/>
 
-            <div className="self-end flex gap-4">
-              <label htmlFor="create-post-modal" className="btn btn-primary">
-                close
-              </label>
-              <button
-                className="btn btn-secondary"
-                onClick={() => {
-                  savePost();
-                }}
-              >
-                {saving ? "Saving.." : "Save"}
-              </button>
-            </div>
-          </div>
-        </Modal>
-      </div>
-    </div>
-  );
+						<div className="self-end flex gap-4">
+							<label htmlFor="create-post-modal" className="btn btn-primary">
+								close
+							</label>
+							<button
+								className="btn btn-secondary"
+								onClick={() => {
+									savePost();
+								}}
+							>
+								{saving ? "Saving.." : "Save"}
+							</button>
+						</div>
+					</div>
+				</Modal>
+			</div>
+		</div>
+	);
 }
 
 export default AdminPage;
