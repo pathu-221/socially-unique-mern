@@ -130,4 +130,27 @@ router.get("/user", authenticate, async (req: IRequest, res: Response) => {
 	}
 });
 
+router.get("/:postId", async (req: Request, res: Response) => {
+	const { postId } = req.params;
+	try {
+		const posts = await Posts.findOne({ _id: postId }).populate(
+			"user",
+			"username photoUrl"
+		);
+
+		res.status(200).send({
+			status: 1,
+			msg: "Post Fetched Successfully!",
+			data: posts,
+		});
+	} catch (error) {
+		console.error(error);
+		res.end({
+			status: 0,
+			msg: "Something went wrong!",
+		});
+	}
+});
+
+
 export default router;
