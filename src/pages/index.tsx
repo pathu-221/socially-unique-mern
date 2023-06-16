@@ -13,6 +13,8 @@ export const getServerSideProps: GetServerSideProps<{ posts: Post[] | null}> = a
     
     const data = await getPosts();
 
+    if (!data) throw new Error('Something went Wrong!');
+
     if(!data.status) throw new Error(data.msg);
 
     posts = data.data as Post[];

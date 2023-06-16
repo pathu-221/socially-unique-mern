@@ -1,6 +1,6 @@
 import useUser from "@/Hooks/useUser";
 import { getUsersPost, newPost } from "@/apis/posts";
-import { HiPlus } from "react-icons/hi";
+import { AiOutlinePlus } from "react-icons/ai";
 import { showToast } from "@/common/toast";
 import Modal from "@/components/Modal";
 import PostFeed from "@/components/PostFeed";
@@ -33,7 +33,7 @@ export const getServerSideProps: GetServerSideProps<{
 
 function AdminPage() {
 
-  const {user, isLoading} = useUser();
+  const user = useUser()
   const [title, setTitle] = useState("");
   const [saving, setSaving] = useState(false);
   const [posts, setPosts] = useState<Post[] | undefined>()
@@ -73,14 +73,17 @@ function AdminPage() {
   return (
 		<div className="main-page">
 			<div className="main-page-content flex flex-col gap-3">
-				<div className="flex">
+				<div className="flex justify-between items-center">
 					{isCurrentUser && (
-						<label
-							htmlFor="create-post-modal"
-							className="btn btn-secondary flex aspect-square text-white"
-						>
-							<HiPlus size={40} color="#fff" />
-						</label>
+						<>
+							<h1 className="text-2xl font-semibold">Your Posts</h1>
+							<label
+								htmlFor="create-post-modal"
+								className="btn btn-secondary flex aspect-square text-white"
+							>
+								<AiOutlinePlus size={40} color="#fff" />
+							</label>
+						</>
 					)}
 				</div>
 
