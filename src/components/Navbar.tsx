@@ -1,13 +1,16 @@
-import { useUser } from "@/Hooks/useUser";
+import useUser from "@/Hooks/useUser";
 import { logOut } from "@/apis/auth";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 
 function Navbar() {
     const user = useUser();
     const router = useRouter();
 
+    console.log({ user });
+    useEffect(() => {}, [user])
     
     return (
         <nav className="navbar bg-neutral lg:px-[110px] sticky top-0 z-10">

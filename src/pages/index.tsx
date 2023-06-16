@@ -39,8 +39,6 @@ export const getServerSideProps: GetServerSideProps<{ posts: Post[] | null}> = a
 
 
 export default function Home({ posts }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-
-
   if(!posts)
   return (
     <main className="main-page">

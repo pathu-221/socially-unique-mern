@@ -1,4 +1,4 @@
-import { useUser } from "@/Hooks/useUser";
+import useUser from "@/Hooks/useUser";
 import { getPostsbyId, getUsersPost, newPost } from "@/apis/posts";
 import { showToast } from "@/common/toast";
 import Modal from "@/components/Modal";
@@ -41,7 +41,7 @@ function AdminPage() {
   const isCurrentUser = user && user._id;
 
   const savePost = async () => {
-    console.log({ title });
+
     setSaving(true);
     const data = await newPost(title);
 

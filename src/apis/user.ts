@@ -1,8 +1,8 @@
 import { requestWithToken } from "./requestWithToken";
 
-export async function getUser () {
+export async function getUser(url: string) {
 
-    const data = await requestWithToken(`${process.env.NEXT_PUBLIC_API_ADDRESS}/auth/authenticate`, {
+    const data = await requestWithToken(url, {
         method: "GET",
         headers: {
             'content-type': "application/json",

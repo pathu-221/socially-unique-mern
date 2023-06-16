@@ -1,4 +1,4 @@
-import { useUser } from "@/Hooks/useUser";
+import useUser from "@/Hooks/useUser";
 import { register } from "@/apis/auth";
 import { showToast } from "@/common/toast";
 import Head from "next/head";
