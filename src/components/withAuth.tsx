@@ -13,7 +13,7 @@ const withAuth = (WrappedComponent: ComponentType) => {
 
 		const fetchUser = async () => {
 			try {
-				const data = await getUser(); // Assuming this function makes an API call to retrieve user data
+				const data = await getUser(); 
 
 				if (!data) {
 					router.push("/login");

@@ -12,12 +12,16 @@ export async function getPosts(){
     }
 }
 
-export async function getPostsbyId(id: string){
+export async function getPostbyId(id: string){
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_ADDRESS}/posts/${id}`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_ADDRESS}/posts/${id}`, {
+            method: 'GET',
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
 
         const data = await res.json();
-        
         return data;
 
     } catch (error) {
