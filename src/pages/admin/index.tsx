@@ -9,6 +9,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useState } from "react";
 import UsernameForm from "@/components/UsernameForm";
+import withAuth from "@/components/withAuth";
 
 
 export const getServerSideProps: GetServerSideProps<{
@@ -126,4 +127,4 @@ function AdminPage() {
 	);
 }
 
-export default AdminPage;
+export default withAuth(AdminPage);

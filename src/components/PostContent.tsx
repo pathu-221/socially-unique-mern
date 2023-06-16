@@ -32,7 +32,7 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin }) => {
 								</span>
 							</div>
 							{isAdmin && (
-								<Link href={"/"}>
+								<Link href={`/admin/${post._id}`}>
 									<button className="btn btn-primary">
 										<MdModeEditOutline size={20} />
 									</button>
