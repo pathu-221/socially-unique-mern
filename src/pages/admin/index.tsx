@@ -10,82 +10,54 @@ import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useState } from "react";
 import UsernameForm from "@/components/UsernameForm";
 import withAuth from "@/components/withAuth";
-
-
-export const getServerSideProps: GetServerSideProps<{
-  posts: Post[] | null;
-}> = async ({ params }) => {
-  let posts = null;
-
-  if (params && params.id) {
-    const data = await getUsersPost();
-
-    if (data.status === 1) {
-      posts = data.data;
-    }
-  }
-
-  return {
-    props: {
-      posts,
-    },
-  };
-};
+import Head from "next/head";
 
 function AdminPage() {
+	const user = useUser();
+	const [title, setTitle] = useState("");
+	const [saving, setSaving] = useState(false);
+	const [posts, setPosts] = useState<Post[] | undefined>();
 
-  const user = useUser()
-  const [title, setTitle] = useState("");
-  const [saving, setSaving] = useState(false);
-  const [posts, setPosts] = useState<Post[] | undefined>()
+	const isCurrentUser = user && user._id;
 
-  const router = useRouter();
-  const isCurrentUser = user && user._id;
+	const savePost = async () => {
+		setSaving(true);
+		const data = await newPost(title);
 
-  const savePost = async () => {
+		if (!data.status) return showToast("error", data.msg);
 
-    setSaving(true);
-    const data = await newPost(title);
+		setTitle("");
+		showToast("success", data.msg);
+		fetchPosts();
+		setSaving(false);
+		
+	};
 
-    if (!data.status) return showToast("error", data.msg);
+	useEffect(() => {
+		if (user) fetchPosts();
+	}, [user]);
 
-    setTitle("");
-    showToast("success", data.msg);
+	const fetchPosts = async () => {
+		const data = await getUsersPost();
+		setPosts(data.data);
+	};
 
-    setSaving(false);
+	if (isCurrentUser && !user?.username) return <UsernameForm user={user} />;
 
-    router.replace(router.asPath);
-  };
-
-  useEffect(() => {
-
-    if (user) fetchPosts();
-    
-  }, [user])
-
-  const fetchPosts = async () => {
-    const data = await getUsersPost();
-    setPosts(data.data);
-  }
-
- 
-  if (isCurrentUser && !user?.username) return <UsernameForm user={user} />;
-
-  return (
+	return (
 		<div className="main-page">
+			<Head>
+				<title>Manage Your Posts</title>
+			</Head>
 			<div className="main-page-content flex flex-col gap-3">
 				<div className="flex justify-between items-center">
-					{isCurrentUser && (
-						<>
-							<h1 className="text-2xl font-semibold">Your Posts</h1>
-							<label
-								htmlFor="create-post-modal"
-								className="btn btn-secondary flex aspect-square text-white"
-							>
-								<AiOutlinePlus size={40} color="#fff" />
-							</label>
-						</>
-					)}
+					<h1 className="text-2xl font-semibold">Manage Your Posts</h1>
+					<label
+						htmlFor="create-post-modal"
+						className="btn btn-secondary flex aspect-square text-white"
+					>
+						<AiOutlinePlus size={40} color="#fff" />
+					</label>
 				</div>
 
 				{posts && posts.length ? (

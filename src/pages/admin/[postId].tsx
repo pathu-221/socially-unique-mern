@@ -91,10 +91,10 @@ const AdminPostEdit: FC<AdminPostEditProps> = () => {
 		const data = await savePost(form, post._id);
 		setSaving(false);
 
-		console.log({ data })
-
 		if (!data.status) showToast("error", data.msg);
 		else showToast("success", data.msg);
+
+		router.replace(`/post/${post._id}`);
 	};
 
 	if (!post) return <p>Loading...</p>;

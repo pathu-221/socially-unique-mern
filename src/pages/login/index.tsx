@@ -33,8 +33,8 @@ function LoginPage() {
 
 			if (data.data.access_token) {
 				localStorage.setItem("token", data.data.access_token);
-                router.replace(router.asPath);
-                router.push('/');
+				router.reload();
+				router.push("/");
 			}
 		} catch (error) {
 			console.error(error);
