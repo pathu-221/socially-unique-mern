@@ -47,6 +47,23 @@ export async function newPost(title: string){
     }
 }
 
+export async function savePost(formData: any, postId: string) {
+	try {
+		const data = await requestWithToken(
+			`${process.env.NEXT_PUBLIC_API_ADDRESS}/posts/${postId}`,
+			{
+				method: "PUT",
+				body: formData,
+			}
+		);
+
+		return data;
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+
 export async function getUsersPost() {
     try {
         const data = await requestWithToken(`${process.env.NEXT_PUBLIC_API_ADDRESS}/posts/user`, {

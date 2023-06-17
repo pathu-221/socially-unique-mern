@@ -4,7 +4,8 @@ export interface Post {
     _id:     string;
     title:   string;
     content: string;
-    picture: string;
+    picture?: string;
+    published: boolean,
     user:    User;
     likes:   number;
     createdAt: Date,
