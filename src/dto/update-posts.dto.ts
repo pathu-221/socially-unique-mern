@@ -1,11 +1,10 @@
-
-import { IsBoolean, IsString } from "class-validator"
-
+import { Type } from "class-transformer";
+import { IsBoolean, IsObject, IsString, ValidateNested } from "class-validator";
 
 export class UpdatePostsDto {
-    @IsString()
-    content: string
+	@IsString()
+	content: string;
 
-    @IsBoolean()
-    published: boolean
+	@IsString()
+	published: string
 }

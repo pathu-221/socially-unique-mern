@@ -37,6 +37,7 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 		return res.status(401).json({ status: 0, msg: firstErrorMessage });
 	}
 
+
 	try {
 		const postId = req.params.postId;
 		const post = await Posts.findOne({ _id: postId }).populate(
@@ -44,24 +45,30 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 			"_id username"
 		);
 
-		if (!post) res.send({ status: 0, msg: "Post not Found!" });
+		if (!post) return res.send({ status: 0, msg: "Post not Found!" });
 
-		if (post.user._id !== new ObjectId(req.user._id))
-			res.send({ status: 0, msg: "This post is not yours!" });
+		// if (post.user._id !== req.user._id)
+		// 	res.send({ status: 0, msg: "This post is not yours!" });
 
 		let url;
 		if (req.files) {
-			const image = await v2.uploader.upload(req.files.image.tempFilePath, {
-				public_id: `${req.user._id}/${req.files.image.name}`,
+			
+			const file = Array.isArray(req.files['picture']) ? req.files['picture'][0] : req.files['picture'];;
+
+			const image = await v2.uploader.upload(file.tempFilePath, {
+				public_id: `${req.user._id}/${file.name}`,
 			});
+
 			url = image.url;
 		}
 
-		const updatedPost = Posts.updateOne(
+		const published = await JSON.parse(updatePostDto.published);
+		const updatedPost = await Posts.updateOne(
 			{ _id: postId },
 			{
-				...updatePostDto,
+				content: updatePostDto.content,
 				picture: url,
+				published: published.published
 			}
 		);
 
@@ -71,6 +78,7 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 			data: updatedPost,
 		});
 	} catch (error) {
+		console.error(error);
 		res.status(501).send({ status: 0, msg: "Something went wrong!" });
 	}
 });
@@ -112,26 +120,26 @@ router.get("/user", authenticate, async (req: IRequest, res: Response) => {
 			"user",
 			"username photoUrl"
 		);
-        
+
 		res.status(200).send({
 			status: 1,
 			msg: "Users posts fetched!",
 			data: posts,
-        });
-        
-    } catch (error) {
-        
+		});
+	} catch (error) {
 		console.error(error);
 		res.end({
 			status: 0,
 			msg: "Something went wrong!",
-        });
-        
+		});
 	}
 });
 
 router.get("/:postId", async (req: Request, res: Response) => {
 	const { postId } = req.params;
+
+	if (!postId) return res.send({ status: 0, msg: "Post Id is required" });
+
 	try {
 		const posts = await Posts.findOne({ _id: postId }).populate(
 			"user",
@@ -151,6 +159,5 @@ router.get("/:postId", async (req: Request, res: Response) => {
 		});
 	}
 });
-
 
 export default router;
