@@ -53,7 +53,7 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin }) => {
 								}}
 							>
 								{ post.likedByUser ? <FcLike size={24} />: <AiOutlineHeart size={24}/>}
-								<p>{post.likes}</p>
+								<p className="select-none">{post.likes}</p>
 							</span>
 						)}
 					</div>

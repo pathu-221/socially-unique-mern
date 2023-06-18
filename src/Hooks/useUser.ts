@@ -1,10 +1,10 @@
 import { getUser } from "@/apis/user";
 import { User } from "@/interfaces/user";
 import { useState, useEffect } from "react";
-import useSWR from "swr";
 
 function useUser() {
-	const [user, setUser] = useState<User>();
+
+	const [user, setUser] = useState<User | undefined>();
 
 	useEffect(() => {
 		fetchUser();
@@ -13,8 +13,8 @@ function useUser() {
 	const fetchUser = async () => {
 		const data = await getUser();
 
-    if (data) {
-      if (!data.status) throw new Error(data.msg);
+		if (data) {
+			if (!data.status) throw new Error(data.msg);
 			setUser(data.data);
 		}
 	};

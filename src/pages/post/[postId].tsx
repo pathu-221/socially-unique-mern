@@ -3,6 +3,9 @@ import { Post } from "@/interfaces/post";
 import { getPostbyId } from "@/apis/posts";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import Head from "next/head";
+import Comments from "@/components/Comments";
+import useUser from "@/Hooks/useUser";
+import { useRouter } from "next/router";
 
 export const getServerSideProps: GetServerSideProps<{
 	post: Post | null;
@@ -30,13 +33,19 @@ function Post({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	if (!post) return <p>Oops something went wrong!</p>;
 
+	const user = useUser();
+	const router = useRouter();
+
+	const postId = Array.isArray(router.query.postId)
+		? router.query.postId[0]
+		: router.query.postId as string;
+
 	const uploadDate = new Date(post.createdAt).toLocaleDateString("en-us", {
 		weekday: "short",
 		month: "short",
 		day: "numeric",
 	});
 
-	console.log({ post });
 	return (
 		<main className="main-page items-center  flex justify-center">
 			<Head>
@@ -63,14 +72,7 @@ function Post({
 					{post.picture && <img src={post.picture} />}
 				</div>
 
-				{/** comment section */}
-                <div className="border-b pb-2 border-gray-400 flex items-start justify-between">Comments</div>
-                <div className="flex flex-col gap-2">
-                    <input
-                        placeholder="Leave a comment!"
-                        className="input input-bordered"
-                    />
-                </div>
+				<Comments user={user} postId={ postId } />
 			</div>
 		</main>
 	);
