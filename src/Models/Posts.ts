@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 
 
 const LikesSchema = new Schema({
-    userId: {
+    user: {
         type: Schema.Types.ObjectId,
         ref: "user"
     }

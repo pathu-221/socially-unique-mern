@@ -11,11 +11,51 @@ import { ObjectId } from "mongodb";
 const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
+	console.log({ query: req.query });
+	const userId = req.query?.userId as string;
+
+	console.log({ userId, query: req.query });
 	try {
-		const posts = await Posts.find({ published: true }).populate(
-			"user",
-			"username photoUrl"
-		);
+		//trying aggregation
+		const posts = await Posts.aggregate([
+			{
+				$lookup: {
+					from: "users",
+					localField: "user",
+					foreignField: "_id",
+					as: "user",
+				},
+			},
+			{ $unwind: "$user" },
+			{ $match: { published: true } },
+			{ $sort: { createdAt: -1 } },
+			{
+				$project: {
+					_id: 1,
+					title: 1,
+					content: 1,
+					published: 1,
+					picture: 1,
+					user: {
+						_id: "$user._id",
+						username: "$user.username",
+						photoUrl: "$user.photoUrl",
+					},
+					likes: {
+						$size: "$likes",
+					},
+					createdAt: 1,
+					updatedAt: 1,
+					likedByUser: {
+						$cond: {
+							if: { $eq: [{ $ifNull: [userId, null] }, null] },
+							then: false,
+							else: { $in: [new ObjectId(userId), "$likes.user"] },
+						},
+					},
+				},
+			},
+		]);
 
 		res.send({
 			status: 1,
@@ -37,7 +77,6 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 		return res.status(401).json({ status: 0, msg: firstErrorMessage });
 	}
 
-
 	try {
 		const postId = req.params.postId;
 		const post = await Posts.findOne({ _id: postId }).populate(
@@ -52,8 +91,9 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 
 		let url;
 		if (req.files) {
-			
-			const file = Array.isArray(req.files['picture']) ? req.files['picture'][0] : req.files['picture'];;
+			const file = Array.isArray(req.files["picture"])
+				? req.files["picture"][0]
+				: req.files["picture"];
 
 			const image = await v2.uploader.upload(file.tempFilePath, {
 				public_id: `${req.user._id}/${file.name}`,
@@ -68,7 +108,7 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 			{
 				content: updatePostDto.content,
 				picture: url,
-				published: published.published
+				published: published.published,
 			}
 		);
 
