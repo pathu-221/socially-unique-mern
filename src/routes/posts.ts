@@ -11,10 +11,8 @@ import { ObjectId } from "mongodb";
 const router = Router();
 
 router.get("/", async (req: Request, res: Response) => {
-	console.log({ query: req.query });
 	const userId = req.query?.userId as string;
 
-	console.log({ userId, query: req.query });
 	try {
 		//trying aggregation
 		const posts = await Posts.aggregate([

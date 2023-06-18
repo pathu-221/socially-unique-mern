@@ -8,6 +8,22 @@ const LikesSchema = new Schema({
     }
 })
 
+const CommentSchema = new Schema({
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'user'
+    },
+    text: {
+        required: true,
+        type: String,
+    },
+    parentComment: {
+        type: Schema.Types.ObjectId,
+    }
+}, {
+    timestamps: true
+})
+
 const PostsSchema = new Schema({
     title: {
         required: true,
@@ -29,7 +45,8 @@ const PostsSchema = new Schema({
         ref: 'user',
         required: true
     },
-    likes:[ LikesSchema ]
+    likes: [LikesSchema],
+    comments: [CommentSchema]
 
 }, { timestamps: true });
 

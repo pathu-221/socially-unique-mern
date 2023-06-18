@@ -10,6 +10,7 @@ import auth from './routes/auth';
 import posts from './routes/posts';
 import users from './routes/user';
 import likes from './routes/like';
+import comments from './routes/comments';
 
 import fileUpload from 'express-fileupload';
 import { connect } from './db/conn';
@@ -43,6 +44,7 @@ app.use('/auth', auth);
 app.use('/posts', posts);
 app.use('/user', users);
 app.use('/like', likes);
+app.use('/comments', comments);
 
 
 app.get('/', async (req:Request, res: Response) => {
