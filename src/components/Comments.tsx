@@ -5,6 +5,7 @@ import { User } from "@/interfaces/user";
 import { useEffect, type FC, useState, FormEvent } from "react";
 import { IoSend } from "react-icons/io5";
 import { BsFillChatDotsFill } from "react-icons/bs";
+import { AiTwotoneEdit } from "react-icons/ai";
 
 interface CommentsProps {
 	user?: User;
@@ -15,6 +16,8 @@ const Comments: FC<CommentsProps> = ({ user, postId }) => {
 	const [comments, setComments] = useState<Comment[] | null>(null);
 	const [comment, setComment] = useState("");
 	const [isReplying, setIsReplying] = useState(false);
+	const [edit, setEdit] = useState(false);
+	const [commentToEdit, setCommentToEdit] = useState<Comment | null>(null);
 	const [commentToReply, setCommentToReply] = useState<Comment | null>(null);
 
 	useEffect(() => {
@@ -50,10 +53,13 @@ const Comments: FC<CommentsProps> = ({ user, postId }) => {
 
 		if (isReplying && commentToReply) {
 			requestBody.parentComment = commentToReply._id;
-		}
+        }
+        
+        if (commentToEdit) {
+            
+        }
 
 		const data = await postComment(postId, requestBody);
-		console.log({ data });
 
 		if (!data.status) showToast("error", data.msg);
 		else {
@@ -99,12 +105,10 @@ const Comments: FC<CommentsProps> = ({ user, postId }) => {
 			if (comments[i].parentComment === commentId) replies.push(comments[i]);
 		}
 
-		console.log({ replies });
-
 		return (
 			<>
 				{replies.map((comment) => (
-					<div className="flex gap-2 flex-col p-3">
+					<div className="flex gap-3 flex-col p-1">
 						<div className="flex gap-3 items-center justify-start text-start">
 							<img
 								src={comment.user.photoUrl}
@@ -116,8 +120,22 @@ const Comments: FC<CommentsProps> = ({ user, postId }) => {
 							<div className="text-base text">
 								{formatCommentDate(comment.updatedAt)}
 							</div>
+							{user && user._id === comment.user._id && (
+								<AiTwotoneEdit
+									className="cursor-pointer"
+									onClick={() => {
+                                        setEdit(!edit);
+                                        setComment(comment.text);
+										setCommentToEdit(comment);
+									}}
+								/>
+							)}
 						</div>
-						<div className="text-lg">{comment.text}</div>
+						<div className="text-lg">
+							{edit && commentToEdit && commentToEdit._id === comment._id
+								? commentForm()
+								: comment.text}
+						</div>
 					</div>
 				))}
 			</>
@@ -152,6 +170,7 @@ const Comments: FC<CommentsProps> = ({ user, postId }) => {
 										<div className="text-base text">
 											{formatCommentDate(comment.updatedAt)}
 										</div>
+										{user && user._id === comment.user._id && <AiTwotoneEdit />}
 									</div>
 									<div className="text-lg">{comment.text}</div>
 									<div
@@ -164,7 +183,9 @@ const Comments: FC<CommentsProps> = ({ user, postId }) => {
 										<BsFillChatDotsFill />
 										Reply
 									</div>
-									{renderReplies(comment._id)}
+									<div className="flex flex-col gap-1 pl-5">
+										{renderReplies(comment._id)}
+									</div>
 									{isReplying &&
 										commentToReply?._id === comment._id &&
 										commentForm()}
