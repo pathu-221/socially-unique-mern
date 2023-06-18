@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import useUser from "@/Hooks/useUser";
 import Head from "next/head";
 import { showToast } from "@/common/toast";
+import { cookies } from "next/dist/client/components/headers";
 
 function LoginPage() {
 	const user = useUser();

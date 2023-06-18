@@ -2,16 +2,19 @@ import PostFeed from "@/components/PostFeed"
 import { GetServerSideProps, InferGetServerSidePropsType } from "next"
 import { getPosts } from "@/apis/posts";
 import { Post } from "@/interfaces/post";
-import { showToast } from "@/common/toast";
 import Head from "next/head";
+import useUser from "@/Hooks/useUser";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
-export const getServerSideProps: GetServerSideProps<{ posts: Post[] | null}> = async () => {
+export const getServerSideProps: GetServerSideProps<{ posts: Post[] | null}> = async ({ query }) => {
 
-  let posts:Post[];
-
+  let posts: Post[];
+  const userId = Array.isArray(query?.userId) ? query.userId[0] : query?.userId;
+  
   try {
-    
-    const data = await getPosts();
+
+    const data = await getPosts(userId);
 
     if (!data) throw new Error('Something went Wrong!');
 
@@ -35,12 +38,29 @@ export const getServerSideProps: GetServerSideProps<{ posts: Post[] | null}> = a
     }
   }
   
-  
-  
 }
 
 
 export default function Home({ posts }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+
+
+  const router = useRouter();
+  const user = useUser();
+
+
+  useEffect(() => {
+
+    if (!router.query.userId && user && router.isReady) {
+      router.replace({
+        pathname: '/',
+        query: { userId: user._id }
+      })
+    } else if (!user) {
+      router.push('/')
+    }
+
+  }, [user]);
+
   if(!posts)
   return (
     <main className="main-page">

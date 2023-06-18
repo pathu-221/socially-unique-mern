@@ -2,8 +2,12 @@ import { Post } from "@/interfaces/post";
 import Link from "next/link";
 import { FC } from "react";
 import { MdModeEditOutline } from "react-icons/md";
+import { FcLike } from 'react-icons/fc';
 import { CiViewTimeline } from "react-icons/ci";
 import { IoIosShareAlt } from "react-icons/io";
+import { AiOutlineHeart } from "react-icons/ai";
+import { likePost } from "@/apis/like";
+import { useRouter } from "next/router";
 
 interface PostContentProps {
 	post: Post;
@@ -11,6 +15,7 @@ interface PostContentProps {
 }
 
 const PostContent: FC<PostContentProps> = ({ post, isAdmin }) => {
+	const router = useRouter();
 	const uploadDate = new Date(post.createdAt).toLocaleDateString("en-us", {
 		weekday: "short",
 		month: "short",
@@ -33,12 +38,23 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin }) => {
 								<h3 className="text-base">{uploadDate}</h3>
 							</span>
 						</div>
-						{isAdmin && (
+						{isAdmin ? (
 							<Link href={`/admin/${post._id}`}>
 								<button className="btn btn-primary">
 									<MdModeEditOutline size={20} />
 								</button>
 							</Link>
+						) : (
+							<span
+								className="mr-5 cursor-pointer flex flex-col gap-0 pt-4 items-center justify-center"
+								onClick={async () => {
+									await likePost(post._id);
+									router.replace(router.asPath, undefined, { scroll: false });
+								}}
+							>
+								{ post.likedByUser ? <FcLike size={24} />: <AiOutlineHeart size={24}/>}
+								<p>{post.likes}</p>
+							</span>
 						)}
 					</div>
 					<h5 className="text-lg font-bold">{post.title}</h5>
