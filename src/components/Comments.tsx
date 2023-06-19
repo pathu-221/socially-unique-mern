@@ -1,11 +1,17 @@
-import { getComments, postComment } from "@/apis/comment";
+import {
+	deleteComment as deleteCommentApi,
+	editComment,
+	getComments,
+	postComment,
+} from "@/apis/comment";
 import { showToast } from "@/common/toast";
 import { Comment } from "@/interfaces/comment";
 import { User } from "@/interfaces/user";
 import { useEffect, type FC, useState, FormEvent } from "react";
 import { IoSend } from "react-icons/io5";
 import { BsFillChatDotsFill } from "react-icons/bs";
-import { AiTwotoneEdit } from "react-icons/ai";
+import { AiTwotoneEdit, AiFillDelete } from "react-icons/ai";
+import { Router } from "next/router";
 
 interface CommentsProps {
 	user?: User;
@@ -48,18 +54,16 @@ const Comments: FC<CommentsProps> = ({ user, postId }) => {
 			return showToast("error", "You need to sign in to post comments!");
 
 		const requestBody: any = {
-			text: comment,
+			text: commentToEdit ? commentToEdit.text : comment,
 		};
 
 		if (isReplying && commentToReply) {
 			requestBody.parentComment = commentToReply._id;
-        }
-        
-        if (commentToEdit) {
-            
-        }
+		}
 
-		const data = await postComment(postId, requestBody);
+		const data = commentToEdit
+			? await editComment(commentToEdit._id, requestBody)
+			: await postComment(postId, requestBody);
 
 		if (!data.status) showToast("error", data.msg);
 		else {
@@ -68,10 +72,20 @@ const Comments: FC<CommentsProps> = ({ user, postId }) => {
 			setComment("");
 			setIsReplying(false);
 			setCommentToReply(null);
+			setCommentToEdit(null);
 		}
 	};
 
-	const commentForm = () => (
+	const deleteComment = async (commentId: string) => {
+		const data = await deleteCommentApi(commentId);
+		if (!data.status) showToast("error", data.msg);
+		else {
+			showToast("success", data.msg);
+			fetchComments();	
+		}
+	};
+
+	const commentForm = (editing?: boolean) => (
 		<div className="flex items-center justify-center gap-2">
 			<img
 				src={
@@ -86,8 +100,15 @@ const Comments: FC<CommentsProps> = ({ user, postId }) => {
 			>
 				<input
 					placeholder="Leave a comment!"
-					value={comment}
-					onChange={(e) => setComment(e.target.value)}
+					value={editing ? commentToEdit?.text : comment}
+					onChange={(e) => {
+						commentToEdit
+							? setCommentToEdit({
+									...commentToEdit,
+									text: e.target.value,
+							  })
+							: setComment(e.target.value);
+					}}
 					className="input w-full break-word max-w-full input-bordered"
 				/>
 				<button className="btn btn-secondary">
@@ -121,19 +142,23 @@ const Comments: FC<CommentsProps> = ({ user, postId }) => {
 								{formatCommentDate(comment.updatedAt)}
 							</div>
 							{user && user._id === comment.user._id && (
-								<AiTwotoneEdit
-									className="cursor-pointer"
-									onClick={() => {
-                                        setEdit(!edit);
-                                        setComment(comment.text);
-										setCommentToEdit(comment);
-									}}
-								/>
+								<>
+									<AiTwotoneEdit
+										className="cursor-pointer self-center"
+										onClick={() => {
+											setEdit(!edit);
+											setCommentToEdit(comment);
+										}}
+									/>
+									<AiFillDelete
+										onClick={() => deleteComment(comment._id)}
+										className="cursor-pointer" />
+								</>
 							)}
 						</div>
 						<div className="text-lg">
 							{edit && commentToEdit && commentToEdit._id === comment._id
-								? commentForm()
+								? commentForm(true)
 								: comment.text}
 						</div>
 					</div>
@@ -170,9 +195,26 @@ const Comments: FC<CommentsProps> = ({ user, postId }) => {
 										<div className="text-base text">
 											{formatCommentDate(comment.updatedAt)}
 										</div>
-										{user && user._id === comment.user._id && <AiTwotoneEdit />}
+										{user && user._id === comment.user._id && (
+											<AiTwotoneEdit
+												className="cursor-pointer self-center"
+												onClick={() => {
+													setEdit(!edit);
+													setCommentToEdit(comment);
+												}}
+											/>
+										)}
 									</div>
-									<div className="text-lg">{comment.text}</div>
+									<div className="text-lg">
+										{" "}
+										<div className="text-lg">
+											{edit &&
+											commentToEdit &&
+											commentToEdit._id === comment._id
+												? commentForm(true)
+												: comment.text}
+										</div>
+									</div>
 									<div
 										className="flex self-start items-center gap-2 justify-center cursor-pointer"
 										onClick={() => {
