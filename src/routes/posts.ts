@@ -7,6 +7,7 @@ import { UpdatePostsDto } from "../dto/update-posts.dto";
 import { validate } from "class-validator";
 import { v2 } from "cloudinary";
 import { ObjectId } from "mongodb";
+import { User } from "../Models/User";
 
 const router = Router();
 
@@ -120,6 +121,27 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 		res.status(501).send({ status: 0, msg: "Something went wrong!" });
 	}
 });
+router.delete("/:postId", authenticate, async (req: IRequest, res: Response) => {
+
+	try {
+		const postId = req.params.postId;
+		const post = await Posts.findOne({ _id: postId });;
+
+		if (!post) return res.send({ status: 0, msg: "Post not Found!" });
+
+
+		await Posts.findByIdAndDelete(postId);
+
+		res.send({
+			status: 1,
+			msg: "Post deleted successfully!",
+		});
+
+	} catch (error) {
+		console.error(error);
+		res.status(501).send({ status: 0, msg: "Something went wrong!" });
+	}
+});
 
 router.post("/", authenticate, async (req: IRequest, res: Response) => {
 	const createPostsDto = plainToClass(CreatePostsDto, req.body);
@@ -163,6 +185,67 @@ router.get("/user", authenticate, async (req: IRequest, res: Response) => {
 			status: 1,
 			msg: "Users posts fetched!",
 			data: posts,
+		});
+	} catch (error) {
+		console.error(error);
+		res.end({
+			status: 0,
+			msg: "Something went wrong!",
+		});
+	}
+});
+
+router.get("/user/:userId", async (req: IRequest, res: Response) => {
+
+	const { userId } = req.params;
+	const currentUserId = req.query.currentUserId as string;
+	try {
+		const posts = await Posts.aggregate([
+			{
+				$lookup: {
+					from: "users",
+					localField: "user",
+					foreignField: "_id",
+					as: "user",
+				},
+			},
+			{ $unwind: "$user" },
+			{ $match: { published: true } },
+			{ $match: { "user._id": new ObjectId(userId) } },
+			{ $sort: { createdAt: -1 } },
+			{
+				$project: {
+					_id: 1,
+					title: 1,
+					content: 1,
+					published: 1,
+					picture: 1,
+					user: {
+						_id: "$user._id",
+						username: "$user.username",
+						photoUrl: "$user.photoUrl",
+					},
+					likes: {
+						$size: "$likes",
+					},
+					createdAt: 1,
+					updatedAt: 1,
+					likedByUser: {
+						$cond: {
+							if: { $eq: [{ $ifNull: [currentUserId, null] }, null] },
+							then: false,
+							else: { $in: [new ObjectId(currentUserId), "$likes.user"] },
+						},
+					},
+				},
+			},
+		]);
+		const user = await User.findOne({ _id: userId}).select(["username", "photoUrl", "_id"])
+
+		res.status(200).send({
+			status: 1,
+			msg: "Users public posts fetched!",
+			data: {posts, user},
 		});
 	} catch (error) {
 		console.error(error);

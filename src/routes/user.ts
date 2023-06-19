@@ -38,11 +38,11 @@ router.get('/username/:username', authenticate, async(req: IRequest, res: Respon
     }
 })
 
-router.post('/username', authenticate, async(req: IRequest, res: Response) => {
+router.post('/username', authenticate, async (req: IRequest, res: Response) => {
     const createUsernameDto = plainToClass(CreateUsernameDto, req.body);
     const errors = await validate(createUsernameDto);
 
-    if(errors.length) {
+    if (errors.length) {
         const firstErrorMessage = Object.values(errors[0].constraints)[0];
         return res.status(401).json({ status: 0, msg: firstErrorMessage });
     }
@@ -51,11 +51,11 @@ router.post('/username', authenticate, async(req: IRequest, res: Response) => {
 
         const username = await Username.findOne({ username: createUsernameDto.username });
 
-        if(username) {
+        if (username) {
             return res.send({ status: 0, msg: "Username Taken!", data: username })
         } else {
 
-            const newUsername = await new Username({ 
+            const newUsername = await new Username({
                 username: createUsernameDto.username,
                 user: req.user._id,
             });
@@ -70,11 +70,12 @@ router.post('/username', authenticate, async(req: IRequest, res: Response) => {
 
     } catch (err) {
         console.error({ err });
-        res.send({ 
+        res.send({
             status: 0,
             msg: "Something went wrong",
         })
     }
-})
+});
+
 
 export default router;
