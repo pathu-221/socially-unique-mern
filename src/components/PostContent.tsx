@@ -6,6 +6,7 @@ import { FcLike } from 'react-icons/fc';
 import { CiViewTimeline } from "react-icons/ci";
 import { IoIosShareAlt } from "react-icons/io";
 import { AiOutlineHeart } from "react-icons/ai";
+import { RiDeleteBin6Fill } from 'react-icons/ri';
 import { likePost } from "@/apis/like";
 import { useRouter } from "next/router";
 
@@ -28,14 +29,18 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin }) => {
 				<div className="card-body p-3 pb-3">
 					<div className="flex justify-between  gap-3 items-center">
 						<div className="flex gap-3 items-center justify-start">
-							<img
-								className="rounded-full w-12 h-12"
-								src={post.user.photoUrl}
-								alt={post.user.username}
-							/>
+							<Link href={`/${post.user._id}`}>
+								<img
+									className="rounded-full w-12 h-12"
+									src={post.user.photoUrl}
+									alt={post.user.username}
+								/>
+							</Link>
 							<span className="flex flex-col">
-								<h2 className="card-title text-base">{post.user.username}</h2>
-								<h3 className="text-base">{uploadDate}</h3>
+								<h2 className="card-title text-base font-bold">
+									{post.user.username}
+								</h2>
+								<h3 className="text-sm font-semibold">{uploadDate}</h3>
 							</span>
 						</div>
 						{isAdmin ? (
@@ -52,7 +57,11 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin }) => {
 									router.replace(router.asPath, undefined, { scroll: false });
 								}}
 							>
-								{ post.likedByUser ? <FcLike size={24} />: <AiOutlineHeart size={24}/>}
+								{post.likedByUser ? (
+									<FcLike size={24} />
+								) : (
+									<AiOutlineHeart size={24} />
+								)}
 								<p className="select-none">{post.likes}</p>
 							</span>
 						)}

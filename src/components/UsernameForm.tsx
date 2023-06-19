@@ -44,7 +44,6 @@ const UsernameForm: FC<UsernameFormProps> = ({ user }) => {
 			setRes(data);
 
 			setLoading(false);
-			console.log(data);
 		}, 500);
 
 		return () => clearTimeout(checkusername);

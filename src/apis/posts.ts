@@ -68,6 +68,21 @@ export async function savePost(formData: any, postId: string) {
 		console.error(error);
 	}
 }
+export async function deletePost(postId: string) {
+	try {
+		const data = await requestWithToken(
+			`${process.env.NEXT_PUBLIC_API_ADDRESS}/posts/${postId}`,
+			{
+				method: "DELETE",
+			}
+		);
+
+		return data;
+	} catch (error) {
+		console.error(error);
+	}
+}
+
 
 export async function getUsersPost() {
 	try {
