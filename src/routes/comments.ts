@@ -70,4 +70,55 @@ router.post("/:postId", authenticate, async (req: IRequest, res: Response) => {
 	}
 });
 
+router.put(
+	"/:commentId",
+	authenticate,
+	async (req: IRequest, res: Response) => {
+		const updateCommentDto = plainToClass(UpdateCommentDto, req.body);
+		const errors = await validate(updateCommentDto);
+
+		if (errors.length) {
+			const firstErrorMessage = Object.values(errors[0].constraints)[0];
+			return res.status(401).json({ status: 0, msg: firstErrorMessage });
+		}
+
+		const { commentId } = req.params;
+
+		try {
+			await Posts.findOneAndUpdate(
+				{ "comments._id": new ObjectId(commentId) },
+				{ $set: { "comments.$.text": updateCommentDto.text } },
+				{ new: true }
+			);
+
+			res.send({ status: 1, msg: "Comment Edited!" });
+		} catch (error) {
+			console.error(error);
+			res.status(501).send({ status: 0, msg: "Something went wrong!" });
+		}
+	}
+);
+
+router.delete(
+	"/:commentId",
+	authenticate,
+	async (req: IRequest, res: Response) => {
+
+		const { commentId } = req.params;
+
+		try {
+			await Posts.findOneAndUpdate(
+				{ "comments._id": new ObjectId(commentId) },
+				{ $pull: { comments: { _id: commentId }} },
+				{ new: true }
+			);
+
+			res.send({ status: 1, msg: "Comment Deleted!" });
+		} catch (error) {
+			console.error(error);
+			res.status(501).send({ status: 0, msg: "Something went wrong!" });
+		}
+	}
+);
+
 export default router;
