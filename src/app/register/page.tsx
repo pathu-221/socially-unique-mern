@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import useUser from "@/hooks/useUser";
 import { register } from "@/apis/auth.api";
@@ -16,7 +16,7 @@ interface formFields {
 }
 
 function SignUpPage() {
-	const {user} = useUser();
+	const { user } = useUser();
 	const formRef = useRef(null);
 	const [loading, setLoading] = useState(false);
 	const [formData, setFormData] = useState<formFields>({
@@ -27,8 +27,8 @@ function SignUpPage() {
 
 	const router = useRouter();
 
-    useEffect(() => {
-        console.log({ user });
+	useEffect(() => {
+		console.log({ user });
 		if (user) {
 			router.push("/");
 		}
@@ -62,7 +62,7 @@ function SignUpPage() {
 		const data = await register(form);
 		setLoading(false);
 
-		if (!data.status) return //showToast("error", data.msg);
+		if (!data.status) return; //showToast("error", data.msg);
 		//else showToast("success", data.msg);
 
 		router.push("/login");
@@ -70,9 +70,7 @@ function SignUpPage() {
 	return (
 		<main className="min-h-screen bg-dark flex flex-col gap-8 p-8 justify-center items-center">
 			{" "}
-			<Head>
-				<title>Register</title>
-			</Head>
+			<title>Register</title>
 			<section className="w-[60%] p-4 card shadow-xl bg-dark-focus rounded-2xl flex flex-col gap-2 ">
 				<h1 className="mb-5 text-3xl">Create Account</h1>
 				<form ref={formRef} onSubmit={onSubmit} className="flex flex-col gap-2">
@@ -134,11 +132,7 @@ function SignUpPage() {
 							Login
 						</Link>
 					</span>
-					<button
-						disabled={loading}
-						type="submit"
-						className="btn btn-primary"
-					>
+					<button disabled={loading} type="submit" className="btn btn-primary">
 						{loading ? "Saving..." : "Create Account"}
 					</button>
 				</form>
