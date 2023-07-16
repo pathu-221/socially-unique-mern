@@ -1,7 +1,7 @@
 
 export async function requestWithToken(url: string, options?: RequestInit){
 
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if(!token ) return 
 
     const res = await fetch(url, {
