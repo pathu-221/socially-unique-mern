@@ -6,7 +6,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useUser from "@/hooks/useUser";
 import Head from "next/head";
-import LoginForm from "@/components/LoginForm";
+
 
 function LoginPage() {
 	const { user, refreshUser } = useUser();
@@ -59,7 +59,47 @@ function LoginPage() {
 			<Head>
 				<title>Login</title>
 			</Head>
-			<LoginForm onChange={onChange} onSubmit={onSubmit} loading={loading} />
+			<section className="w-[60%] p-4 card shadow-xl bg-dark-focus rounded-2xl flex flex-col gap-2 ">
+				<h1 className="mb-5 text-3xl">Login</h1>
+				<form onSubmit={onSubmit} className="flex flex-col gap-3">
+					<div className="flex flex-col gap-2">
+						<label className="label">
+							<span className="label-text text-xl">Email: </span>
+						</label>
+						<input
+							required
+							type="email"
+							name="email"
+							onChange={onChange}
+							placeholder="JohnDoe@gmail.com"
+							className="input input-bordered w-full"
+						/>
+					</div>
+					<div className="flex flex-col gap-2">
+						<label className="label">
+							<span className="label-text text-xl">Password: </span>
+						</label>
+						<input
+							required
+							type="password"
+							name="password"
+							onChange={onChange}
+							placeholder="Your Password"
+							className="input input-bordered w-full"
+						/>
+					</div>
+					<span className="text-md ">
+						Don't have an Account?
+						<Link className="underline hover:no-underline" href="/register">
+							{" "}
+							Create Account
+						</Link>
+					</span>
+					<button disabled={loading} type="submit" className="btn btn-primary">
+						{loading ? "Loading..." : "Login"}
+					</button>
+				</form>
+			</section>
 		</main>
 	);
 }
