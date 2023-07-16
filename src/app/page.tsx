@@ -1,17 +1,11 @@
+
+
 import { getPosts } from "@/apis/posts.api";
-import Navbar from "@/components/Navbar";
-
-
-
-
 
 export default async function Home() {
-	//const posts = await getPosts();
-	sessionStorage.setItem('token', 'some value');
-
+	const posts = await getPosts();
 	return (
 		<>
-			<Navbar />
 
 			<main className="h-screen bg-dark flex justify-center items-center">
 				{/* {JSON.stringify(posts)} */}
@@ -22,3 +16,5 @@ export default async function Home() {
 		</>
 	);
 }
+
+export const fetchCache = 'only-no-store'

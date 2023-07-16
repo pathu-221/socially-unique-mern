@@ -2,11 +2,7 @@ import { requestWithToken } from "./requestWithToken";
 
 export async function getPosts(userId?: string) {
 	try {
-		const url = userId
-			? `${process.env.NEXT_PUBLIC_API_ADDRESS}/posts/?userId=${userId}`
-			: `${process.env.NEXT_PUBLIC_API_ADDRESS}/posts/`
-
-		const res = await fetch(url);
+		const res = await fetch(`${process.env.NEXT_PUBLIC_API_ADDRESS}/posts/`);
 
 		const data = await res.json();
 		return data;
@@ -82,7 +78,6 @@ export async function deletePost(postId: string) {
 		console.error(error);
 	}
 }
-
 
 export async function getUsersPost() {
 	try {
