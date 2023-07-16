@@ -10,7 +10,7 @@ export interface Post {
 	content: string;
 	picture?: string;
 	likes: number;
-	likedByUser: boolean;
+	comments: number;
 }
 
 export interface User {

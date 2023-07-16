@@ -12,11 +12,11 @@ const Navbar: FC<NavbarProps> = () => {
 	console.log({ user });
 
 	return (
-		<nav className="h-16 sticky top-0 left-0 w-full bg-dark-focus md:px-40 sm:px-14">
+		<nav className="h-16 sticky top-0 left-0 w-full bg-dark-focus md:px-40 sm:px-14 z-10">
 			<ul className="flex w-full h-full items-center justify-between text-lg">
 				<li className="text-white link">
 					<Link href={"/"} className="link">
-						<span className="btn btn-primary btn-sm py-3 h-full">
+						<span className="btn btn-primary btn-link btn-sm py-3 h-full">
 							<GoHome color="white" size={25} />
 						</span>
 					</Link>

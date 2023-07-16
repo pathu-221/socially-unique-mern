@@ -1,17 +1,25 @@
 
 
 import { getPosts } from "@/apis/posts.api";
+import PostContent from "@/components/PostContent";
+import { Post } from "@/interfaces/post.interface";
+import Head from "next/head";
 
 export default async function Home() {
-	const posts = await getPosts();
+	
+	const data = await getPosts();
+
+	if (!data.status) return <div> Error </div>
+	
+	const posts: Post[] = data.data;
+
 	return (
 		<>
-
-			<main className="h-screen bg-dark flex justify-center items-center">
-				{/* {JSON.stringify(posts)} */}
-				<div className="w-[60%] bg-dark-focus min-h-[500px] rounded-lg ">
-
-				</div>
+			<main className="min-h-screen bg-dark flex flex-col gap-8 p-8 justify-center items-center">
+				<Head>
+					<title>Welcome</title>
+				</Head>
+				{posts && posts.map((post) => <PostContent post={post} />)}
 			</main>
 		</>
 	);
