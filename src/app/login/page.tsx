@@ -6,6 +6,7 @@ import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useUser from "@/hooks/useUser";
 import Head from "next/head";
+import Loading from "./loading";
 
 
 function LoginPage() {
