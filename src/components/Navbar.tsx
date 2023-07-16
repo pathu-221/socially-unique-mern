@@ -3,13 +3,19 @@
 import useUser from "@/hooks/useUser";
 import { GoHome } from "react-icons/go";
 import type { FC } from "react";
+import { useEffect  } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface NavbarProps {}
 
 const Navbar: FC<NavbarProps> = () => {
-	const user = useUser();
-	console.log({ user });
+	const { user, refreshUser } = useUser();
+	const router = useRouter();
+
+	useEffect(() => {
+		
+	}, [useEffect]);
 
 	return (
 		<nav className="h-16 sticky top-0 left-0 w-full bg-dark-focus md:px-40 sm:px-14 z-10">
@@ -56,7 +62,11 @@ const Navbar: FC<NavbarProps> = () => {
 									<li>
 										<a>Settings</a>
 									</li>
-									<li>
+									<li onClick={async () => {
+										localStorage.removeItem('token');
+										await refreshUser();
+										//router.refresh();
+									}}>
 										<a>Logout</a>
 									</li>
 								</ul>

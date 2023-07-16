@@ -10,9 +10,16 @@ export default function useUser() {
 	}, []);
 
 	const fetchUser = async () => {
-        const data = await getUser();
-        if (!data.status) return;
+		const data = await getUser();
+		if (!data || !data.status) return;
 		setUser(data.data);
 	};
-	return user;
+
+	const refreshUser = async () => {
+		const data = await getUser();
+		if (!data || !data.status) return setUser(undefined);
+		setUser(data.data);
+	};
+
+	return { user, refreshUser };
 }
