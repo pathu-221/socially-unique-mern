@@ -39,7 +39,10 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin }) => {
 				{isAdmin && (
 					<span className="align-self-end mr-5">
 						{" "}
-						<Link className="btn btn-link" href={`/admin/${ post._id}`}>
+						<Link
+							className="btn btn-link btn-ghost"
+							href={`/admin/${post._id}`}
+						>
 							<MdModeEditOutline size={25} />
 						</Link>
 					</span>
@@ -55,10 +58,13 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin }) => {
 				/>
 				{!isAdmin && (
 					<div className="flex justify-between items-center w-full pt-3">
-						<span className="flex self-start items-center gap-2">
+						<Link
+							href={`/post/${post._id}`}
+							className="flex self-start items-center gap-2"
+						>
 							<BsViewList size={20} />
 							<p>View</p>
-						</span>
+						</Link>
 						<span className="flex gap-3 self-end items-center">
 							<span className="flex gap-1 items-center">
 								<AiOutlineHeart size={20} />
