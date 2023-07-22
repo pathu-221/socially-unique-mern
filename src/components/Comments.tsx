@@ -21,8 +21,7 @@ interface CommentsProps {
 }
 
 const Comments: FC<CommentsProps> = ({ postId }) => {
-
-    const { user } = useUser();
+	const { user } = useUser();
 	const [comments, setComments] = useState<Comment[] | null>(null);
 	const [comment, setComment] = useState("");
 	const [isReplying, setIsReplying] = useState(false);
@@ -31,13 +30,13 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 	const [commentToReply, setCommentToReply] = useState<Comment | null>(null);
 
 	useEffect(() => {
-		fetchComments();
+		//fetchComments();
 	}, []);
 
 	const fetchComments = async () => {
 		const data = await getComments(postId);
 
-		if (!data.status) return //showToast("error", data.msg);
+		if (!data.status) return; //showToast("error", data.msg);
 		setComments(data.data.comments);
 	};
 
@@ -54,8 +53,7 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 	const onSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 
-		if (!user)
-			return //showToast("error", "You need to sign in to post comments!");
+		if (!user) return; //showToast("error", "You need to sign in to post comments!");
 
 		const requestBody: any = {
 			text: commentToEdit ? commentToEdit.text : comment,
@@ -69,7 +67,7 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 			? await editComment(commentToEdit._id, requestBody)
 			: await postComment(postId, requestBody);
 
-		if (!data.status) return //showToast("error", data.msg);
+		if (!data.status) return; //showToast("error", data.msg);
 		else {
 			//showToast("success", data.msg);
 			fetchComments();
@@ -82,7 +80,7 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 
 	const deleteComment = async (commentId: string) => {
 		const data = await deleteCommentApi(commentId);
-		if (!data.status) return //showToast("error", data.msg);
+		if (!data.status) return; //showToast("error", data.msg);
 		else {
 			//showToast("success", data.msg);
 			fetchComments();
@@ -174,68 +172,79 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 	return (
 		<>
 			{/** comment section */}
-			{/** comment form */}
-			{user?.username &&  commentForm()}
 			{/** comments  */}
 			<div className="flex flex-col gap-2">
-				{comments &&
-					comments.map(
-						(comment) =>
-							!comment.parentComment && (
-								<div
-									key={comment._id}
-									className="flex gap-2 flex-col border-b border-gray-600 p-3"
-								>
-									<div className="flex gap-3 items-center justify-start text-start ">
-										<img
-											src={comment.user.photoUrl}
-											className="rounded-full w-6 h-6"
-										/>
-										<div className="text-white text-base ">
-											{comment.user.username}
-										</div>
-										<div className="text-base text">
-											{formatCommentDate(comment.updatedAt)}
-										</div>
-										{user && user._id === comment.user._id && (
-											<AiTwotoneEdit
-												className="cursor-pointer self-center"
-												onClick={() => {
-													setEdit(!edit);
-													setCommentToEdit(comment);
-												}}
-											/>
-										)}
-									</div>
-									<div className="text-lg">
-										{" "}
-										<div className="text-lg">
-											{edit &&
-											commentToEdit &&
-											commentToEdit._id === comment._id
-												? commentForm(true)
-												: comment.text}
-										</div>
-									</div>
+				{comments ? (
+					<>
+						{" "}
+						{/** comment form */}
+						{user?.username && commentForm()}{" "}
+						{comments.map(
+							(comment) =>
+								!comment.parentComment && (
 									<div
-										className="flex self-start items-center gap-2 justify-center cursor-pointer"
-										onClick={() => {
-											setCommentToReply(comment);
-											setIsReplying(!isReplying);
-										}}
+										key={comment._id}
+										className="flex gap-2 flex-col border-b border-gray-600 p-3"
 									>
-										<BsFillChatDotsFill />
-										Reply
+										<div className="flex gap-3 items-center justify-start text-start ">
+											<img
+												src={comment.user.photoUrl}
+												className="rounded-full w-6 h-6"
+											/>
+											<div className="text-white text-base ">
+												{comment.user.username}
+											</div>
+											<div className="text-base text">
+												{formatCommentDate(comment.updatedAt)}
+											</div>
+											{user && user._id === comment.user._id && (
+												<AiTwotoneEdit
+													className="cursor-pointer self-center"
+													onClick={() => {
+														setEdit(!edit);
+														setCommentToEdit(comment);
+													}}
+												/>
+											)}
+										</div>
+										<div className="text-lg">
+											{" "}
+											<div className="text-lg">
+												{edit &&
+												commentToEdit &&
+												commentToEdit._id === comment._id
+													? commentForm(true)
+													: comment.text}
+											</div>
+										</div>
+										<div
+											className="flex self-start items-center gap-2 justify-center cursor-pointer"
+											onClick={() => {
+												setCommentToReply(comment);
+												setIsReplying(!isReplying);
+											}}
+										>
+											<BsFillChatDotsFill />
+											Reply
+										</div>
+										<div className="flex flex-col gap-1 pl-5">
+											{renderReplies(comment._id)}
+										</div>
+										{isReplying &&
+											commentToReply?._id === comment._id &&
+											commentForm()}
 									</div>
-									<div className="flex flex-col gap-1 pl-5">
-										{renderReplies(comment._id)}
-									</div>
-									{isReplying &&
-										commentToReply?._id === comment._id &&
-										commentForm()}
-								</div>
-							)
-					)}
+								)
+						)}
+					</>
+				) : (
+					<button
+						className="btn-link btn btn-primary"
+						onClick={() => fetchComments()}
+					>
+						Load comments
+					</button>
+				)}
 			</div>
 		</>
 	);
