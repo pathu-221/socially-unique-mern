@@ -20,34 +20,46 @@ interface CommentsProps {
 	postId: string;
 }
 
+interface CommentItemProps {
+	comment: threadComments;
+	level: number;
+	user?: User;
+}
+
+interface threadComments extends Comment {
+	replies: threadComments[];
+}
+
+interface CommentFormProps {}
+
 const Comments: FC<CommentsProps> = ({ postId }) => {
 	const { user } = useUser();
-	const [comments, setComments] = useState<Comment[] | null>(null);
+	const [comments, setComments] = useState<threadComments[] | null>(null);
+	const [loading, setLoading] = useState(false);
 	const [comment, setComment] = useState("");
 	const [isReplying, setIsReplying] = useState(false);
 	const [edit, setEdit] = useState(false);
 	const [commentToEdit, setCommentToEdit] = useState<Comment | null>(null);
 	const [commentToReply, setCommentToReply] = useState<Comment | null>(null);
 
-	useEffect(() => {
-		//fetchComments();
-	}, []);
+	// useEffect(() => {
+	// 	fetchComments();
+	// }, []);
 
 	const fetchComments = async () => {
+		setLoading(true);
 		const data = await getComments(postId);
+		setLoading(false);
 
 		if (!data.status) return; //showToast("error", data.msg);
-		setComments(data.data.comments);
-	};
 
-	const formatCommentDate = (date: string) => {
-		const formattedDate = new Date(date).toLocaleDateString("en-us", {
-			weekday: "short",
-			month: "short",
-			day: "numeric",
+		const temp = data.data.comments.map((comment: any) => {
+			return {
+				...comment,
+				replies: [],
+			};
 		});
-
-		return formattedDate;
+		setComments(formatThreadComments(temp));
 	};
 
 	const onSubmit = async (e: FormEvent) => {
@@ -87,166 +99,140 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 		}
 	};
 
-	const commentForm = (editing?: boolean) => (
-		<div className="flex items-center justify-center gap-2">
-			<img
-				src={
-					user?.photoUrl ||
-					"https://api.dicebear.com/6.x/fun-emoji/svg?seed=Kiki"
-				}
-				className="rounded-full h-12 w-12"
-			/>
-			<form
-				className="flex-grow flex items-center justify-between gap-2"
-				onSubmit={onSubmit}
-			>
-				<input
-					placeholder="Leave a comment!"
-					value={editing ? commentToEdit?.text : comment}
-					onChange={(e) => {
-						commentToEdit
-							? setCommentToEdit({
-									...commentToEdit,
-									text: e.target.value,
-							  })
-							: setComment(e.target.value);
-					}}
-					className="input w-full break-word max-w-full input-bordered"
+	const formatThreadComments = (comments: threadComments[]) => {
+		if (!comments) return [];
+		let comm: threadComments[] = [];
+
+		for (const comment of comments) {
+			if (comment.parentComment) {
+				const index = comments.findIndex(
+					(c) => c._id === comment.parentComment
+				);
+				if (comments[index]) comments[index].replies.push({ ...comment });
+			} else {
+				comm.push({ ...comment, replies: [] });
+			}
+		}
+
+		comm = comm.map((comment, index) => {
+			return {
+				...comments.find((c) => c._id === comment._id),
+			} as threadComments;
+		});
+
+		return comm;
+	};
+
+	return (
+		<section className="flex flex-col gap-2 items-start jutify-start">
+			{comments ? (
+				<>
+					<CommentForm />
+					{comments.map((comment) => (
+						<CommentItem
+							user={user}
+							key={comment._id}
+							level={0}
+							comment={comment}
+						/>
+					))}
+				</>
+			) : (
+				<button
+					onClick={() => fetchComments()}
+					className="btn btn-primary btn-link self-center"
+				>
+					{loading ? "Loading" : "Load comments"}
+				</button>
+			)}
+		</section>
+	);
+};
+
+const CommentItem: FC<CommentItemProps> = ({ comment, level, user }) => {
+	const isAdmin = comment.user._id === user?._id;
+
+	const [isEditing, setIsEditing] = useState(false);
+
+	const formatCommentDate = (date: string) => {
+		const formattedDate = Intl.DateTimeFormat("en-US", {
+			year: "numeric",
+			month: "long",
+			day: "numeric",
+			hour: "numeric",
+			minute: "numeric",
+			hour12: true,
+		}).format(new Date(date));
+		return formattedDate;
+	};
+
+	return (
+		<div className="ml-3 border-l border-gray-400 px-3 pt-2 w-full">
+			<div className="flex gap-2 items-center">
+				<img
+					className="h-8 w-8 rounded-full"
+					src={comment.user.photoUrl}
+					alt="comment"
 				/>
-				<button className="btn btn-primary">
-					<IoSend />
+				<div>
+					<p className="font-semibold text-sm">{comment.user.username}</p>
+					<p className="text-xs text-gray-500">
+						{formatCommentDate(comment.createdAt)}
+					</p>
+				</div>
+				{isAdmin && (
+					<div className="flex gap-2 items-center text-gray-400">
+						<button onClick={() => setIsEditing(!isEditing)}>
+							<AiTwotoneEdit />
+						</button>
+						<button>
+							<AiFillDelete />
+						</button>
+					</div>
+				)}
+			</div>
+
+			<div className="mt-2 text-sm px-2 pb-2">
+				{isEditing ? <CommentForm /> : comment.text}
+			</div>
+
+			{comment.replies &&
+				comment.replies.map((reply) => (
+					<CommentItem
+						user={user}
+						key={reply._id}
+						level={level + 1}
+						comment={reply}
+					/>
+				))}
+		</div>
+	);
+};
+
+const CommentForm: FC<CommentFormProps> = () => {
+	return (
+		<div className="w-full">
+			<form className="mb-6">
+				<div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+					<label htmlFor="comment" className="sr-only">
+						Your comment
+					</label>
+					<textarea
+						id="comment"
+						rows={4}
+						className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
+						placeholder="Write a comment..."
+						required
+					></textarea>
+				</div>
+				<button
+					type="submit"
+					className="btn btn-primary btn-sm text-white text-xs"
+				>
+					Post comment
 				</button>
 			</form>
 		</div>
-	);
-
-	const renderReplies = (commentId: string) => {
-		if (!comments) return;
-
-		let replies: Comment[] = [];
-		for (let i = 0; i < comments?.length; i++) {
-			if (comments[i].parentComment === commentId) replies.push(comments[i]);
-		}
-
-		return (
-			<>
-				{replies.map((comment) => (
-					<div className="flex gap-3 flex-col p-1">
-						<div className="flex gap-3 items-center justify-start text-start">
-							<img
-								src={comment.user.photoUrl}
-								className="rounded-full w-6 h-6"
-							/>
-							<div className="text-white text-base ">
-								{comment.user.username}
-							</div>
-							<div className="text-base text">
-								{formatCommentDate(comment.updatedAt)}
-							</div>
-							{user && user._id === comment.user._id && (
-								<>
-									<AiTwotoneEdit
-										className="cursor-pointer self-center"
-										onClick={() => {
-											setEdit(!edit);
-											setCommentToEdit(comment);
-										}}
-									/>
-									<AiFillDelete
-										onClick={() => deleteComment(comment._id)}
-										className="cursor-pointer"
-									/>
-								</>
-							)}
-						</div>
-						<div className="text-lg">
-							{edit && commentToEdit && commentToEdit._id === comment._id
-								? commentForm(true)
-								: comment.text}
-						</div>
-					</div>
-				))}
-			</>
-		);
-	};
-	return (
-		<>
-			{/** comment section */}
-			{/** comments  */}
-			<div className="flex flex-col gap-2">
-				{comments ? (
-					<>
-						{" "}
-						{/** comment form */}
-						{user?.username && commentForm()}{" "}
-						{comments.map(
-							(comment) =>
-								!comment.parentComment && (
-									<div
-										key={comment._id}
-										className="flex gap-2 flex-col border-b border-gray-600 p-3"
-									>
-										<div className="flex gap-3 items-center justify-start text-start ">
-											<img
-												src={comment.user.photoUrl}
-												className="rounded-full w-6 h-6"
-											/>
-											<div className="text-white text-base ">
-												{comment.user.username}
-											</div>
-											<div className="text-base text">
-												{formatCommentDate(comment.updatedAt)}
-											</div>
-											{user && user._id === comment.user._id && (
-												<AiTwotoneEdit
-													className="cursor-pointer self-center"
-													onClick={() => {
-														setEdit(!edit);
-														setCommentToEdit(comment);
-													}}
-												/>
-											)}
-										</div>
-										<div className="text-lg">
-											{" "}
-											<div className="text-lg">
-												{edit &&
-												commentToEdit &&
-												commentToEdit._id === comment._id
-													? commentForm(true)
-													: comment.text}
-											</div>
-										</div>
-										<div
-											className="flex self-start items-center gap-2 justify-center cursor-pointer"
-											onClick={() => {
-												setCommentToReply(comment);
-												setIsReplying(!isReplying);
-											}}
-										>
-											<BsFillChatDotsFill />
-											Reply
-										</div>
-										<div className="flex flex-col gap-1 pl-5">
-											{renderReplies(comment._id)}
-										</div>
-										{isReplying &&
-											commentToReply?._id === comment._id &&
-											commentForm()}
-									</div>
-								)
-						)}
-					</>
-				) : (
-					<button
-						className="btn-link btn btn-primary"
-						onClick={() => fetchComments()}
-					>
-						Load comments
-					</button>
-				)}
-			</div>
-		</>
 	);
 };
 
