@@ -4,6 +4,7 @@ dotenv.config();
 
 import express, { Request, Response} from 'express';
 import cors from 'cors';
+import path from 'path';
 
 
 import auth from './routes/auth';
@@ -21,6 +22,9 @@ export const app = express();
 
 
 const port = process.env.PORT || 5000; 
+
+
+app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(cors({
     origin: "*",

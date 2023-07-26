@@ -11,11 +11,19 @@ import { User } from "../Models/User";
 
 const router = Router();
 
-router.get("/", async (req: Request, res: Response) => {
-	const userId = req.query?.userId as string;
+function delayFiveSecondsAsync(): Promise<void> {
+	return new Promise((resolve) => {
+		setTimeout(() => {
+			console.log("Delay completed!");
+			resolve();
+		}, 5000);
+	});
+}
 
+router.get("/", async (req: Request, res: Response) => {
 	try {
 		//trying aggregation
+		await delayFiveSecondsAsync();
 		const posts = await Posts.aggregate([
 			{
 				$lookup: {
@@ -43,15 +51,11 @@ router.get("/", async (req: Request, res: Response) => {
 					likes: {
 						$size: "$likes",
 					},
+					comments: {
+						$size: "$comments",
+					},
 					createdAt: 1,
 					updatedAt: 1,
-					likedByUser: {
-						$cond: {
-							if: { $eq: [{ $ifNull: [userId, null] }, null] },
-							then: false,
-							else: { $in: [new ObjectId(userId), "$likes.user"] },
-						},
-					},
 				},
 			},
 		]);
@@ -121,27 +125,28 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 		res.status(501).send({ status: 0, msg: "Something went wrong!" });
 	}
 });
-router.delete("/:postId", authenticate, async (req: IRequest, res: Response) => {
+router.delete(
+	"/:postId",
+	authenticate,
+	async (req: IRequest, res: Response) => {
+		try {
+			const postId = req.params.postId;
+			const post = await Posts.findOne({ _id: postId });
 
-	try {
-		const postId = req.params.postId;
-		const post = await Posts.findOne({ _id: postId });;
+			if (!post) return res.send({ status: 0, msg: "Post not Found!" });
 
-		if (!post) return res.send({ status: 0, msg: "Post not Found!" });
+			await Posts.findByIdAndDelete(postId);
 
-
-		await Posts.findByIdAndDelete(postId);
-
-		res.send({
-			status: 1,
-			msg: "Post deleted successfully!",
-		});
-
-	} catch (error) {
-		console.error(error);
-		res.status(501).send({ status: 0, msg: "Something went wrong!" });
+			res.send({
+				status: 1,
+				msg: "Post deleted successfully!",
+			});
+		} catch (error) {
+			console.error(error);
+			res.status(501).send({ status: 0, msg: "Something went wrong!" });
+		}
 	}
-});
+);
 
 router.post("/", authenticate, async (req: IRequest, res: Response) => {
 	const createPostsDto = plainToClass(CreatePostsDto, req.body);
@@ -176,6 +181,7 @@ router.post("/", authenticate, async (req: IRequest, res: Response) => {
 
 router.get("/user", authenticate, async (req: IRequest, res: Response) => {
 	try {
+		await delayFiveSecondsAsync();
 		const posts = await Posts.find({ user: req.user._id }).populate(
 			"user",
 			"username photoUrl"
@@ -196,9 +202,7 @@ router.get("/user", authenticate, async (req: IRequest, res: Response) => {
 });
 
 router.get("/user/:userId", async (req: IRequest, res: Response) => {
-
 	const { userId } = req.params;
-	const currentUserId = req.query.currentUserId as string;
 	try {
 		const posts = await Posts.aggregate([
 			{
@@ -230,22 +234,19 @@ router.get("/user/:userId", async (req: IRequest, res: Response) => {
 					},
 					createdAt: 1,
 					updatedAt: 1,
-					likedByUser: {
-						$cond: {
-							if: { $eq: [{ $ifNull: [currentUserId, null] }, null] },
-							then: false,
-							else: { $in: [new ObjectId(currentUserId), "$likes.user"] },
-						},
-					},
 				},
 			},
 		]);
-		const user = await User.findOne({ _id: userId}).select(["username", "photoUrl", "_id"])
+		const user = await User.findOne({ _id: userId }).select([
+			"username",
+			"photoUrl",
+			"_id",
+		]);
 
 		res.status(200).send({
 			status: 1,
 			msg: "Users public posts fetched!",
-			data: {posts, user},
+			data: { posts, user },
 		});
 	} catch (error) {
 		console.error(error);
@@ -262,10 +263,43 @@ router.get("/:postId", async (req: Request, res: Response) => {
 	if (!postId) return res.send({ status: 0, msg: "Post Id is required" });
 
 	try {
-		const posts = await Posts.findOne({ _id: postId }).populate(
-			"user",
-			"username photoUrl"
-		);
+		//await delayFiveSecondsAsync();
+		const posts = await Posts.aggregate([
+			{ $match: { _id: new ObjectId(postId) } },
+			{
+				$lookup: {
+					from: "users",
+					localField: "user",
+					foreignField: "_id",
+					as: "user",
+				},
+			},
+			{ $unwind: "$user" },
+			{ $match: { published: true } },
+			{ $sort: { createdAt: -1 } },
+			{
+				$project: {
+					_id: 1,
+					title: 1,
+					content: 1,
+					published: 1,
+					picture: 1,
+					user: {
+						_id: "$user._id",
+						username: "$user.username",
+						photoUrl: "$user.photoUrl",
+					},
+					likes: {
+						$size: "$likes",
+					},
+					comments: {
+						$size: "$comments",
+					},
+					createdAt: 1,
+					updatedAt: 1,
+				},
+			},
+		]);
 
 		res.status(200).send({
 			status: 1,

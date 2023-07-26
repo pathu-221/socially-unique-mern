@@ -57,7 +57,9 @@ router.post("/:postId", authenticate, async (req: IRequest, res: Response) => {
 					comments: {
 						user: req.user._id,
 						text: commentDto.text,
-						parentComment: commentDto.parentComment,
+						parentComment:
+							commentDto.parentComment &&
+							new ObjectId(commentDto.parentComment),
 					},
 				},
 			}
@@ -84,13 +86,13 @@ router.put(
 
 		const { commentId } = req.params;
 
+		console.log({ id: new ObjectId(commentId) });
 		try {
 			await Posts.findOneAndUpdate(
 				{ "comments._id": new ObjectId(commentId) },
 				{ $set: { "comments.$.text": updateCommentDto.text } },
 				{ new: true }
 			);
-
 			res.send({ status: 1, msg: "Comment Edited!" });
 		} catch (error) {
 			console.error(error);
@@ -103,13 +105,12 @@ router.delete(
 	"/:commentId",
 	authenticate,
 	async (req: IRequest, res: Response) => {
-
 		const { commentId } = req.params;
 
 		try {
 			await Posts.findOneAndUpdate(
 				{ "comments._id": new ObjectId(commentId) },
-				{ $pull: { comments: { _id: commentId }} },
+				{ $pull: { comments: { _id: commentId } } },
 				{ new: true }
 			);
 
