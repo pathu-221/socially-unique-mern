@@ -1,5 +1,5 @@
 import { getPostbyId } from "@/apis/posts.api";
-import Comments from "@/components/Comments";
+import Comments from "@/components/Comments/Comments";
 import LikePost from "@/components/LikePost";
 import { Post } from "@/interfaces/post.interface";
 import Image from "next/image";

@@ -9,7 +9,14 @@ import {
 // import { showToast } from "@/common/toast";
 import { Comment } from "@/interfaces/comment.interface";
 import { User } from "@/interfaces/user.interface";
-import { useEffect, type FC, useState, FormEvent } from "react";
+import {
+	useEffect,
+	type FC,
+	useState,
+	FormEvent,
+	FormEventHandler,
+	ChangeEventHandler,
+} from "react";
 import { IoSend } from "react-icons/io5";
 import { BsFillChatDotsFill } from "react-icons/bs";
 import { AiTwotoneEdit, AiFillDelete } from "react-icons/ai";
@@ -24,27 +31,25 @@ interface CommentItemProps {
 	comment: threadComments;
 	level: number;
 	user?: User;
+	onUpdate: () => Promise<void>;
 }
 
 interface threadComments extends Comment {
 	replies: threadComments[];
 }
 
-interface CommentFormProps {}
+interface CommentFormProps {
+	comment?: threadComments;
+	onSubmit: FormEventHandler<HTMLFormElement>;
+	onChange: ChangeEventHandler<HTMLTextAreaElement>;
+	value?: string;
+}
 
 const Comments: FC<CommentsProps> = ({ postId }) => {
 	const { user } = useUser();
 	const [comments, setComments] = useState<threadComments[] | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [comment, setComment] = useState("");
-	const [isReplying, setIsReplying] = useState(false);
-	const [edit, setEdit] = useState(false);
-	const [commentToEdit, setCommentToEdit] = useState<Comment | null>(null);
-	const [commentToReply, setCommentToReply] = useState<Comment | null>(null);
-
-	// useEffect(() => {
-	// 	fetchComments();
-	// }, []);
 
 	const fetchComments = async () => {
 		setLoading(true);
@@ -68,35 +73,15 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 		if (!user) return; //showToast("error", "You need to sign in to post comments!");
 
 		const requestBody: any = {
-			text: commentToEdit ? commentToEdit.text : comment,
+			text: comment,
 		};
 
-		if (isReplying && commentToReply) {
-			requestBody.parentComment = commentToReply._id;
-		}
-
-		const data = commentToEdit
-			? await editComment(commentToEdit._id, requestBody)
-			: await postComment(postId, requestBody);
+		const data = await postComment(postId, requestBody);
 
 		if (!data.status) return; //showToast("error", data.msg);
-		else {
-			//showToast("success", data.msg);
-			fetchComments();
-			setComment("");
-			setIsReplying(false);
-			setCommentToReply(null);
-			setCommentToEdit(null);
-		}
-	};
-
-	const deleteComment = async (commentId: string) => {
-		const data = await deleteCommentApi(commentId);
-		if (!data.status) return; //showToast("error", data.msg);
-		else {
-			//showToast("success", data.msg);
-			fetchComments();
-		}
+		//showToast("success", data.msg);
+		fetchComments();
+		setComment("");
 	};
 
 	const formatThreadComments = (comments: threadComments[]) => {
@@ -127,9 +112,16 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 		<section className="flex flex-col gap-2 items-start jutify-start">
 			{comments ? (
 				<>
-					<CommentForm />
+					<CommentForm
+						onChange={(e) => {
+							setComment(e.target.value);
+						}}
+						value={comment}
+						onSubmit={onSubmit}
+					/>
 					{comments.map((comment) => (
 						<CommentItem
+							onUpdate={fetchComments}
 							user={user}
 							key={comment._id}
 							level={0}
@@ -149,10 +141,15 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 	);
 };
 
-const CommentItem: FC<CommentItemProps> = ({ comment, level, user }) => {
+const CommentItem: FC<CommentItemProps> = ({
+	comment,
+	level,
+	user,
+	onUpdate,
+}) => {
 	const isAdmin = comment.user._id === user?._id;
-
 	const [isEditing, setIsEditing] = useState(false);
+	const [commentToEdit, setCommentToEdit] = useState<threadComments>();
 
 	const formatCommentDate = (date: string) => {
 		const formattedDate = Intl.DateTimeFormat("en-US", {
@@ -164,6 +161,28 @@ const CommentItem: FC<CommentItemProps> = ({ comment, level, user }) => {
 			hour12: true,
 		}).format(new Date(date));
 		return formattedDate;
+	};
+
+	const onSubmit = async (e: FormEvent) => {
+		e.preventDefault();
+		if (!commentToEdit) return;
+
+		const requestBody: any = {
+			text: commentToEdit.text,
+		};
+
+		const res = await editComment(commentToEdit._id, requestBody);
+		if (!res.status) return;
+		await onUpdate();
+		setIsEditing(false);
+	};
+
+	const deleteComment = async (commentId: string) => {
+		const data = await deleteCommentApi(commentId);
+		if (!data.status) return; //showToast("error", data.msg);
+
+		//showToast("success", data.msg);
+		await onUpdate();
 	};
 
 	return (
@@ -182,10 +201,15 @@ const CommentItem: FC<CommentItemProps> = ({ comment, level, user }) => {
 				</div>
 				{isAdmin && (
 					<div className="flex gap-2 items-center text-gray-400">
-						<button onClick={() => setIsEditing(!isEditing)}>
+						<button
+							onClick={() => {
+								setIsEditing(!isEditing);
+								setCommentToEdit(comment);
+							}}
+						>
 							<AiTwotoneEdit />
 						</button>
-						<button>
+						<button onClick={() => deleteComment(comment._id)}>
 							<AiFillDelete />
 						</button>
 					</div>
@@ -193,12 +217,24 @@ const CommentItem: FC<CommentItemProps> = ({ comment, level, user }) => {
 			</div>
 
 			<div className="mt-2 text-sm px-2 pb-2">
-				{isEditing ? <CommentForm /> : comment.text}
+				{isEditing ? (
+					<CommentForm
+						onChange={(e) => {
+							if (commentToEdit)
+								setCommentToEdit({ ...commentToEdit, text: e.target.value });
+						}}
+						onSubmit={onSubmit}
+						comment={commentToEdit}
+					/>
+				) : (
+					comment.text
+				)}
 			</div>
 
 			{comment.replies &&
 				comment.replies.map((reply) => (
 					<CommentItem
+						onUpdate={onUpdate}
 						user={user}
 						key={reply._id}
 						level={level + 1}
@@ -209,20 +245,25 @@ const CommentItem: FC<CommentItemProps> = ({ comment, level, user }) => {
 	);
 };
 
-const CommentForm: FC<CommentFormProps> = () => {
+const CommentForm: FC<CommentFormProps> = ({
+	comment,
+	onSubmit,
+	onChange,
+	value,
+}) => {
 	return (
 		<div className="w-full">
-			<form className="mb-6">
-				<div className="py-2 px-4 mb-4 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-					<label htmlFor="comment" className="sr-only">
-						Your comment
-					</label>
+			<form onSubmit={onSubmit} className="mb-6">
+				<div className="py-2 px-4 mb-2 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
 					<textarea
 						id="comment"
 						rows={4}
 						className="px-0 w-full text-sm text-gray-900 border-0 focus:ring-0 focus:outline-none dark:text-white dark:placeholder-gray-400 dark:bg-gray-800"
 						placeholder="Write a comment..."
 						required
+						onChange={onChange}
+						defaultValue={comment?.text}
+						value={value}
 					></textarea>
 				</div>
 				<button
