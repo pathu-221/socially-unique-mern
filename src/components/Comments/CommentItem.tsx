@@ -1,18 +1,20 @@
 import {
 	deleteComment as deleteCommentApi,
 	editComment,
+	postComment,
 } from "@/apis/comment.api";
 import type { User } from "@/interfaces/user.interface";
-import type { FC, FormEvent } from "react";
+import type { ChangeEvent, FC, FormEvent } from "react";
 import { useState } from "react";
 import type { ThreadComments } from "./Comments";
 import { AiTwotoneEdit, AiFillDelete } from "react-icons/ai";
 import CommentForm from "./CommentForm";
-
+import { BsReplyFill } from "react-icons/bs";
 interface CommentItemProps {
 	comment: ThreadComments;
 	level: number;
 	user?: User;
+	postId?: string;
 	onUpdate: () => Promise<void>;
 }
 
@@ -21,10 +23,13 @@ const CommentItem: FC<CommentItemProps> = ({
 	level,
 	user,
 	onUpdate,
+	postId,
 }) => {
 	const isAdmin = comment.user._id === user?._id;
 	const [isEditing, setIsEditing] = useState(false);
+	const [isReplying, setIsReplying] = useState(false);
 	const [commentToEdit, setCommentToEdit] = useState<ThreadComments>();
+	const [reply, setReply] = useState("");
 
 	const formatCommentDate = (date: string) => {
 		const formattedDate = Intl.DateTimeFormat("en-US", {
@@ -36,6 +41,10 @@ const CommentItem: FC<CommentItemProps> = ({
 			hour12: true,
 		}).format(new Date(date));
 		return formattedDate;
+	};
+
+	const onChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+		setReply(e.target.value);
 	};
 
 	const onSubmit = async (e: FormEvent) => {
@@ -52,6 +61,22 @@ const CommentItem: FC<CommentItemProps> = ({
 		setIsEditing(false);
 	};
 
+	const replyToComment = async (e: FormEvent) => {
+		e.preventDefault();
+		const requestBody = {
+			parentComment: comment._id,
+			text: reply,
+		};
+
+		if (!postId) return;
+
+		const data = await postComment(postId, requestBody);
+		if (!data.status) return alert(data.msg);
+		setIsReplying(false);
+		setReply("");
+		onUpdate();
+	};
+
 	const deleteComment = async (commentId: string) => {
 		const data = await deleteCommentApi(commentId);
 		if (!data.status) return; //showToast("error", data.msg);
@@ -61,7 +86,7 @@ const CommentItem: FC<CommentItemProps> = ({
 	};
 
 	return (
-		<div className="ml-3 border-l border-gray-400 px-3 pt-2 w-full">
+		<div className="border-l border-gray-400 px-3 pt-2 w-full">
 			<div className="flex gap-2 items-center">
 				<img
 					className="h-8 w-8 rounded-full"
@@ -102,7 +127,23 @@ const CommentItem: FC<CommentItemProps> = ({
 						comment={commentToEdit}
 					/>
 				) : (
-					comment.text
+					<span className="flex flex-col gap-2 items-start justify-center">
+						<p>{comment.text}</p>
+						<span
+							onClick={() => setIsReplying(!isReplying)}
+							className="flex items-end gap-2 justify-end cursor-pointer"
+						>
+							<BsReplyFill size={18} />
+							<p className="m-0 p-0 text-xs text-gray-500">Reply</p>
+						</span>
+						{isReplying && (
+							<CommentForm
+								value={reply}
+								onChange={onChange}
+								onSubmit={replyToComment}
+							/>
+						)}
+					</span>
 				)}
 			</div>
 
@@ -112,6 +153,7 @@ const CommentItem: FC<CommentItemProps> = ({
 						onUpdate={onUpdate}
 						user={user}
 						key={reply._id}
+						postId={postId}
 						level={level + 1}
 						comment={reply}
 					/>

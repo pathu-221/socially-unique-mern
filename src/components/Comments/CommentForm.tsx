@@ -4,7 +4,7 @@ import type { ThreadComments } from "./Comments";
 interface CommentFormProps {
 	comment?: ThreadComments;
 	onSubmit: FormEventHandler<HTMLFormElement>;
-	onChange: ChangeEventHandler<HTMLTextAreaElement>;
+	onChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
 	value?: string;
 }
 
@@ -16,7 +16,7 @@ const CommentForm: FC<CommentFormProps> = ({
 }) => {
 	return (
 		<div className="w-full">
-			<form onSubmit={onSubmit} className="mb-6">
+			<form onSubmit={onSubmit} className="mb-2">
 				<div className="py-2 px-4 mb-2 bg-white rounded-lg rounded-t-lg border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
 					<textarea
 						id="comment"

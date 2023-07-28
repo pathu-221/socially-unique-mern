@@ -1,17 +1,10 @@
 "use client";
 
-import {
-	getComments,
-	postComment
-} from "@/apis/comment.api";
+import { getComments, postComment } from "@/apis/comment.api";
 // import { showToast } from "@/common/toast";
 import useUser from "@/hooks/useUser";
 import { Comment } from "@/interfaces/comment.interface";
-import {
-	FormEvent,
-	useState,
-	type FC
-} from "react";
+import { FormEvent, useState, type FC } from "react";
 import CommentItem from "./CommentItem";
 import CommentForm from "./CommentForm";
 //import { Router } from "next/router";
@@ -104,6 +97,7 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 							user={user}
 							key={comment._id}
 							level={0}
+							postId={postId}
 							comment={comment}
 						/>
 					))}
@@ -119,7 +113,5 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 		</section>
 	);
 };
-
-
 
 export default Comments;

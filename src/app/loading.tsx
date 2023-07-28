@@ -17,7 +17,7 @@ export default function Loading() {
 					<span className="bg-slate-700 rounded-md w-full h-80 mt-4"></span>
 				</span>
 			</div>
-			<div className="w-[60%] p-4 card shadow-xl bg-dark-focus min-h-[500px] rounded-2xl flex flex-col gap-2 animate-pulse space-x-4">
+			<div className="w-[60%] p-4 card shadow-xl bg-dark-focus min-h-[500px] rounded-2xl flex flex-col gap-2 animate-pulse">
 				<span className="flex items-center">
 					<span className="bg-slate-700 rounded-full h-10 aspect-square w-10"></span>
 					<span className="flex gap-2.5 flex-col px-1">
