@@ -4,6 +4,8 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { MdModeEditOutline } from "react-icons/md";
 import { BsChat, BsViewList } from "react-icons/bs";
 import Link from "next/link";
+import PostEdit from "./PostEditModal";
+import PostEditModal from "./PostEditModal";
 
 interface PostContentProps {
 	post: Post;
@@ -39,12 +41,9 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin }) => {
 				{isAdmin && (
 					<span className="align-self-end mr-5">
 						{" "}
-						<Link
-							className="btn btn-link btn-ghost"
-							href={`/admin/${post._id}`}
-						>
+						<label htmlFor={post._id} className="btn btn-link btn-ghost">
 							<MdModeEditOutline size={25} />
-						</Link>
+						</label>
 					</span>
 				)}
 			</span>
@@ -78,6 +77,7 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin }) => {
 					</div>
 				)}
 			</span>
+			<PostEditModal post={post} />
 		</div>
 	);
 };
