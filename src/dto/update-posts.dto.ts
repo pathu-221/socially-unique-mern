@@ -7,6 +7,9 @@ export class UpdatePostsDto {
 
 	@IsString()
 	published: string
+
+	@IsString()
+	picture: string
 }
 
 export class CommentDto {

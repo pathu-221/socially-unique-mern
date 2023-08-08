@@ -97,7 +97,6 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 			const file = Array.isArray(req.files["picture"])
 				? req.files["picture"][0]
 				: req.files["picture"];
-
 			const image = await v2.uploader.upload(file.tempFilePath, {
 				public_id: `${req.user._id}/${file.name}`,
 			});
@@ -110,7 +109,7 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 			{ _id: postId },
 			{
 				content: updatePostDto.content,
-				picture: url,
+				picture: url || updatePostDto.picture,
 				published: published.published,
 			}
 		);
@@ -263,7 +262,6 @@ router.get("/:postId", async (req: Request, res: Response) => {
 	if (!postId) return res.send({ status: 0, msg: "Post Id is required" });
 
 	try {
-		//await delayFiveSecondsAsync();
 		const posts = await Posts.aggregate([
 			{ $match: { _id: new ObjectId(postId) } },
 			{

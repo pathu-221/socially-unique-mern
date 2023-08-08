@@ -5,6 +5,7 @@ import { CommentDto, UpdateCommentDto } from "../dto/update-posts.dto";
 import { plainToClass } from "class-transformer";
 import { validate } from "class-validator";
 import { ObjectId } from "mongodb";
+import { status } from "../constants/status.enum";
 const router = Router();
 
 router.get("/:postId", async (req: Request, res: Response) => {
@@ -86,7 +87,6 @@ router.put(
 
 		const { commentId } = req.params;
 
-		console.log({ id: new ObjectId(commentId) });
 		try {
 			await Posts.findOneAndUpdate(
 				{ "comments._id": new ObjectId(commentId) },
@@ -110,7 +110,12 @@ router.delete(
 		try {
 			await Posts.findOneAndUpdate(
 				{ "comments._id": new ObjectId(commentId) },
-				{ $pull: { comments: { _id: commentId } } },
+				{
+					$set: {
+						"comments.$.status": status.DELETED,
+						"comments.$.text": "[deleted]",
+					},
+				},
 				{ new: true }
 			);
 
