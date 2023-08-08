@@ -66,7 +66,7 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 		);
 		if (images) {
 			for (const image of images) {
-				formData.append("images", image);
+				formData.append("picture", image);
 			}
 		}
 		setSaving(true);
