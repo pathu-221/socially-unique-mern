@@ -4,15 +4,14 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { MdModeEditOutline } from "react-icons/md";
 import { BsChat, BsViewList } from "react-icons/bs";
 import Link from "next/link";
-import PostEdit from "./PostEditModal";
-import PostEditModal from "./PostEditModal";
 
 interface PostContentProps {
 	post: Post;
 	isAdmin?: boolean;
+	editPost?: Function;
 }
 
-const PostContent: FC<PostContentProps> = ({ post, isAdmin }) => {
+const PostContent: FC<PostContentProps> = ({ post, isAdmin, editPost }) => {
 	const unformattedDate = new Date(post.createdAt);
 	const uploadDate = Intl.DateTimeFormat("en-US", {
 		year: "numeric",
@@ -38,12 +37,15 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin }) => {
 						<p className="text-[12px]">{uploadDate}</p>
 					</span>
 				</span>
-				{isAdmin && (
+				{isAdmin && editPost && (
 					<span className="align-self-end mr-5">
 						{" "}
-						<label htmlFor={post._id} className="btn btn-link btn-ghost">
+						<button
+							onClick={() => editPost()}
+							className="btn btn-link btn-ghost"
+						>
 							<MdModeEditOutline size={25} />
-						</label>
+						</button>
 					</span>
 				)}
 			</span>
@@ -77,7 +79,6 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin }) => {
 					</div>
 				)}
 			</span>
-			<PostEditModal post={post} />
 		</div>
 	);
 };
