@@ -1,29 +1,20 @@
-import { Router, Request, Response } from "express";
-import { Posts } from "../Models/Posts";
-import { IRequest, authenticate } from "../middleware/authenticate";
 import { plainToClass } from "class-transformer";
+import { validate } from "class-validator";
+import { Request, Response, Router } from "express";
+import { UploadedFile } from "express-fileupload";
+import { ObjectId } from "mongodb";
+import path from "path";
+import { Posts } from "../Models/Posts";
+import { User } from "../Models/User";
 import { CreatePostsDto } from "../dto/create-posts.dto";
 import { UpdatePostsDto } from "../dto/update-posts.dto";
-import { validate } from "class-validator";
-import { v2 } from "cloudinary";
-import { ObjectId } from "mongodb";
-import { User } from "../Models/User";
+import { IRequest, authenticate } from "../middleware/authenticate";
 
 const router = Router();
-
-function delayFiveSecondsAsync(): Promise<void> {
-	return new Promise((resolve) => {
-		setTimeout(() => {
-			console.log("Delay completed!");
-			resolve();
-		}, 5000);
-	});
-}
 
 router.get("/", async (req: Request, res: Response) => {
 	try {
 		//trying aggregation
-		await delayFiveSecondsAsync();
 		const posts = await Posts.aggregate([
 			{
 				$lookup: {
@@ -89,19 +80,13 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 
 		if (!post) return res.send({ status: 0, msg: "Post not Found!" });
 
-		// if (post.user._id !== req.user._id)
-		// 	res.send({ status: 0, msg: "This post is not yours!" });
-
-		let url;
+		let filePath = updatePostDto.picture;
 		if (req.files) {
-			const file = Array.isArray(req.files["picture"])
+			const file: UploadedFile = Array.isArray(req.files["picture"])
 				? req.files["picture"][0]
 				: req.files["picture"];
-			const image = await v2.uploader.upload(file.tempFilePath, {
-				public_id: `${req.user._id}/${file.name}`,
-			});
-
-			url = image.url;
+			filePath = `uploads/${req.user._id}/${postId}/${file.name}`; // path.join("public/uploads", req.user._id, postId, file.name);
+			file.mv(`public/${filePath}`);
 		}
 
 		const published = await JSON.parse(updatePostDto.published);
@@ -109,7 +94,7 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 			{ _id: postId },
 			{
 				content: updatePostDto.content,
-				picture: url || updatePostDto.picture,
+				picture: filePath || "",
 				published: published.published,
 			}
 		);
@@ -180,7 +165,6 @@ router.post("/", authenticate, async (req: IRequest, res: Response) => {
 
 router.get("/user", authenticate, async (req: IRequest, res: Response) => {
 	try {
-		await delayFiveSecondsAsync();
 		const posts = await Posts.find({ user: req.user._id }).populate(
 			"user",
 			"username photoUrl"

@@ -9,7 +9,8 @@ export class UpdatePostsDto {
 	published: string
 
 	@IsString()
-	picture: string
+	@IsOptional()
+	picture?: string
 }
 
 export class CommentDto {
