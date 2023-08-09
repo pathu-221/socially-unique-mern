@@ -80,13 +80,21 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 
 		if (!post) return res.send({ status: 0, msg: "Post not Found!" });
 
-		let filePath = updatePostDto.picture;
+		let filePaths = updatePostDto.picture || [];
 		if (req.files) {
-			const file: UploadedFile = Array.isArray(req.files["picture"])
-				? req.files["picture"][0]
-				: req.files["picture"];
-			filePath = `uploads/${req.user._id}/${postId}/${file.name}`; // path.join("public/uploads", req.user._id, postId, file.name);
-			file.mv(`public/${filePath}`);
+			const files = req.files["picture"];
+			let file: UploadedFile[];
+			if (!Array.isArray(files)) {
+				file = [files];
+			} else file = files;
+
+			file.map((f) => {
+				const filePath = `uploads/${req.user._id}/${postId}/${f.name}`;
+				filePaths.push(filePath);
+				f.mv(`public/${filePath}`);
+			});
+
+			//
 		}
 
 		const published = await JSON.parse(updatePostDto.published);
@@ -94,8 +102,8 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 			{ _id: postId },
 			{
 				content: updatePostDto.content,
-				picture: filePath || "",
-				published: published.published,
+				picture: filePaths || "",
+				published: published
 			}
 		);
 

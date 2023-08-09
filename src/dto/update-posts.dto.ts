@@ -1,28 +1,35 @@
 import { Type } from "class-transformer";
-import { IsBoolean, IsObject, IsOptional, IsString, ValidateNested } from "class-validator";
+import {
+	IsArray,
+	IsBoolean,
+	IsObject,
+	IsOptional,
+	IsString,
+	ValidateNested,
+} from "class-validator";
 
 export class UpdatePostsDto {
 	@IsString()
 	content: string;
 
 	@IsString()
-	published: string
+	published: string;
 
 	@IsString()
+	@IsArray()
 	@IsOptional()
-	picture?: string
+	picture?: string[];
 }
 
 export class CommentDto {
 	@IsString()
-	text: string 
+	text: string;
 
 	@IsOptional()
-	parentComment: string
-	
+	parentComment: string;
 }
 
 export class UpdateCommentDto {
 	@IsString()
-	text: string
+	text: string;
 }

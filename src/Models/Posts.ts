@@ -43,7 +43,13 @@ const PostsSchema = new Schema(
 			type: String,
 		},
 		picture: {
-			type: String,
+			type: [{ type: String }],
+			validate: [
+				(val) => {
+					return val.length <= 5;
+				},
+				"{PATH} exceeds the limit of 5",
+			],
 		},
 		published: {
 			required: true,
