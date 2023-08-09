@@ -23,7 +23,7 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin, editPost }) => {
 	}).format(unformattedDate);
 
 	return (
-		<div className="w-[60%] p-4 card shadow-xl bg-dark-focus min-h-[500px] rounded-2xl flex flex-col gap-2 ">
+		<div className="w-[60%] p-4 card shadow-xl bg-dark-focus rounded-2xl flex flex-col gap-2 ">
 			{/** card header */}
 			<span className="flex gap-2.5 justify-between items-center max-w-full">
 				<span className="flex gap-2.5 max-w-full">
@@ -52,11 +52,13 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin, editPost }) => {
 			{/** post body */}
 			<span className="text-[.9rem] py-4 gap-2 flex flex-col">
 				<p>{post.content}</p>
-				<img
-					src={post.picture}
-					alt={post.title}
-					className="w-full h-auto rounded-2xl"
-				/>
+				{post.picture && (
+					<img
+						src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${post.picture}`}
+						alt={post.title}
+						className="w-full h-auto rounded-2xl"
+					/>
+				)}
 				{!isAdmin && (
 					<div className="flex justify-between items-center w-full pt-3">
 						<Link

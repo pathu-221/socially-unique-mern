@@ -16,11 +16,13 @@ interface PostEditModalProps {
 
 const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 	const [images, setImages] = useState<FileList | File[]>();
+	console.log({ post });
+
 	const [postFormValue, setPostFormValue] = useState({
 		title: post?.title || "",
 		content: post?.content || "",
 		published: post ? post.published : true,
-		picture: post?.picture || "",
+		picture: post?.picture,
 	});
 	const [saving, setSaving] = useState(false);
 
@@ -50,7 +52,7 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 	const removeExistingImage = () => {
 		setPostFormValue({
 			...postFormValue,
-			picture: "",
+			picture: undefined,
 		});
 	};
 
@@ -58,7 +60,8 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 		e.preventDefault();
 
 		const formData = new FormData();
-		formData.append("picture", postFormValue?.picture);
+		if (postFormValue.picture)
+			formData.append("picture", postFormValue.picture);
 		formData.append("content", postFormValue.content);
 		formData.append(
 			"published",
@@ -115,7 +118,7 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 							</span>
 							<img
 								className="w-[140px] h-20 rounded-lg height-auto"
-								src={postFormValue.picture}
+								src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${postFormValue.picture}`}
 								alt={`Image ${post?.title}`}
 							/>
 						</div>
@@ -158,9 +161,14 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 						<input
 							name="published"
 							type="checkbox"
-							onChange={onChange}
+							onChange={() =>
+								setPostFormValue({
+									...postFormValue,
+									published: !postFormValue.published,
+								})
+							}
 							className="toggle toggle-sm toggle-primary"
-							checked={post ? post.published : true}
+							checked={post ? postFormValue.published : true}
 						/>
 					</label>
 				</div>

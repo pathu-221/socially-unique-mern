@@ -50,18 +50,20 @@ const PostPage: FC<PostPageProps> = async ({ params }) => {
 					</span>
 					<span className="mr-5 cursor-pointer flex flex-col gap-0 pt-4 items-center justify-center">
 						<LikePost />
-						{ postContent.likes }
+						{postContent.likes}
 					</span>
 				</span>
 				{/** post title */}
 				<h1 className="text-xl capitalize my-3">{postContent.title}</h1>
-				<figure>
-					<img
-						src={postContent.picture}
-						alt={postContent.title}
-						className="w-full h-auto rounded-2xl"
-					/>
-				</figure>
+				{postContent.picture && (
+					<figure>
+						<img
+							src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${postContent.picture}`}
+							alt={postContent.title}
+							className="w-full h-auto rounded-2xl"
+						/>
+					</figure>
+				)}
 				<p className="my-2">{postContent.content}</p>
 				<div className="border-b pb-2 border-gray-400 flex items-start justify-between mt-5">
 					{`${postContent.comments} Comments`}
