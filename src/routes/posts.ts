@@ -79,10 +79,12 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 		);
 
 		if (!post) return res.send({ status: 0, msg: "Post not Found!" });
-
-		let filePaths = updatePostDto.picture || [];
+		let filePaths: string[] = updatePostDto.picture
+			? await JSON.parse(updatePostDto.picture)
+			: [];
 		if (req.files) {
-			const files = req.files["picture"];
+			
+			const files = req.files["pictures"];
 			let file: UploadedFile[];
 			if (!Array.isArray(files)) {
 				file = [files];
@@ -98,12 +100,14 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 		}
 
 		const published = await JSON.parse(updatePostDto.published);
+		console.log({ filePaths, published });
+
 		const updatedPost = await Posts.updateOne(
 			{ _id: postId },
 			{
 				content: updatePostDto.content,
-				picture: filePaths || "",
-				published: published
+				picture: filePaths,
+				published: published.published,
 			}
 		);
 

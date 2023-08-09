@@ -16,9 +16,8 @@ export class UpdatePostsDto {
 	published: string;
 
 	@IsString()
-	@IsArray()
 	@IsOptional()
-	picture?: string[];
+	picture?: string;
 }
 
 export class CommentDto {
