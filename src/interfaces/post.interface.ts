@@ -8,7 +8,7 @@ export interface Post {
 	createdAt: string;
 	updatedAt: string;
 	content: string;
-	picture?: string;
+	picture?: string[];
 	likes: number;
 	comments: number;
 }

@@ -55,9 +55,9 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin, editPost }) => {
 				<p>{post.content}</p>
 				{post.picture && (
 					<LightGallery>
-						<a href={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${post.picture}`}>
+						<a href={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${post.picture[0]}`}>
 							<img
-								src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${post.picture}`}
+								src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${post.picture[0]}`}
 								alt={post.title}
 								className="w-full h-auto rounded-2xl"
 							/>

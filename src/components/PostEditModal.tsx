@@ -60,8 +60,9 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 		e.preventDefault();
 
 		const formData = new FormData();
-		if (postFormValue.picture)
-			formData.append("picture", postFormValue.picture);
+		if (postFormValue.picture) {
+			formData.append("picture", JSON.stringify(post?.picture));
+		}
 		formData.append("content", postFormValue.content);
 		formData.append(
 			"published",
@@ -69,7 +70,8 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 		);
 		if (images) {
 			for (const image of images) {
-				formData.append("picture", image);
+				console.log({ image });
+				formData.append("pictures", image);
 			}
 		}
 		setSaving(true);
@@ -118,7 +120,7 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 							</span>
 							<img
 								className="w-[140px] h-20 rounded-lg height-auto"
-								src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${postFormValue.picture}`}
+								src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${postFormValue.picture[0]}`}
 								alt={`Image ${post?.title}`}
 							/>
 						</div>
