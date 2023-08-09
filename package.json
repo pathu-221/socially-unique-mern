@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "lightgallery": "^2.7.1",
     "next": "13.4.10",
     "next-auth": "^4.22.1",
     "react": "18.2.0",

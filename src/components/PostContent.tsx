@@ -4,6 +4,7 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { MdModeEditOutline } from "react-icons/md";
 import { BsChat, BsViewList } from "react-icons/bs";
 import Link from "next/link";
+import LightGallery from "./LightBox";
 
 interface PostContentProps {
 	post: Post;
@@ -53,11 +54,15 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin, editPost }) => {
 			<span className="text-[.9rem] py-4 gap-2 flex flex-col">
 				<p>{post.content}</p>
 				{post.picture && (
-					<img
-						src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${post.picture}`}
-						alt={post.title}
-						className="w-full h-auto rounded-2xl"
-					/>
+					<LightGallery>
+						<a href={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${post.picture}`}>
+							<img
+								src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${post.picture}`}
+								alt={post.title}
+								className="w-full h-auto rounded-2xl"
+							/>
+						</a>
+					</LightGallery>
 				)}
 				{!isAdmin && (
 					<div className="flex justify-between items-center w-full pt-3">
