@@ -4,7 +4,7 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { MdModeEditOutline } from "react-icons/md";
 import { BsChat, BsViewList } from "react-icons/bs";
 import Link from "next/link";
-import LightGallery from "./LightBox";
+import LightGallery from "./LightGallery";
 
 interface PostContentProps {
 	post: Post;
