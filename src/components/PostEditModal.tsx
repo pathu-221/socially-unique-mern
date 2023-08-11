@@ -6,7 +6,6 @@ import type { ChangeEvent, FC, FormEvent } from "react";
 import { useState } from "react";
 import { BsFillCameraFill } from "react-icons/bs";
 import { RxCross1 } from "react-icons/rx";
-import Modal from "@/components/ReactResponsiveModal";
 
 interface PostEditModalProps {
 	post?: Post;
@@ -15,14 +14,12 @@ interface PostEditModalProps {
 }
 
 const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
-	const [images, setImages] = useState<FileList | File[]>();
-	console.log({ post });
-
+	const [images, setImages] = useState<File[]>([]);
 	const [postFormValue, setPostFormValue] = useState({
 		title: post?.title || "",
 		content: post?.content || "",
 		published: post ? post.published : true,
-		picture: post?.picture,
+		picture: post?.picture || [],
 	});
 	const [saving, setSaving] = useState(false);
 
@@ -35,9 +32,11 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 
 	const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files) {
-			setImages(e.target.files);
+			const newFiles = images.concat(Array.from(e.target.files));
+			if (newFiles.length + postFormValue.picture.length > 5)
+				return alert("Max 5 files are allowed");
+			setImages(newFiles);
 		}
-		console.log({ files: e.target.files });
 	};
 
 	const removeImage = (imageToRemove: File) => {
@@ -46,13 +45,15 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 		const newImages = Array.from(images).filter(
 			(image) => image !== imageToRemove
 		);
-		setImages(newImages.length > 0 ? newImages : undefined);
+		setImages(newImages);
 	};
 
-	const removeExistingImage = () => {
+	const removeExistingImage = (image: string) => {
+		const newPictures = postFormValue.picture.filter((i) => i !== image);
+		console.log({ newPictures });
 		setPostFormValue({
 			...postFormValue,
-			picture: undefined,
+			picture: newPictures,
 		});
 	};
 
@@ -61,7 +62,7 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 
 		const formData = new FormData();
 		if (postFormValue.picture) {
-			formData.append("picture", JSON.stringify(post?.picture));
+			formData.append("picture", JSON.stringify(postFormValue?.picture));
 		}
 		formData.append("content", postFormValue.content);
 		formData.append(
@@ -79,7 +80,6 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 			? await savePost(formData, post._id)
 			: await newPost("egample");
 
-		console.log({ response });
 		await onUpdate();
 		setSaving(false);
 		close();
@@ -88,7 +88,7 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 	};
 
 	return (
-		<form onSubmit={onSubmit} className="rounded-xl p-5">
+		<form onSubmit={onSubmit} className="rounded-xl p-5 max-w-full">
 			<p className="font-bold text-lg mb-3">
 				{post ? "Edit post" : "Create a post"}
 			</p>
@@ -109,22 +109,23 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 					value={postFormValue.content}
 					placeholder="Text (optional)"
 				/>
-				<div className="flex flex-wrap max-w-full gap-2 pt-1">
-					{postFormValue.picture && (
-						<div className="indicator">
-							<span
-								className="indicator-item badge badge-primary rounded-full h-7 w-7 p-1 cursor-pointer hover:bg-blue-500"
-								onClick={() => removeExistingImage()}
-							>
-								<RxCross1 />
-							</span>
-							<img
-								className="w-[140px] h-20 rounded-lg height-auto"
-								src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${postFormValue.picture[0]}`}
-								alt={`Image ${post?.title}`}
-							/>
-						</div>
-					)}
+				<div className="grid grid-cols-3 max-w-full gap-2 pt-1">
+					{postFormValue.picture.length > 0 &&
+						postFormValue?.picture?.map((image) => (
+							<div key={image} className="indicator">
+								<span
+									className="indicator-item badge badge-primary rounded-full h-7 w-7 p-1 cursor-pointer hover:bg-blue-500"
+									onClick={() => removeExistingImage(image)}
+								>
+									<RxCross1 />
+								</span>
+								<img
+									className="w-[140px] h-20 rounded-lg height-auto"
+									src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${image}`}
+									alt={`Image ${post?.title}`}
+								/>
+							</div>
+						))}
 					{images &&
 						Array.from(images).map((file, index) => (
 							<div className="indicator" key={index}>
@@ -150,7 +151,7 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 							<p className="text-sm">Media</p>
 						</span>
 						<input
-							//multiple={true}
+							multiple={true}
 							onChange={onFileChange}
 							accept="image/*"
 							type="file"
