@@ -5,6 +5,7 @@ import { MdModeEditOutline } from "react-icons/md";
 import { BsChat, BsViewList } from "react-icons/bs";
 import Link from "next/link";
 import LightGallery from "./LightGallery";
+import PostImage from "./PostImage";
 
 interface PostContentProps {
 	post: Post;
@@ -24,7 +25,7 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin, editPost }) => {
 	}).format(unformattedDate);
 
 	return (
-		<div className="w-[60%] p-4 card shadow-xl bg-dark-focus rounded-2xl flex flex-col gap-2 ">
+		<div className="w-[60%] p-4 card shadow-xl bg-dark-focus rounded-2xl flex flex-col gap-2  ">
 			{/** card header */}
 			<span className="flex gap-2.5 justify-between items-center max-w-full">
 				<span className="flex gap-2.5 max-w-full">
@@ -54,15 +55,16 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin, editPost }) => {
 			<span className="text-[.9rem] py-4 gap-2 flex flex-col">
 				<p>{post.content}</p>
 				{post.picture && (
-					<LightGallery>
-						<a href={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${post.picture[0]}`}>
-							<img
-								src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${post.picture[0]}`}
-								alt={post.title}
-								className="w-full h-auto rounded-2xl"
-							/>
-						</a>
-					</LightGallery>
+					// <LightGallery>
+					// 	<a href={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${post.picture[0]}`}>
+					// 		<img
+					// 			src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${post.picture[0]}`}
+					// 			alt={post.title}
+					// 			className="w-full h-auto rounded-2xl"
+					// 		/>
+					// 	</a>
+					// </LightGallery>
+					<PostImage images={post.picture} />
 				)}
 				{!isAdmin && (
 					<div className="flex justify-between items-center w-full pt-3">
