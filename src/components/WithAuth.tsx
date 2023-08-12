@@ -4,7 +4,7 @@ import { getUser } from "@/apis/user.api";
 import { useRouter } from "next/navigation";
 import { ComponentType, FC, useEffect, useState } from "react";
 
-const withAuth = (WrappedComponent: ComponentType) => {
+const withAuth = (WrappedComponent: ComponentType<any>) => {
 	const Wrapper: FC = (props) => {
 		const router = useRouter();
 		const [isAuthenticated, setIsAuthenticated] = useState(false);

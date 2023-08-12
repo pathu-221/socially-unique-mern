@@ -3,9 +3,7 @@
 import useUser from "@/hooks/useUser";
 import { GoHome } from "react-icons/go";
 import type { FC } from "react";
-import { useEffect  } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 interface NavbarProps {}
 
@@ -25,7 +23,7 @@ const Navbar: FC<NavbarProps> = () => {
 				<span className="flex gap-6 items-center">
 					<li>
 						{user ? (
-							<Link href={"/admin"} className="link link-hover">
+							<Link href={"/admin?create=true"} className="btn btn-ghost">
 								Your Posts
 							</Link>
 						) : (

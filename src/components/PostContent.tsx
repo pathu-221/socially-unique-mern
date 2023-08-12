@@ -40,7 +40,7 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin, editPost }) => {
 					</span>
 				</span>
 				{isAdmin && editPost && (
-					<span className="align-self-end mr-5">
+					<span className="align-self-end ">
 						{" "}
 						<button
 							onClick={() => editPost()}

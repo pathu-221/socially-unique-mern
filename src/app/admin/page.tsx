@@ -11,13 +11,18 @@ import type { FC } from "react";
 import { useEffect, useState } from "react";
 import { RxCross1 } from "react-icons/rx";
 import Loading from "../loading";
+import { useSearchParams } from "next/navigation";
 
 interface AdminPageProps {}
 
-const AdminPage: FC<AdminPageProps> = () => {
+const AdminPage: FC<AdminPageProps> = ({}) => {
+	const params = useSearchParams();
+	const create = params.get("create");
+	console.log({ param: params.get("create") });
+
 	const [posts, setPosts] = useState<Post[]>();
 	const { user } = useUser();
-	const [isOpen, setIsOpen] = useState(false);
+	const [isOpen, setIsOpen] = useState(create === "true" ? true : false);
 	const [editPost, setEditPost] = useState<Post>();
 
 	useEffect(() => {
@@ -39,17 +44,15 @@ const AdminPage: FC<AdminPageProps> = () => {
 
 			{posts &&
 				posts.map((post) => (
-					<>
-						<PostContent
-							editPost={() => {
-								setEditPost(post);
-								setIsOpen(true);
-							}}
-							isAdmin={true}
-							key={post._id}
-							post={post}
-						/>
-					</>
+					<PostContent
+						editPost={() => {
+							setEditPost(post);
+							setIsOpen(true);
+						}}
+						isAdmin={true}
+						key={post._id}
+						post={post}
+					/>
 				))}
 
 			<Modal

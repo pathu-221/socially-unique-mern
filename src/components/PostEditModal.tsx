@@ -65,13 +65,9 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 			formData.append("picture", JSON.stringify(postFormValue?.picture));
 		}
 		formData.append("content", postFormValue.content);
-		formData.append(
-			"published",
-			JSON.stringify({ published: postFormValue.published })
-		);
+		formData.append("published", postFormValue.published ? "true" : "false");
 		if (images) {
 			for (const image of images) {
-				console.log({ image });
 				formData.append("pictures", image);
 			}
 		}
@@ -99,7 +95,7 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 					value={postFormValue.title}
 					onChange={onChange}
 					name="title"
-					className="input w-full input-bordered"
+					className="input bg-dark-focus w-full input-bordered"
 				/>
 				<textarea
 					rows={4}

@@ -28,6 +28,7 @@ const PostImage: FC<PostImageProps> = ({ images }) => {
 			<LightGallery elementClassNames="flex flex-col gap-3">
 				{images.map((image, index) => (
 					<a
+						key={index}
 						className={`${index > 0 ? "hidden" : ""}`}
 						href={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${image}`}
 					>
@@ -39,74 +40,6 @@ const PostImage: FC<PostImageProps> = ({ images }) => {
 				))}
 			</LightGallery>
 		</span>
-		// <div className="flex flex-col gap-3">
-		// 	<div className="flex gap-3">
-		// 		<div className="w-1/2">
-		// 			<img
-		// 				className="w-full rounded-2xl"
-		// 				src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${images[0]}`}
-		// 			/>
-		// 		</div>
-		// 		<div className="w-1/2">
-		// 			<img
-		// 				className="w-full rounded-2xl"
-		// 				src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${images[1]}`}
-		// 			/>
-		// 		</div>
-		// 	</div>
-		// </div>
-		// <div className="flex bg-center flex-col gap-3 h-[350px]">
-		// 	<div className="flex gap-3">
-		// 		<div className="w-1/2 flex flex-col">
-		// 			<img
-		// 				className="flex-grow rounded-2xl"
-		// 				src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${images[0]}`}
-		// 			/>
-		// 		</div>
-		// 		<div className="w-1/2 flex flex-col">
-		// 			<img
-		// 				className="flex-grow rounded-2xl"
-		// 				src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${images[1]}`}
-		// 			/>
-		// 		</div>
-		// 	</div>
-		// 	<div className="w-full rounded-2xl bg-center overflow-hidden">
-		// 		<img
-		// 			className="w-full -translate-y-1/2 rounded-2xl"
-		// 			src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${images[1]}`}
-		// 		/>
-		// 	</div>
-		// </div>
-		// <div className="flex bg-center flex-col gap-3">
-		// 	<div className="flex gap-3">
-		// 		<div className="w-1/2 flex flex-col">
-		// 			<img
-		// 				className="flex-grow rounded-2xl"
-		// 				src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${images[0]}`}
-		// 			/>
-		// 		</div>
-		// 		<div className="w-1/2 flex flex-col">
-		// 			<img
-		// 				className="flex-grow rounded-2xl"
-		// 				src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${images[1]}`}
-		// 			/>
-		// 		</div>
-		// 	</div>
-		// 	<div className="flex gap-3">
-		// 		<div className="w-1/2 flex flex-col">
-		// 			<img
-		// 				className="flex-grow rounded-2xl"
-		// 				src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${images[0]}`}
-		// 			/>
-		// 		</div>
-		// 		<div className="w-1/2 flex flex-col">
-		// 			<img
-		// 				className="flex-grow rounded-2xl"
-		// 				src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${images[1]}`}
-		// 			/>
-		// 		</div>
-		// 	</div>
-		// </div>
 	);
 };
 
