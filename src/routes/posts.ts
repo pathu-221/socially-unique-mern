@@ -9,6 +9,7 @@ import { User } from "../Models/User";
 import { CreatePostsDto } from "../dto/create-posts.dto";
 import { UpdatePostsDto } from "../dto/update-posts.dto";
 import { IRequest, authenticate } from "../middleware/authenticate";
+import { uploadPostPictures } from "../helpers/uploadFiles";
 
 const router = Router();
 
@@ -83,31 +84,22 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 			? await JSON.parse(updatePostDto.picture)
 			: [];
 		if (req.files) {
-			
-			const files = req.files["pictures"];
-			let file: UploadedFile[];
-			if (!Array.isArray(files)) {
-				file = [files];
-			} else file = files;
-
-			file.map((f) => {
-				const filePath = `uploads/${req.user._id}/${postId}/${f.name}`;
-				filePaths.push(filePath);
-				f.mv(`public/${filePath}`);
-			});
-
-			//
+			const files = uploadPostPictures(
+				req.files["pictures"],
+				req.user._id,
+				postId
+			);
+			filePaths.concat(files);
 		}
 
-		const published = await JSON.parse(updatePostDto.published);
-		console.log({ filePaths, published });
+		const published = updatePostDto.published === "true";
 
 		const updatedPost = await Posts.updateOne(
 			{ _id: postId },
 			{
 				content: updatePostDto.content,
 				picture: filePaths,
-				published: published.published,
+				published: published,
 			}
 		);
 
@@ -121,6 +113,7 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 		res.status(501).send({ status: 0, msg: "Something went wrong!" });
 	}
 });
+
 router.delete(
 	"/:postId",
 	authenticate,
@@ -154,7 +147,20 @@ router.post("/", authenticate, async (req: IRequest, res: Response) => {
 	}
 
 	try {
+		const postId = new ObjectId();
+		const filePaths: string[] = [];
+		if (req.files) {
+			filePaths.push(
+				...uploadPostPictures(
+					req.files["pictures"],
+					req.user._id,
+					postId.toString()
+				)
+			);
+		}
 		const post = new Posts({
+			picture: filePaths,
+			_id: postId,
 			...createPostsDto,
 			user: req.user._id,
 		});
