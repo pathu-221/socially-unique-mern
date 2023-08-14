@@ -25,12 +25,6 @@ const PostCreate: FC<PostCreateProps> = () => {
 	return (
 		<div className="flex items-center justify-between self-start p-4 rounded-2xl my-[-25px]">
 			<button
-				onClick={() => showToast("hello", "info")}
-				className="btn btn-primary"
-			>
-				Show
-			</button>
-			<button
 				className="bg-primary text-white flex items-center px-4 py-2 rounded-lg"
 				onClick={() => setshowAddPostModal(true)}
 			>
