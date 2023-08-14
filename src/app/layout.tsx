@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
+import { ToastContainer, Slide } from "@/components/ReactToast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +21,19 @@ export default function RootLayout({
 			<body className={inter.className}>
 				<Navbar />
 				{children}
+				<ToastContainer
+					position="top-right"
+					autoClose={5000}
+					hideProgressBar={false}
+					closeOnClick
+					rtl={false}
+					transition={Slide}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+					theme="dark"
+					toastStyle={{ backgroundColor: "#151A23" }}
+				/>
 			</body>
 		</html>
 	);

@@ -7,6 +7,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import { showToast } from "@/common/showToast";
 
 interface formFields {
 	email: string;
@@ -61,8 +62,8 @@ function SignUpPage() {
 		const data = await register(form);
 		setLoading(false);
 
-		if (!data.status) return; //showToast("error", data.msg);
-		//else showToast("success", data.msg);
+		if (!data.status) return showToast(data.msg, "error");
+		else showToast(data.msg, "success");
 
 		router.push("/login");
 	};

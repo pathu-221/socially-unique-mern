@@ -10,12 +10,13 @@ import type { ThreadComments } from "./Comments";
 import { AiTwotoneEdit, AiFillDelete } from "react-icons/ai";
 import CommentForm from "./CommentForm";
 import { BsReplyFill } from "react-icons/bs";
+import { showToast } from "@/common/showToast";
 interface CommentItemProps {
 	comment: ThreadComments;
 	level: number;
 	user?: User;
 	postId?: string;
-	onUpdate: () => Promise<void>;
+	onUpdate: () => Promise<any>;
 }
 
 const CommentItem: FC<CommentItemProps> = ({
@@ -71,7 +72,7 @@ const CommentItem: FC<CommentItemProps> = ({
 		if (!postId) return;
 
 		const data = await postComment(postId, requestBody);
-		if (!data.status) return alert(data.msg);
+		if (!data.status) return showToast(data.msg, "error");
 		setIsReplying(false);
 		setReply("");
 		onUpdate();
@@ -79,9 +80,9 @@ const CommentItem: FC<CommentItemProps> = ({
 
 	const deleteComment = async (commentId: string) => {
 		const data = await deleteCommentApi(commentId);
-		if (!data.status) return; //showToast("error", data.msg);
+		if (!data.status) return showToast(data.msg, "error");
 
-		//showToast("success", data.msg);
+		showToast(data.msg, "success");
 		await onUpdate();
 	};
 

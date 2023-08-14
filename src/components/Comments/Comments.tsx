@@ -7,6 +7,7 @@ import { Comment } from "@/interfaces/comment.interface";
 import { FormEvent, useState, type FC } from "react";
 import CommentItem from "./CommentItem";
 import CommentForm from "./CommentForm";
+import { showToast } from "@/common/showToast";
 //import { Router } from "next/router";
 
 interface CommentsProps {
@@ -28,7 +29,7 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 		const data = await getComments(postId);
 		setLoading(false);
 
-		if (!data.status) return; //showToast("error", data.msg);
+		if (!data.status) return showToast(data.msg, "error");
 
 		const temp = data.data.comments.map((comment: any) => {
 			return {
@@ -50,8 +51,8 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 
 		const data = await postComment(postId, requestBody);
 
-		if (!data.status) return; //showToast("error", data.msg);
-		//showToast("success", data.msg);
+		if (!data.status) return showToast(data.msg, "error");
+		showToast(data.msg, "success");
 		fetchComments();
 		setComment("");
 	};

@@ -1,16 +1,17 @@
 "use client";
 
 import { getUsersPost } from "@/apis/posts.api";
+import { showToast } from "@/common/showToast";
 import PostContent from "@/components/PostContent";
 import PostEditModal from "@/components/PostEditModal";
 import withAuth from "@/components/WithAuth";
 import useUser from "@/hooks/useUser";
 import { Post } from "@/interfaces/post.interface";
+import { useSearchParams } from "next/navigation";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
-import { RxCross1 } from "react-icons/rx";
 import Loading from "../loading";
-import { useSearchParams } from "next/navigation";
+
 
 interface AdminPageProps {}
 
@@ -29,7 +30,7 @@ const AdminPage: FC<AdminPageProps> = ({}) => {
 
 	const loadPosts = async () => {
 		const data = await getUsersPost();
-		if (!data.status) return alert(data.msg);
+		if (!data.status) return showToast(data.msg, "error");
 		setPosts(data.data);
 	};
 
