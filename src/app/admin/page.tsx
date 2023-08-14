@@ -42,19 +42,20 @@ const AdminPage: FC<AdminPageProps> = ({}) => {
 		<main className="min-h-screen bg-dark flex flex-col gap-8 p-8 justify-center items-center">
 			<title>{user?.username}</title>
 
-			{posts &&
-				posts.map((post) => (
-					<PostContent
-						editPost={() => {
-							setEditPost(post);
-							setIsOpen(true);
-						}}
-						isAdmin={true}
-						key={post._id}
-						post={post}
-					/>
-				))}
-
+			<section className="flex w-[60%]">
+				{posts &&
+					posts.map((post) => (
+						<PostContent
+							editPost={() => {
+								setEditPost(post);
+								setIsOpen(true);
+							}}
+							isAdmin={true}
+							key={post._id}
+							post={post}
+						/>
+					))}
+			</section>
 			<Modal
 				styles={{
 					modal: {
@@ -62,7 +63,6 @@ const AdminPage: FC<AdminPageProps> = ({}) => {
 						padding: 0,
 						backgroundColor: "#2F3B50",
 						borderRadius: "12px",
-						minWidth: "512px",
 					},
 				}}
 				closeOnEsc

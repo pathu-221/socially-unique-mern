@@ -66,6 +66,7 @@ const PostEditModal: FC<PostEditModalProps> = ({ post, onUpdate, close }) => {
 		}
 		formData.append("content", postFormValue.content);
 		formData.append("published", postFormValue.published ? "true" : "false");
+		
 		if (images) {
 			for (const image of images) {
 				formData.append("pictures", image);

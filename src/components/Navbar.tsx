@@ -23,7 +23,7 @@ const Navbar: FC<NavbarProps> = () => {
 				<span className="flex gap-6 items-center">
 					<li>
 						{user ? (
-							<Link href={"/admin?create=true"} className="btn btn-ghost">
+							<Link href={"/admin"} className="btn btn-ghost">
 								Your Posts
 							</Link>
 						) : (
