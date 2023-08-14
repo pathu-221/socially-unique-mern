@@ -30,16 +30,13 @@ export async function getPostbyId(id: string) {
 	}
 }
 
-export async function newPost(title: string) {
+export async function newPost(formData: any) {
 	try {
 		const data = await requestWithToken(
 			`${process.env.NEXT_PUBLIC_API_ADDRESS}/posts`,
 			{
 				method: "POST",
-				headers: {
-					"content-type": "Application/json",
-				},
-				body: JSON.stringify({ title }),
+				body: formData,
 			}
 		);
 

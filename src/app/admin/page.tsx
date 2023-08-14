@@ -3,7 +3,6 @@
 import { getUsersPost } from "@/apis/posts.api";
 import PostContent from "@/components/PostContent";
 import PostEditModal from "@/components/PostEditModal";
-import Modal from "@/components/ReactResponsiveModal";
 import withAuth from "@/components/WithAuth";
 import useUser from "@/hooks/useUser";
 import { Post } from "@/interfaces/post.interface";
@@ -18,7 +17,6 @@ interface AdminPageProps {}
 const AdminPage: FC<AdminPageProps> = ({}) => {
 	const params = useSearchParams();
 	const create = params.get("create");
-	console.log({ param: params.get("create") });
 
 	const [posts, setPosts] = useState<Post[]>();
 	const { user } = useUser();
@@ -31,7 +29,6 @@ const AdminPage: FC<AdminPageProps> = ({}) => {
 
 	const loadPosts = async () => {
 		const data = await getUsersPost();
-		console.log({ data });
 		if (!data.status) return alert(data.msg);
 		setPosts(data.data);
 	};
@@ -39,10 +36,9 @@ const AdminPage: FC<AdminPageProps> = ({}) => {
 	if (!posts) return <Loading />;
 
 	return (
-		<main className="min-h-screen bg-dark flex flex-col gap-8 p-8 justify-center items-center">
+		<main className="min-h-screen bg-dark flex flex-col items-center justify-center">
 			<title>{user?.username}</title>
-
-			<section className="flex w-[60%]">
+			<section className="flex flex-col gap-8 p-8 justify-center items-center w-[60%]">
 				{posts &&
 					posts.map((post) => (
 						<PostContent
@@ -56,27 +52,15 @@ const AdminPage: FC<AdminPageProps> = ({}) => {
 						/>
 					))}
 			</section>
-			<Modal
-				styles={{
-					modal: {
-						margin: 0,
-						padding: 0,
-						backgroundColor: "#2F3B50",
-						borderRadius: "12px",
-					},
-				}}
-				closeOnEsc
-				closeIcon={<RxCross1 className="text-white" />}
-				open={isOpen}
-				onClose={() => setIsOpen(false)}
-				center
-			>
+			{isOpen && (
 				<PostEditModal
+					isOpen={isOpen}
+					onClose={() => setIsOpen(false)}
 					close={() => setIsOpen(false)}
 					onUpdate={loadPosts}
 					post={editPost}
 				/>
-			</Modal>
+			)}
 		</main>
 	);
 };

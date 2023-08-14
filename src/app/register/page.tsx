@@ -28,7 +28,6 @@ function SignUpPage() {
 	const router = useRouter();
 
 	useEffect(() => {
-		console.log({ user });
 		if (user) {
 			router.push("/");
 		}

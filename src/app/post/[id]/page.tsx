@@ -27,7 +27,6 @@ const PostPage: FC<PostPageProps> = async ({ params }) => {
 		hour12: true,
 	}).format(unformattedDate);
 
-	console.log(postContent);
 
 	return (
 		<main className="min-h-screen bg-dark flex flex-col gap-8 p-8 justify-center items-center">
