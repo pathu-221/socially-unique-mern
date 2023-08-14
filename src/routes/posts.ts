@@ -89,7 +89,7 @@ router.put("/:postId", authenticate, async (req: IRequest, res: Response) => {
 				req.user._id,
 				postId
 			);
-			filePaths.concat(files);
+			filePaths.push(...files);
 		}
 
 		const published = updatePostDto.published === "true";
@@ -158,11 +158,13 @@ router.post("/", authenticate, async (req: IRequest, res: Response) => {
 				)
 			);
 		}
+		const published = createPostsDto.published === "true";
 		const post = new Posts({
-			picture: filePaths,
-			_id: postId,
 			...createPostsDto,
+			published,
+			_id: postId,
 			user: req.user._id,
+			picture: filePaths,
 		});
 
 		await post.save();

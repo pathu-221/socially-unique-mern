@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 export function uploadPostPictures(
 	files: UploadedFile,
 	userId: string,
-	postId: string 
+	postId: string
 ) {
 	const filePaths: string[] = [];
 	let file: UploadedFile[];
