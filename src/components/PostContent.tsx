@@ -53,7 +53,7 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin, editPost }) => {
 			</span>
 			{/** post body */}
 			<span className="text-[.9rem] py-4 gap-2 flex flex-col">
-				<p>{post.content}</p>
+				<p>{post.title}</p>
 				{post.picture && <PostImage images={post.picture} />}
 				{!isAdmin && (
 					<div className="flex justify-between items-center w-full pt-3">
