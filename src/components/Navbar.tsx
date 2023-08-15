@@ -4,12 +4,14 @@ import useUser from "@/hooks/useUser";
 import { GoHome } from "react-icons/go";
 import type { FC } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface NavbarProps {}
 
 const Navbar: FC<NavbarProps> = () => {
 	const { user, refreshUser } = useUser();
-	
+	const router = useRouter();
+
 	return (
 		<nav className="h-16 sticky top-0 left-0 w-full bg-dark-focus md:px-40 sm:px-14 z-10">
 			<ul className="flex w-full h-full items-center justify-between text-lg">
@@ -55,11 +57,12 @@ const Navbar: FC<NavbarProps> = () => {
 									<li>
 										<a>Settings</a>
 									</li>
-									<li onClick={async () => {
-										localStorage.removeItem('token');
-										await refreshUser();
-										//router.refresh();
-									}}>
+									<li
+										onClick={async () => {
+											localStorage.removeItem("token");
+											window.location.reload();
+										}}
+									>
 										<a>Logout</a>
 									</li>
 								</ul>

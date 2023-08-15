@@ -28,18 +28,14 @@ function LoginPage() {
 			const data = await login(formData);
 			setLoading(false);
 
-			if (!data.status) return showToast(data.msg, 'error');
+			if (!data.status) return showToast(data.msg, "error");
 
-			showToast(data.msg, 'success');
+			showToast(data.msg, "success");
 
 			if (data.data.access_token) {
 				localStorage.setItem("token", data.data.access_token);
-
-				await refreshUser();
 				//router.push("/");
 				window.location.reload();
-
-				router.refresh();
 			}
 		} catch (error) {
 			console.error(error);

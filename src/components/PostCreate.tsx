@@ -15,7 +15,7 @@ const PostCreate: FC<PostCreateProps> = () => {
 	const { user } = useUser();
 	const [showAddPostModal, setshowAddPostModal] = useState(false);
 
-	if (!user) return null;
+	if (!user) return <></>;
 
 	if (!user.username)
 		<span>

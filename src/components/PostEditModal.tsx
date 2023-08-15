@@ -7,6 +7,7 @@ import { useState } from "react";
 import { BsFillCameraFill } from "react-icons/bs";
 import { RxCross1 } from "react-icons/rx";
 import Modal from "@/components/ReactResponsiveModal";
+import { showToast } from "@/common/showToast";
 
 interface PostEditModalProps {
 	post?: Post;
@@ -87,12 +88,11 @@ const PostEditModal: FC<PostEditModalProps> = ({
 		const response = post
 			? await savePost(formData, post._id)
 			: await newPost(formData);
-		console.log({ response, post });
 		await onUpdate();
+		if (!response.status) return showToast(response.msg, "error");
+		showToast(response.msg, "success");
 		setSaving(false);
 		close();
-
-		if (!response.status) return;
 	};
 
 	return (

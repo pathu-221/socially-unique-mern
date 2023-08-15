@@ -12,7 +12,6 @@ import type { FC } from "react";
 import { useEffect, useState } from "react";
 import Loading from "../loading";
 
-
 interface AdminPageProps {}
 
 const AdminPage: FC<AdminPageProps> = ({}) => {
@@ -37,10 +36,10 @@ const AdminPage: FC<AdminPageProps> = ({}) => {
 	if (!posts) return <Loading />;
 
 	return (
-		<main className="min-h-screen bg-dark flex flex-col items-center justify-center">
+		<main className="min-h-screen bg-dark flex flex-col items-center justify-start">
 			<title>{user?.username}</title>
 			<section className="flex flex-col gap-8 p-8 justify-center items-center w-[60%]">
-				{posts &&
+				{posts.length ? (
 					posts.map((post) => (
 						<PostContent
 							editPost={() => {
@@ -51,7 +50,12 @@ const AdminPage: FC<AdminPageProps> = ({}) => {
 							key={post._id}
 							post={post}
 						/>
-					))}
+					))
+				) : (
+					<div className="flex w-full items-start justify-start justify-self-start self-start bg-dark-focus p-4 rounded-2xl">
+						<h1 className="text-xl">You haven't posted yet</h1>
+					</div>
+				)}
 			</section>
 			{isOpen && (
 				<PostEditModal
