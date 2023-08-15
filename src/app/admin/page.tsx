@@ -11,6 +11,7 @@ import { useSearchParams } from "next/navigation";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
 import Loading from "../loading";
+import UsernameMoal from "@/components/UsernameModal";
 
 interface AdminPageProps {}
 
@@ -22,6 +23,7 @@ const AdminPage: FC<AdminPageProps> = ({}) => {
 	const { user } = useUser();
 	const [isOpen, setIsOpen] = useState(create === "true" ? true : false);
 	const [editPost, setEditPost] = useState<Post>();
+	const [chooseUsernameModal, setChooseUsernameModal] = useState(false);
 
 	useEffect(() => {
 		loadPosts();
@@ -39,6 +41,23 @@ const AdminPage: FC<AdminPageProps> = ({}) => {
 		<main className="min-h-screen bg-dark flex flex-col items-center justify-start">
 			<title>{user?.username}</title>
 			<section className="flex flex-col gap-8 p-8 justify-center items-center w-[60%]">
+				{!user?.username && (
+					<>
+						<div className="flex w-full items-center justify-center justify-self-start self-start bg-dark-focus p-4 rounded-2xl flex-col gap-4">
+							<p className="text-2xl">You need to choose a username first!</p>
+							<button
+								onClick={() => setChooseUsernameModal(true)}
+								className="btn btn-primary btn-sm"
+							>
+								Choose
+							</button>
+							<UsernameMoal
+								isOpen={chooseUsernameModal}
+								onClose={() => setChooseUsernameModal(false)}
+							/>
+						</div>
+					</>
+				)}
 				{posts.length ? (
 					posts.map((post) => (
 						<PostContent
