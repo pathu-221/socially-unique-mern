@@ -4,19 +4,21 @@ import { checkUsernameAvailability, saveUsername } from "@/apis/user.api";
 import { showToast } from "@/common/showToast";
 import Modal from "@/components/ReactResponsiveModal";
 import useUser from "@/hooks/useUser";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { FC } from "react";
 
-interface UsernameMoalProps {
+interface UsernameModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 }
 
-const UsernameMoal: FC<UsernameMoalProps> = ({ isOpen, onClose }) => {
+const UsernameModal: FC<UsernameModalProps> = ({ isOpen, onClose }) => {
 	const { user } = useUser();
 	const [username, setUsername] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [res, setRes] = useState<any>(null);
+	const router = useRouter();
 
 	const submitUsername = async () => {
 		if (res.status === 1) {
@@ -25,6 +27,7 @@ const UsernameMoal: FC<UsernameMoalProps> = ({ isOpen, onClose }) => {
 
 			if (data.status) {
 				showToast(data.msg, "success");
+				window.location.reload();
 				onClose();
 			} else showToast(data.msg, "error");
 
@@ -52,8 +55,6 @@ const UsernameMoal: FC<UsernameMoalProps> = ({ isOpen, onClose }) => {
 		return () => clearTimeout(checkusername);
 	}, [username]);
 
-	if (!user) return showToast("how did you do that?", "error");
-
 	return (
 		<Modal
 			styles={{
@@ -72,12 +73,12 @@ const UsernameMoal: FC<UsernameMoalProps> = ({ isOpen, onClose }) => {
 			center
 		>
 			<span className="flex gap-3 p-4">
-				<img src={user.photoUrl} className="rounded-full h-12 aspect-square" />
+				<img src={user?.photoUrl} className="rounded-full h-12 aspect-square" />
 				<span className="flex-grow flex-col">
 					<span className="flex items-start gap-3">
 						<input
 							placeholder="Choose a username"
-							className="w-full cursor-pointer mb-3 hover:bg-gray-700 input input-bordered"
+							className="w-full cursor-pointer  hover:bg-gray-700 input input-bordered"
 							onChange={(e) => setUsername(e.target.value)}
 						/>
 						<button
@@ -89,10 +90,10 @@ const UsernameMoal: FC<UsernameMoalProps> = ({ isOpen, onClose }) => {
 						</button>
 					</span>
 
-					{loading && <p className="text-sm text-blue-400">Checking...</p>}
+					{loading && <p className="text-sm text-blue-400 mt-3">Checking...</p>}
 					{!loading && res && (
 						<p
-							className={`text-sm ${
+							className={`text-sm mt-3 ${
 								!res.status ? "text-red-500" : "text-blue-500"
 							}`}
 						>
@@ -105,4 +106,4 @@ const UsernameMoal: FC<UsernameMoalProps> = ({ isOpen, onClose }) => {
 	);
 };
 
-export default UsernameMoal;
+export default UsernameModal;

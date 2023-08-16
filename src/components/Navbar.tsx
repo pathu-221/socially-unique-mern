@@ -60,6 +60,7 @@ const Navbar: FC<NavbarProps> = () => {
 									<li
 										onClick={async () => {
 											localStorage.removeItem("token");
+											router.push("/");
 											window.location.reload();
 										}}
 									>

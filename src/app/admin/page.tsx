@@ -58,23 +58,24 @@ const AdminPage: FC<AdminPageProps> = ({}) => {
 						</div>
 					</>
 				)}
-				{posts.length ? (
-					posts.map((post) => (
-						<PostContent
-							editPost={() => {
-								setEditPost(post);
-								setIsOpen(true);
-							}}
-							isAdmin={true}
-							key={post._id}
-							post={post}
-						/>
-					))
-				) : (
-					<div className="flex w-full items-start justify-start justify-self-start self-start bg-dark-focus p-4 rounded-2xl">
-						<h1 className="text-xl">You haven't posted yet</h1>
-					</div>
-				)}
+				{user?.username &&
+					(posts.length ? (
+						posts.map((post) => (
+							<PostContent
+								editPost={() => {
+									setEditPost(post);
+									setIsOpen(true);
+								}}
+								isAdmin={true}
+								key={post._id}
+								post={post}
+							/>
+						))
+					) : (
+						<div className="flex w-full items-start justify-start justify-self-start self-start bg-dark-focus p-4 rounded-2xl">
+							<h1 className="text-xl">You haven't posted yet</h1>
+						</div>
+					))}
 			</section>
 			{isOpen && (
 				<PostEditModal
