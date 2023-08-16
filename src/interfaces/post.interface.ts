@@ -9,8 +9,8 @@ export interface Post {
 	updatedAt: string;
 	content: string;
 	picture?: string[];
-	likes: number;
-	comments: number;
+	likes?: number;
+	comments?: number;
 }
 
 export interface User {

@@ -4,7 +4,7 @@ import { getComments, postComment } from "@/apis/comment.api";
 // import { showToast } from "@/common/toast";
 import useUser from "@/hooks/useUser";
 import { Comment } from "@/interfaces/comment.interface";
-import { FormEvent, useState, type FC } from "react";
+import { FormEvent, useState, useEffect, type FC } from "react";
 import CommentItem from "./CommentItem";
 import CommentForm from "./CommentForm";
 import { showToast } from "@/common/showToast";
@@ -22,7 +22,13 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 	const { user } = useUser();
 	const [comments, setComments] = useState<ThreadComments[] | null>(null);
 	const [loading, setLoading] = useState(false);
+	const [showComments, setShowComments] = useState(false);
+	const [commentSize, setcommentSize] = useState(0);
 	const [comment, setComment] = useState("");
+
+	useEffect(() => {
+		fetchComments();
+	}, []);
 
 	const fetchComments = async () => {
 		setLoading(true);
@@ -37,6 +43,7 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 				replies: [],
 			};
 		});
+		setcommentSize(temp.length);
 		setComments(formatThreadComments(temp));
 	};
 
@@ -83,7 +90,12 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 
 	return (
 		<section className="flex flex-col gap-2 items-start jutify-start">
-			{comments ? (
+			<div className="flex w-full border-b border-gray-500 items-center py-2 justify-start">
+				{comments && (
+					<p className="text-white text-xl">{`${commentSize} Comments`}</p>
+				)}
+			</div>
+			{showComments ? (
 				<>
 					<CommentForm
 						onChange={(e) => {
@@ -92,20 +104,21 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 						value={comment}
 						onSubmit={onSubmit}
 					/>
-					{comments.map((comment) => (
-						<CommentItem
-							onUpdate={fetchComments}
-							user={user}
-							key={comment._id}
-							level={0}
-							postId={postId}
-							comment={comment}
-						/>
-					))}
+					{comments &&
+						comments.map((comment) => (
+							<CommentItem
+								onUpdate={fetchComments}
+								user={user}
+								key={comment._id}
+								level={0}
+								postId={postId}
+								comment={comment}
+							/>
+						))}
 				</>
 			) : (
 				<button
-					onClick={() => fetchComments()}
+					onClick={() => setShowComments(true)}
 					className="btn btn-primary btn-link self-center"
 				>
 					{loading ? "Loading" : "Load comments"}
