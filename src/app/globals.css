@@ -6,7 +6,7 @@
 @tailwind utilities;
 
 .main-page {
-    @apply min-h-screen bg-dark flex flex-col items-center justify-center
+    @apply min-h-screen bg-dark flex flex-col items-center justify-start
 }
 
 .main-page-content {

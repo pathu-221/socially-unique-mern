@@ -99,11 +99,9 @@ const PostEditModal: FC<PostEditModalProps> = ({
 		<Modal
 			styles={{
 				modal: {
-					margin: 0,
 					padding: 0,
 					backgroundColor: "#2F3B50",
 					borderRadius: "12px",
-					minWidth: "512px",
 				},
 			}}
 			closeOnEsc
@@ -112,7 +110,7 @@ const PostEditModal: FC<PostEditModalProps> = ({
 			onClose={onClose}
 			center
 		>
-			<form onSubmit={onSubmit} className="rounded-xl p-5 max-w-full">
+			<form onSubmit={onSubmit} className="rounded-xl p-5 max-w-full min-w-screen md:min-w-[512px]">
 				<p className="font-bold text-lg mb-3">
 					{post ? "Edit post" : "Create a post"}
 				</p>

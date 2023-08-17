@@ -59,11 +59,9 @@ const UsernameModal: FC<UsernameModalProps> = ({ isOpen, onClose }) => {
 		<Modal
 			styles={{
 				modal: {
-					margin: 0,
 					padding: 0,
 					backgroundColor: "#2F3B50",
 					borderRadius: "12px",
-					minWidth: "512px",
 				},
 			}}
 			closeOnEsc
@@ -72,7 +70,7 @@ const UsernameModal: FC<UsernameModalProps> = ({ isOpen, onClose }) => {
 			onClose={onClose}
 			center
 		>
-			<span className="flex gap-3 p-4">
+			<span className="flex gap-3 p-4 max-w-full min-w-screen md:min-w-[512px]">
 				<img src={user?.photoUrl} className="rounded-full h-12 aspect-square" />
 				<span className="flex-grow flex-col">
 					<span className="flex items-start gap-3">

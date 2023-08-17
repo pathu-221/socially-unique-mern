@@ -27,7 +27,6 @@ const LikePost: FC<LikePostProps> = ({ postId }) => {
 		if (!response.status) return showToast(response.msg, "error");
 
 		await Promise.all([fetchLikes(postId), fetchIsLiked(postId)]);
-
 	};
 
 	const fetchLikes = async (id: string) => {
