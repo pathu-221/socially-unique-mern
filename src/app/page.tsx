@@ -17,24 +17,8 @@ export default async function Home() {
 	const posts: Post[] = data.data;
 
 	return (
-		<main className="min-h-screen bg-dark flex flex-col items-center justify-start">
-			<title>Welcome</title>
-			<meta
-				name="description"
-				content="Welcome to Our Social Network - Connect with Friends, Share Photos, and More!"
-			/>
-			<meta
-				name="keywords"
-				content="social network, friends, connect, photos, community"
-			/>
-			<meta name="author" content="Pratham Aggarwal" />
-			<meta property="og:title" content="Socially unique" />
-			<meta
-				property="og:description"
-				content="Connect with friends, share photos, and stay updated on what matters to you. Join our community now!"
-			/>
-
-			<section className="flex flex-col gap-8 p-8 justify-center items-center w-[60%]">
+		<main className="main-page">
+			<section className="main-page-content">
 				<PostCreate />
 				{posts ? (
 					posts.map((post) => <PostContent post={post} />)
@@ -51,6 +35,7 @@ export default async function Home() {
 export const fetchCache = "only-no-store";
 
 export const metadata: Metadata = {
+	title: "Welcome",
 	twitter: {
 		title: "Socially Unique",
 		description:

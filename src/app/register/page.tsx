@@ -68,10 +68,10 @@ function SignUpPage() {
 		router.push("/login");
 	};
 	return (
-		<main className="min-h-screen bg-dark flex flex-col gap-8 p-8 justify-center items-center">
+		<main className="main-page gap-8 p-8">
 			{" "}
 			<title>Register</title>
-			<section className="w-[60%] p-4 card shadow-xl bg-dark-focus rounded-2xl flex flex-col gap-2 ">
+			<section className="login-register">
 				<h1 className="mb-5 text-3xl">Create Account</h1>
 				<form ref={formRef} onSubmit={onSubmit} className="flex flex-col gap-2">
 					<div className="flex flex-col gap-2">

@@ -4,3 +4,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.main-page {
+    @apply min-h-screen bg-dark flex flex-col items-center justify-start
+}
+
+.main-page-content {
+    @apply flex flex-col gap-8 p-8 justify-center items-center w-[60%]
+}
+
+.login-register {
+    @apply w-[60%] p-4 card shadow-xl bg-dark-focus rounded-2xl flex flex-col gap-2
+}

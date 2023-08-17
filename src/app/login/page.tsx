@@ -49,9 +49,9 @@ function LoginPage() {
 	}, [user]);
 
 	return (
-		<main className="min-h-screen bg-dark flex flex-col gap-8 p-8 justify-center items-center">
+		<main className="main-page gap-8 p-8">
 			<title>Login</title>
-			<section className="w-[60%] p-4 card shadow-xl bg-dark-focus rounded-2xl flex flex-col gap-2 ">
+			<section className="login-register">
 				<h1 className="mb-5 text-3xl">Login</h1>
 				<form onSubmit={onSubmit} className="flex flex-col gap-3">
 					<div className="flex flex-col gap-2">

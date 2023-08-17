@@ -38,7 +38,7 @@ const AdminPage: FC<AdminPageProps> = ({}) => {
 	if (!posts) return <Loading />;
 
 	return (
-		<main className="min-h-screen bg-dark flex flex-col items-center justify-start">
+		<main className="main-page">
 			<title>{user?.username}</title>
 			<section className="flex flex-col gap-8 p-8 justify-center items-center w-[60%]">
 				{!user?.username && (

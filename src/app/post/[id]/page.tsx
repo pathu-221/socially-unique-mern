@@ -27,7 +27,7 @@ const PostPage: FC<PostPageProps> = async ({ params }) => {
 	}).format(unformattedDate);
 
 	return (
-		<main className="min-h-screen bg-dark flex flex-col gap-8 p-6 justify-center items-center">	
+		<main className="main-page justify-center gap-8 p-6 items-center">
 			<section className="w-[60%] p-4 card shadow-xl bg-dark-focus min-h-[500px] rounded-2xl flex flex-col gap-2 ">
 				{/** user profile */}
 				<span className="flex gap-2.5 justify-between items-center max-w-full mb-3">
