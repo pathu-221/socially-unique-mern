@@ -40,7 +40,7 @@ const AdminPage: FC<AdminPageProps> = ({}) => {
 	return (
 		<main className="main-page">
 			<title>{user?.username}</title>
-			<section className="flex flex-col gap-8 p-8 justify-center items-center w-[60%]">
+			<section className="main-page-content">
 				{!user?.username && (
 					<>
 						<div className="flex w-full items-center justify-center justify-self-start self-start bg-dark-focus p-4 rounded-2xl flex-col gap-4">

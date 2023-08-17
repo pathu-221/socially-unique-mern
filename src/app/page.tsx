@@ -3,6 +3,7 @@ import PostContent from "@/components/PostContent";
 import PostCreate from "@/components/PostCreate";
 import { Post } from "@/interfaces/post.interface";
 import { Metadata } from "next";
+import Loading from "./loading";
 
 export default async function Home() {
 	const data = await getPosts();

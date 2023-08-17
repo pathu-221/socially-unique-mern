@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { showToast } from "@/common/showToast";
+import Loading from "./loading";
 
 interface formFields {
 	email: string;

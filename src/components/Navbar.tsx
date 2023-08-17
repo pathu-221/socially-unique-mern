@@ -29,7 +29,7 @@ const Navbar: FC<NavbarProps> = () => {
 								Your Posts
 							</Link>
 						) : (
-							<Link href={"/login"} className="link link-hover">
+							<Link href={"/login"} className="btn btn-ghost">
 								Login
 							</Link>
 						)}

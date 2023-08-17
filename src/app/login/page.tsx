@@ -6,9 +6,10 @@ import useUser from "@/hooks/useUser";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import type { Metadata } from 'next';
 
 function LoginPage() {
-	const { user, refreshUser } = useUser();
+	const { user } = useUser();
 	const router = useRouter();
 	const [formData, setFormData] = useState({ email: "", password: "" });
 	const [loading, setLoading] = useState(false);
@@ -49,10 +50,9 @@ function LoginPage() {
 	}, [user]);
 
 	return (
-		<main className="main-page gap-8 p-8">
-			<title>Login</title>
+		<main className="main-page gap-8 p-2 justify-center items-center md:p-8">
 			<section className="login-register">
-				<h1 className="mb-5 text-3xl">Login</h1>
+				<h1 className="mb-3 text-3xl">Login</h1>
 				<form onSubmit={onSubmit} className="flex flex-col gap-3">
 					<div className="flex flex-col gap-2">
 						<label className="label">
@@ -97,3 +97,5 @@ function LoginPage() {
 }
 
 export default LoginPage;
+
+export const metadata: Metadata = { title: "Login"}
