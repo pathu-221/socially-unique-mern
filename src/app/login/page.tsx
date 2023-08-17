@@ -6,7 +6,7 @@ import useUser from "@/hooks/useUser";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import type { Metadata } from 'next';
+import type { Metadata } from "next";
 
 function LoginPage() {
 	const { user } = useUser();
@@ -50,46 +50,52 @@ function LoginPage() {
 	}, [user]);
 
 	return (
-		<main className="main-page gap-8 p-2 justify-center items-center md:p-8">
-			<section className="login-register">
-				<h1 className="mb-3 text-3xl">Login</h1>
-				<form onSubmit={onSubmit} className="flex flex-col gap-3">
-					<div className="flex flex-col gap-2">
+		<main className="relative p-3 flex flex-col items-center justify-center h-screen overflow-hidden">
+			<section className="w-full m-3 md:m-2 p-6 bg-dark-focus text-white border-t-4 border-primary rounded-2xl shadow-md border-top lg:max-w-lg">
+				<h1 className="text-3xl font-semibold text-center text-gray-300">
+					Login
+				</h1>
+				<form className="space-y-4" onSubmit={onSubmit}>
+					<div>
 						<label className="label">
-							<span className="label-text text-xl">Email: </span>
+							<span className="text-base label-text">Email</span>
 						</label>
 						<input
-							required
 							type="email"
+							required
 							name="email"
 							onChange={onChange}
-							placeholder="JohnDoe@gmail.com"
-							className="input input-bordered w-full"
+							placeholder="Email Address"
+							className="w-full input input-bordered"
 						/>
 					</div>
-					<div className="flex flex-col gap-2">
+					<div>
 						<label className="label">
-							<span className="label-text text-xl">Password: </span>
+							<span className="text-base label-text">Password</span>
 						</label>
 						<input
-							required
 							type="password"
-							name="password"
 							onChange={onChange}
-							placeholder="Your Password"
-							className="input input-bordered w-full"
+							name="password"
+							placeholder="Enter Password"
+							className="w-full input input-bordered"
 						/>
 					</div>
-					<span className="text-md ">
-						Don't have an Account?
-						<Link className="underline hover:no-underline" href="/register">
+					<span className="text-xs text-gray-400">
+						Dont have an account?{" "}
+						<Link
+							href={"/register"}
+							className="600 hover:underline hover:text-blue-600"
+						>
 							{" "}
 							Create Account
 						</Link>
 					</span>
-					<button disabled={loading} type="submit" className="btn btn-primary">
-						{loading ? "Loading..." : "Login"}
-					</button>
+					<div>
+						<button className="btn btn-block btn-primary">
+							{loading ? "Please wait..." : "Login"}
+						</button>
+					</div>
 				</form>
 			</section>
 		</main>
@@ -98,4 +104,4 @@ function LoginPage() {
 
 export default LoginPage;
 
-export const metadata: Metadata = { title: "Login"}
+export const metadata: Metadata = { title: "Login" };
