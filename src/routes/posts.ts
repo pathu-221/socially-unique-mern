@@ -270,37 +270,6 @@ router.get("/:postId", async (req: Request, res: Response) => {
 			"user",
 			"photoUrl username"
 		);
-		// const posts = await Posts.aggregate([
-		// 	{ $match: { _id: new ObjectId(postId) } },
-		// 	{
-		// 		$lookup: {
-		// 			from: "users",
-		// 			localField: "user",
-		// 			foreignField: "_id",
-		// 			as: "user",
-		// 		},
-		// 	},
-		// 	{ $unwind: "$user" },
-		// 	{ $match: { published: true } },
-		// 	{ $sort: { createdAt: -1 } },
-		// 	{
-		// 		$project: {
-		// 			_id: 1,
-		// 			title: 1,
-		// 			content: 1,
-		// 			published: 1,
-		// 			picture: 1,
-		// 			user: {
-		// 				_id: "$user._id",
-		// 				username: "$user.username",
-		// 				photoUrl: "$user.photoUrl",
-		// 			},
-		// 			createdAt: 1,
-		// 			updatedAt: 1,
-		// 		},
-		// 	},
-		// ]);
-
 		res.status(200).send({
 			status: 1,
 			msg: "Post Fetched Successfully!",
