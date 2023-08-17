@@ -21,19 +21,19 @@ const LikePost: FC<LikePostProps> = ({ postId }) => {
 	}, []);
 
 	const likeThisPost = async () => {
-        if (!user) return;
-        
+		if (!user) return;
+
 		const response = await likePost(postId);
 		if (!response.status) return showToast(response.msg, "error");
 
-		fetchLikes(postId);
-		fetchIsLiked(postId);
+		await Promise.all([fetchLikes(postId), fetchIsLiked(postId)]);
+
 	};
 
 	const fetchLikes = async (id: string) => {
 		const response = await getTotalLikes(id);
-		console.log({ response });
-		if (!response.status) return showToast(response?.msg, "error");
+
+		if (!response.status) return showToast(response.msg, "error");
 
 		setPostLikes(response.data);
 	};
@@ -46,7 +46,7 @@ const LikePost: FC<LikePostProps> = ({ postId }) => {
 	};
 
 	return (
-		<span className="mr-5 cursor-pointer flex flex-col gap-0 pt-4 items-center justify-center">
+		<span className="mr-5 cursor-pointer flex flex-col gap-0 items-center justify-center">
 			<button onClick={() => likeThisPost()} className="btn btn-ghost btn-sm">
 				{alreadyLiked ? (
 					<AiFillHeart className="text-secondary" size={25} />

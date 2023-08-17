@@ -1,8 +1,10 @@
 import { getPostbyId } from "@/apis/posts.api";
 import Comments from "@/components/Comments/Comments";
 import LikePost from "@/components/LikePost";
+import PostImage from "@/components/PostImage";
 import { Post } from "@/interfaces/post.interface";
 import type { FC } from "react";
+import type { Metadata } from "next";
 
 interface PostPageProps {
 	params: { id: string };
@@ -25,9 +27,8 @@ const PostPage: FC<PostPageProps> = async ({ params }) => {
 	}).format(unformattedDate);
 
 	return (
-		<main className="min-h-screen bg-dark flex flex-col gap-8 p-8 justify-center items-center">
-			<title>{postContent.title}</title>
-			<section className="w-[60%] p-5 card shadow-xl bg-dark-focus min-h-[500px] rounded-2xl flex flex-col gap-2 ">
+		<main className="min-h-screen bg-dark flex flex-col gap-8 p-6 justify-center items-center">	
+			<section className="w-[60%] p-4 card shadow-xl bg-dark-focus min-h-[500px] rounded-2xl flex flex-col gap-2 ">
 				{/** user profile */}
 				<span className="flex gap-2.5 justify-between items-center max-w-full mb-3">
 					<span className="flex gap-2.5 max-w-full">
@@ -46,18 +47,10 @@ const PostPage: FC<PostPageProps> = async ({ params }) => {
 
 					<LikePost postId={postContent._id} />
 				</span>
-				<h1 className="text-3xl capitalize mb-4 font-monsterrat">
+				<h1 className="text-2xl capitalize mb-2 font-monsterrat">
 					{postContent.title}
 				</h1>
-				{postContent.picture && (
-					<figure className="mb-3">
-						<img
-							src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${postContent.picture}`}
-							alt={postContent.title}
-							className="w-full h-auto rounded-2xl"
-						/>
-					</figure>
-				)}
+				{postContent.picture && <PostImage images={postContent.picture} />}
 
 				{/** post content */}
 				{postContent.content && <p className="my-2">{postContent.content}</p>}
@@ -70,3 +63,27 @@ const PostPage: FC<PostPageProps> = async ({ params }) => {
 export default PostPage;
 
 export const fetchCache = "only-no-store";
+
+export async function generateMetadata({
+	params,
+}: {
+	params: { id: string };
+}): Promise<Metadata> {
+	const data = await getPostbyId(params.id);
+	const postData = data.data as Post;
+
+	return {
+		// return your metadata here
+		title: postData.title,
+		twitter: {
+			title: postData.title,
+			description: postData.content || "",
+			images: postData?.picture ? postData.picture[0] : "",
+		},
+		openGraph: {
+			title: postData.title,
+			description: postData.content || "",
+			images: postData?.picture ? postData.picture[0] : "",
+		},
+	};
+}

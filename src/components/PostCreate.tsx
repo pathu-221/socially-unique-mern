@@ -21,7 +21,7 @@ const PostCreate: FC<PostCreateProps> = () => {
 	//useEffect(() => {}, [user]);
 	return (
 		<div className="flex items-center justify-between self-start p-4 rounded-2xl my-[-25px] justify-self-start gap-3 bg-dark-focus w-full">
-			<img src={user?.photoUrl} className="rounded-full h-12 aspect-square" />
+			<img src={user?.photoUrl} className="rounded-full h-12 aspect-square" alt="user profile"/>
 			<span className="flex-grow">
 				<input
 					placeholder="What's on your mind?"

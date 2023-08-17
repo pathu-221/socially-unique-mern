@@ -43,6 +43,7 @@ const Navbar: FC<NavbarProps> = () => {
 											user?.photoUrl ||
 											"https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60"
 										}
+										alt="user profile"
 									/>
 								</div>
 							</label>
@@ -52,10 +53,10 @@ const Navbar: FC<NavbarProps> = () => {
 									className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
 								>
 									<li>
-										<a className="justify-between">Profile</a>
+										<p className="justify-between">Profile</p>
 									</li>
 									<li>
-										<a>Settings</a>
+										<p>Settings</p>
 									</li>
 									<li
 										onClick={async () => {
@@ -64,7 +65,7 @@ const Navbar: FC<NavbarProps> = () => {
 											window.location.reload();
 										}}
 									>
-										<a>Logout</a>
+										<p>Logout</p>
 									</li>
 								</ul>
 							)}
