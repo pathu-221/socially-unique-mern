@@ -6,7 +6,7 @@ import useUser from "@/hooks/useUser";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import type { Metadata } from "next";
+import Head from "next/head";
 
 function LoginPage() {
 	const { user } = useUser();
@@ -51,6 +51,9 @@ function LoginPage() {
 
 	return (
 		<main className="relative p-3 flex flex-col items-center justify-center h-screen overflow-hidden">
+			<Head>
+				<title>Login</title>
+			</Head>
 			<section className="w-full m-3 md:m-2 p-6 bg-dark-focus text-white border-t-4 border-primary rounded-2xl shadow-md border-top lg:max-w-lg">
 				<h1 className="text-3xl font-semibold text-center text-gray-300">
 					Login
@@ -103,5 +106,3 @@ function LoginPage() {
 }
 
 export default LoginPage;
-
-export const metadata: Metadata = { title: "Login" };

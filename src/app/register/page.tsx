@@ -1,14 +1,13 @@
 "use client";
 
-import useUser from "@/hooks/useUser";
 import { register } from "@/apis/auth.api";
+import useUser from "@/hooks/useUser";
 // import { showToast } from "@/common/toast";
+import { showToast } from "@/common/showToast";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
-import { showToast } from "@/common/showToast";
-import Loading from "./loading";
 
 interface formFields {
 	email: string;
@@ -70,6 +69,9 @@ function SignUpPage() {
 	};
 	return (
 		<main className="relative p-3 flex flex-col items-center justify-center h-screen overflow-hidden">
+			<Head>
+				<title>Register</title>
+			</Head>
 			<section className="w-full m-3 md:m-2 p-6 bg-dark-focus text-white border-t-4 border-primary rounded-2xl shadow-md border-top lg:max-w-lg">
 				<h1 className="text-3xl font-semibold text-center text-gray-300">
 					Login
