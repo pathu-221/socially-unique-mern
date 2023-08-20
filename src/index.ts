@@ -14,7 +14,6 @@ import comments from "./routes/comments";
 
 import fileUpload from "express-fileupload";
 import { connect } from "./db/conn";
-import { v2 } from "cloudinary";
 
 export const app = express();
 
@@ -28,12 +27,6 @@ app.use(
 		allowedHeaders: "*",
 	})
 );
-
-v2.config({
-	cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-	api_key: process.env.CLOUDINARY_API_KEY,
-	api_secret: process.env.CLOUDINARY_SECRET_KEY,
-});
 
 app.use(express.json());
 app.use(
