@@ -53,7 +53,12 @@ const Navbar: FC<NavbarProps> = () => {
 									className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
 								>
 									<li>
-										<p className="justify-between">Profile</p>
+										<Link
+											href={`/user/${user._id}`}
+											className="justify-between"
+										>
+											Profile
+										</Link>
 									</li>
 									<li>
 										<p>Settings</p>

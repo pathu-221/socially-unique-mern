@@ -29,11 +29,13 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin, editPost }) => {
 			{/** card header */}
 			<span className="flex gap-2.5 justify-between items-center max-w-full">
 				<span className="flex gap-2.5 max-w-full">
-					<img
-						className="h-10 w-10 rounded-full"
-						src={post.user.photoUrl}
-						alt={post.title}
-					/>
+					<Link href={`/user/${post.user._id}`}>
+						<img
+							className="h-10 w-10 rounded-full"
+							src={post.user.photoUrl}
+							alt={post.title}
+						/>
+					</Link>
 					<span className="flex flex-col">
 						<p className="font-semibold text-[15px]">{post.user.username}</p>
 						<p className="text-[12px]">{uploadDate}</p>

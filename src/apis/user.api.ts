@@ -36,21 +36,15 @@ export async function saveUsername(username: string) {
 	return data;
 }
 
-export async function getUsersPublicPost(userId: string, currentUserId?: string) {
+export async function getUsersPublicPost(userId: string) {
 	try {
-		 
-		const url = currentUserId
-			? `${process.env.NEXT_PUBLIC_API_ADDRESS}/posts/user/${userId}/?currentUserId=${currentUserId}`
-			: `${process.env.NEXT_PUBLIC_API_ADDRESS}/posts/user/${userId}`;
-		const res = await fetch(
-			url,
-			{
-				method: "GET",
-				headers: {
-					"content-type": "application/json",
-				},
-			}
-		);
+		const url = `${process.env.NEXT_PUBLIC_API_ADDRESS}/posts/user/${userId}`;
+		const res = await fetch(url, {
+			method: "GET",
+			headers: {
+				"content-type": "application/json",
+			},
+		});
 		const data = await res.json();
 		return data;
 	} catch (error) {
