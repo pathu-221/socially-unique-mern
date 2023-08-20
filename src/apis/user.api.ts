@@ -36,6 +36,18 @@ export async function saveUsername(username: string) {
 	return data;
 }
 
+export async function editProfileImage(formData: any) {
+	const data = await requestWithToken(
+		`${process.env.NEXT_PUBLIC_API_ADDRESS}/user`,
+		{
+			method: "POST",
+			body: formData,
+		}
+	);
+
+	return data;
+}
+
 export async function getUsersPublicPost(userId: string) {
 	try {
 		const url = `${process.env.NEXT_PUBLIC_API_ADDRESS}/posts/user/${userId}`;

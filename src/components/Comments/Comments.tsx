@@ -50,7 +50,10 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 	const onSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 
-		if (!user) return; //showToast("error", "You need to sign in to post comments!");
+		if (!user) return showToast("Sign in to post comments!", "error");
+
+		if (!user.username)
+			return showToast("You need to choose a username first!", "error");
 
 		const requestBody: any = {
 			text: comment,

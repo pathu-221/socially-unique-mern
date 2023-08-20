@@ -52,17 +52,17 @@ const Navbar: FC<NavbarProps> = () => {
 									tabIndex={0}
 									className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
 								>
-									<li>
-										<Link
-											href={`/user/${user._id}`}
-											className="justify-between"
-										>
-											Profile
-										</Link>
-									</li>
-									<li>
-										<p>Settings</p>
-									</li>
+									{user.username && (
+										<li>
+											<Link
+												href={`/user/${user._id}`}
+												className="justify-between"
+											>
+												Profile
+											</Link>
+										</li>
+									)}
+
 									<li
 										onClick={async () => {
 											localStorage.removeItem("token");

@@ -1,5 +1,6 @@
 import { getUsersPublicPost } from "@/apis/user.api";
 import PostContent from "@/components/PostContent";
+import UpdateProfileImage from "@/components/UpdateUserProfile";
 import { Post } from "@/interfaces/post.interface";
 import type { FC } from "react";
 
@@ -7,7 +8,7 @@ interface UserProfilePageProps {
 	params: { userId: string };
 }
 
-interface ProfilePageUser {
+export interface ProfilePageUser {
 	_id: string;
 	photoUrl: string;
 	username: string;
@@ -35,11 +36,9 @@ const UserProfilePage: FC<UserProfilePageProps> = async ({ params }) => {
 	return (
 		<main className="main-page">
 			<section className="mt-3 items-center justify-center flex flex-col gap-2 rounded-2xl ">
-				<img
-					className="h-16 w-16 rounded-full"
-					src={user.photoUrl}
-					alt="user"
-				/>
+				<figure>
+					<UpdateProfileImage profileUser={user} />
+				</figure>
 				<h4 className="text-xl">@{user.username}</h4>
 			</section>
 			<section className="main-page-content">
