@@ -6,6 +6,7 @@ import { BsChat, BsViewList } from "react-icons/bs";
 import Link from "next/link";
 import LightGallery from "./LightGallery";
 import PostImage from "./PostImage";
+import { getProfileImageUrl } from "@/common/getImageUrl";
 
 interface PostContentProps {
 	post: Post;
@@ -32,7 +33,7 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin, editPost }) => {
 					<Link href={`/user/${post.user._id}`}>
 						<img
 							className="h-10 w-10 rounded-full"
-							src={post.user.photoUrl}
+							src={getProfileImageUrl(post.user.photoUrl)}
 							alt={post.title}
 						/>
 					</Link>

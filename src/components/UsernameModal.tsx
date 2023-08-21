@@ -1,6 +1,7 @@
 "use client";
 
 import { checkUsernameAvailability, saveUsername } from "@/apis/user.api";
+import { getProfileImageUrl } from "@/common/getImageUrl";
 import { showToast } from "@/common/showToast";
 import Modal from "@/components/ReactResponsiveModal";
 import useUser from "@/hooks/useUser";
@@ -71,7 +72,10 @@ const UsernameModal: FC<UsernameModalProps> = ({ isOpen, onClose }) => {
 			center
 		>
 			<span className="flex gap-3 p-4 max-w-full min-w-screen md:min-w-[512px]">
-				<img src={user?.photoUrl} className="rounded-full h-12 aspect-square" />
+				<img
+					src={getProfileImageUrl(user?.photoUrl || "")}
+					className="rounded-full h-12 aspect-square"
+				/>
 				<span className="flex-grow flex-col">
 					<span className="flex items-start gap-3">
 						<input

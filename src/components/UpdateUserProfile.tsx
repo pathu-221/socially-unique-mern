@@ -1,6 +1,7 @@
 "use client";
 import { editProfileImage } from "@/apis/user.api";
 import { ProfilePageUser } from "@/app/user/[userId]/page";
+import { getProfileImageUrl } from "@/common/getImageUrl";
 import { showToast } from "@/common/showToast";
 import useUser from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
@@ -12,7 +13,7 @@ interface UpdateProfileImageProps {
 }
 
 const UpdateProfileImage: FC<UpdateProfileImageProps> = ({ profileUser }) => {
-	const { user } = useUser();
+	const { user, refreshUser } = useUser();
 	const router = useRouter();
 
 	const onProfileChange = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -24,6 +25,8 @@ const UpdateProfileImage: FC<UpdateProfileImageProps> = ({ profileUser }) => {
 			formData.append("photo", profile);
 			const response = await editProfileImage(formData);
 			if (!response.status) return showToast(response.msg, "error");
+
+			await refreshUser();
 			router.refresh();
 		}
 	};
@@ -31,7 +34,7 @@ const UpdateProfileImage: FC<UpdateProfileImageProps> = ({ profileUser }) => {
 		<div className="indicator relative">
 			<img
 				className="h-16 w-16 rounded-full"
-				src={profileUser.photoUrl}
+				src={getProfileImageUrl(profileUser.photoUrl)}
 				alt="user"
 			/>
 			{user && user._id === profileUser._id && (
@@ -41,7 +44,7 @@ const UpdateProfileImage: FC<UpdateProfileImageProps> = ({ profileUser }) => {
 						onChange={onProfileChange}
 						hidden
 						type="file"
-						accept="images/*"
+						accept="image/*"
 					/>
 				</label>
 			)}

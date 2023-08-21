@@ -50,3 +50,4 @@ const UserProfilePage: FC<UserProfilePageProps> = async ({ params }) => {
 };
 
 export default UserProfilePage;
+export const fetchCache = "only-no-store";

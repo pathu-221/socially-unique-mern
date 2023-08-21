@@ -8,6 +8,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import PostEditModal from "./PostEditModal";
 import { showToast } from "@/common/showToast";
 import UsernameModal from "./UsernameModal";
+import { getProfileImageUrl } from "@/common/getImageUrl";
 
 interface PostCreateProps {}
 
@@ -16,12 +17,16 @@ const PostCreate: FC<PostCreateProps> = () => {
 	const { user } = useUser();
 	const [showAddPostModal, setshowAddPostModal] = useState(false);
 
-	if (!user) return <></>;
+	if (!user) return null;
 	//if (!user.username)
 	//useEffect(() => {}, [user]);
 	return (
 		<div className="flex items-center justify-between self-start p-4 rounded-2xl md:my-[-25px] justify-self-start gap-3 bg-dark-focus w-full">
-			<img src={user?.photoUrl} className="rounded-full h-12 aspect-square" alt="user profile"/>
+			<img
+				src={getProfileImageUrl(user.photoUrl)}
+				className="rounded-full h-12 aspect-square"
+				alt="user profile"
+			/>
 			<span className="flex-grow">
 				<input
 					placeholder="What's on your mind?"

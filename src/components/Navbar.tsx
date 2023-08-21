@@ -5,6 +5,7 @@ import { GoHome } from "react-icons/go";
 import type { FC } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { getProfileImageUrl } from "@/common/getImageUrl";
 
 interface NavbarProps {}
 
@@ -39,10 +40,10 @@ const Navbar: FC<NavbarProps> = () => {
 							<label tabIndex={0} className="btn btn-ghost btn-circle avatar">
 								<div className="w-10 rounded-full">
 									<img
-										src={
+										src={getProfileImageUrl(
 											user?.photoUrl ||
-											"https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60"
-										}
+												"https://e7.pngegg.com/pngimages/753/432/png-clipart-user-profile-2018-in-sight-user-conference-expo-business-default-business-angle-service.png"
+										)}
 										alt="user profile"
 									/>
 								</div>
