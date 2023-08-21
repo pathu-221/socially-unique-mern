@@ -15,6 +15,7 @@ const UsernameForm: FC<UsernameFormProps> = () => {
 	const { user } = useUser();
 	const [username, setUsername] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [saving, setSaving] = useState(false);
 	const [res, setRes] = useState<any>(null);
 
 	if (!user) return showToast("Error message", "error");
@@ -41,10 +42,11 @@ const UsernameForm: FC<UsernameFormProps> = () => {
 			}
 
 			setLoading(true);
+			setSaving(true);
 			const data = await checkUsernameAvailability(username);
 			setRes(data);
 			setRes(data);
-
+			setSaving(false);
 			setLoading(false);
 		}, 500);
 
@@ -78,7 +80,11 @@ const UsernameForm: FC<UsernameFormProps> = () => {
 							{res.msg}
 						</p>
 					) : (
-						loading && <p className="text-left">Checking...</p>
+						loading && (
+							<p className="text-left">
+								{saving ? "Saving..." : "Checking..."}
+							</p>
+						)
 					)}
 				</div>
 				<button
