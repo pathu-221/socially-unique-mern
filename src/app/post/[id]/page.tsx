@@ -5,6 +5,7 @@ import PostImage from "@/components/PostImage";
 import { Post } from "@/interfaces/post.interface";
 import type { FC } from "react";
 import type { Metadata } from "next";
+import { getProfileImageUrl } from "@/common/getImageUrl";
 
 interface PostPageProps {
 	params: { id: string };
@@ -13,7 +14,12 @@ interface PostPageProps {
 const PostPage: FC<PostPageProps> = async ({ params }) => {
 	//const params = useSearchParams();
 	const data = await getPostbyId(params.id);
-	if (!data.status) return <div>{data.msg}</div>;
+	if (!data || !data.status)
+		return (
+			<div className="flex w-full items-start justify-start justify-self-start self-start bg-dark-focus p-4 rounded-2xl">
+				<h1 className="text-xl">Something went wrong!</h1>
+			</div>
+		);
 
 	const postContent = data.data as Post;
 	const unformattedDate = new Date(postContent.createdAt);
@@ -34,7 +40,7 @@ const PostPage: FC<PostPageProps> = async ({ params }) => {
 					<span className="flex gap-2.5 max-w-full">
 						<img
 							className="h-10 w-10 rounded-full"
-							src={postContent.user.photoUrl}
+							src={getProfileImageUrl(postContent.user.photoUrl)}
 							alt={postContent.title}
 						/>
 						<span className="flex flex-col">
@@ -72,18 +78,22 @@ export async function generateMetadata({
 	const data = await getPostbyId(params.id);
 	const postData = data.data as Post;
 
+	const picture = postData.picture
+		? `${process.env.NEXT_PUBLIC_API_ADDRESS}/${postData?.picture[0]}`
+		: "";
+
 	return {
 		// return your metadata here
 		title: postData.title,
 		twitter: {
 			title: postData.title,
 			description: postData.content || "",
-			images: postData?.picture ? postData.picture[0] : "",
+			images: picture,
 		},
 		openGraph: {
 			title: postData.title,
 			description: postData.content || "",
-			images: postData?.picture ? postData.picture[0] : "",
+			images: picture,
 		},
 	};
 }

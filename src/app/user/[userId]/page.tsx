@@ -3,6 +3,9 @@ import PostContent from "@/components/PostContent";
 import UpdateProfileImage from "@/components/UpdateUserProfile";
 import { Post } from "@/interfaces/post.interface";
 import type { FC } from "react";
+import { Metadata } from "next";
+import { Profile } from "next-auth";
+import { getProfileImageUrl } from "@/common/getImageUrl";
 
 interface UserProfilePageProps {
 	params: { userId: string };
@@ -51,3 +54,30 @@ const UserProfilePage: FC<UserProfilePageProps> = async ({ params }) => {
 
 export default UserProfilePage;
 export const fetchCache = "only-no-store";
+
+export async function generateMetadata({
+	params,
+}: {
+	params: { userId: string };
+}): Promise<Metadata> {
+	const data = await getUsersPublicPost(params.userId);
+	const postData = data.data.posts as Post;
+	const userData = data.data.user as ProfilePageUser;
+
+	const picture = getProfileImageUrl(userData.photoUrl);
+
+	return {
+		// return your metadata here
+		title: postData.title,
+		twitter: {
+			title: userData.username,
+			description: `${userData.username}'s posts`,
+			images: picture,
+		},
+		openGraph: {
+			title: userData.username,
+			description: `${userData.username}'s posts`,
+			images: picture,
+		},
+	};
+}

@@ -5,7 +5,7 @@ import { getProfileImageUrl } from "@/common/getImageUrl";
 import { showToast } from "@/common/showToast";
 import useUser from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
-import { useState, type ChangeEvent, type FC } from "react";
+import { type ChangeEvent, type FC } from "react";
 import { AiFillCamera } from "react-icons/ai";
 
 interface UpdateProfileImageProps {
