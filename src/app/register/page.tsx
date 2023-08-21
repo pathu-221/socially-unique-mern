@@ -96,7 +96,7 @@ function SignUpPage() {
 						</label>
 						<input
 							type="file"
-							name="email"
+							accept="image/*"
 							onChange={handleFileChange}
 							placeholder="Choose a profile picture"
 							className="w-full file-input file-input-bordered"

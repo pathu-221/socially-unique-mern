@@ -6,6 +6,7 @@ interface CommentFormProps {
 	onSubmit: FormEventHandler<HTMLFormElement>;
 	onChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
 	value?: string;
+	saving?: boolean;
 }
 
 const CommentForm: FC<CommentFormProps> = ({
@@ -13,6 +14,7 @@ const CommentForm: FC<CommentFormProps> = ({
 	onSubmit,
 	onChange,
 	value,
+	saving = false,
 }) => {
 	return (
 		<div className="w-full">
@@ -33,7 +35,7 @@ const CommentForm: FC<CommentFormProps> = ({
 					type="submit"
 					className="btn btn-primary btn-sm text-white text-xs"
 				>
-					Post comment
+					{saving ? "Saving..." : "Post comment"}
 				</button>
 			</form>
 		</div>

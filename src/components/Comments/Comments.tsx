@@ -22,6 +22,7 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 	const { user } = useUser();
 	const [comments, setComments] = useState<ThreadComments[] | null>(null);
 	const [loading, setLoading] = useState(false);
+	const [saving, setSaving] = useState(false);
 	const [showComments, setShowComments] = useState(false);
 	const [commentSize, setcommentSize] = useState(0);
 	const [comment, setComment] = useState("");
@@ -59,7 +60,9 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 			text: comment,
 		};
 
+		setSaving(true);
 		const data = await postComment(postId, requestBody);
+		setSaving(false);
 
 		if (!data.status) return showToast(data.msg, "error");
 		showToast(data.msg, "success");
@@ -106,6 +109,7 @@ const Comments: FC<CommentsProps> = ({ postId }) => {
 						}}
 						value={comment}
 						onSubmit={onSubmit}
+						saving={saving}
 					/>
 					{comments &&
 						comments.map((comment) => (
