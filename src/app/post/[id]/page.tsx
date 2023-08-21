@@ -1,11 +1,11 @@
 import { getPostbyId } from "@/apis/posts.api";
 import Comments from "@/components/Comments/Comments";
 import LikePost from "@/components/LikePost";
+import PostImage from "@/components/PostImage";
 import { Post } from "@/interfaces/post.interface";
-import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
 import type { FC } from "react";
-import Loading from "./loading";
+import type { Metadata } from "next";
+import { getProfileImageUrl } from "@/common/getImageUrl";
 
 interface PostPageProps {
 	params: { id: string };
@@ -14,9 +14,14 @@ interface PostPageProps {
 const PostPage: FC<PostPageProps> = async ({ params }) => {
 	//const params = useSearchParams();
 	const data = await getPostbyId(params.id);
-	if (!data.status) return <div>{data.msg}</div>;
+	if (!data || !data.status)
+		return (
+			<div className="flex w-full items-start justify-start justify-self-start self-start bg-dark-focus p-4 rounded-2xl">
+				<h1 className="text-xl">Something went wrong!</h1>
+			</div>
+		);
 
-	const postContent = data.data[0] as Post;
+	const postContent = data.data as Post;
 	const unformattedDate = new Date(postContent.createdAt);
 	const uploadDate = Intl.DateTimeFormat("en-US", {
 		year: "numeric",
@@ -27,17 +32,15 @@ const PostPage: FC<PostPageProps> = async ({ params }) => {
 		hour12: true,
 	}).format(unformattedDate);
 
-
 	return (
-		<main className="min-h-screen bg-dark flex flex-col gap-8 p-8 justify-center items-center">
-			<title>{postContent.title}</title>
-			<section className="w-[60%] p-4 card shadow-xl bg-dark-focus min-h-[500px] rounded-2xl flex flex-col gap-2 ">
+		<main className="main-page flex p-4">
+			<section className="w-full md:w-[60%] self-center p-2 lg:p-4 md:p-4  card shadow-xl bg-dark-focus min-h-[500px] rounded-2xl flex flex-col gap-2 ">
 				{/** user profile */}
-				<span className="flex gap-2.5 justify-between items-center max-w-full">
+				<span className="flex gap-2.5 justify-between items-center max-w-full mb-3">
 					<span className="flex gap-2.5 max-w-full">
 						<img
 							className="h-10 w-10 rounded-full"
-							src={postContent.user.photoUrl}
+							src={getProfileImageUrl(postContent.user.photoUrl)}
 							alt={postContent.title}
 						/>
 						<span className="flex flex-col">
@@ -47,26 +50,16 @@ const PostPage: FC<PostPageProps> = async ({ params }) => {
 							<p className="text-[12px]">{uploadDate}</p>
 						</span>
 					</span>
-					<span className="mr-5 cursor-pointer flex flex-col gap-0 pt-4 items-center justify-center">
-						<LikePost />
-						{postContent.likes}
-					</span>
+
+					<LikePost postId={postContent._id} />
 				</span>
-				{/** post title */}
-				<h1 className="text-xl capitalize my-3">{postContent.title}</h1>
-				{postContent.picture && (
-					<figure>
-						<img
-							src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${postContent.picture}`}
-							alt={postContent.title}
-							className="w-full h-auto rounded-2xl"
-						/>
-					</figure>
-				)}
-				<p className="my-2">{postContent.content}</p>
-				<div className="border-b pb-2 border-gray-400 flex items-start justify-between mt-5">
-					{`${postContent.comments} Comments`}
-				</div>
+				<h1 className="text-2xl capitalize mb-2 font-monsterrat">
+					{postContent.title}
+				</h1>
+				{postContent.picture && <PostImage images={postContent.picture} />}
+
+				{/** post content */}
+				{postContent.content && <p className="my-2">{postContent.content}</p>}
 				<Comments postId={postContent._id} />
 			</section>
 		</main>
@@ -76,3 +69,31 @@ const PostPage: FC<PostPageProps> = async ({ params }) => {
 export default PostPage;
 
 export const fetchCache = "only-no-store";
+
+export async function generateMetadata({
+	params,
+}: {
+	params: { id: string };
+}): Promise<Metadata> {
+	const data = await getPostbyId(params.id);
+	const postData = data.data as Post;
+
+	const picture = postData.picture
+		? `${process.env.NEXT_PUBLIC_API_ADDRESS}/${postData?.picture[0]}`
+		: "";
+
+	return {
+		// return your metadata here
+		title: postData.title,
+		twitter: {
+			title: postData.title,
+			description: postData.content || "",
+			images: picture,
+		},
+		openGraph: {
+			title: postData.title,
+			description: postData.content || "",
+			images: picture,
+		},
+	};
+}

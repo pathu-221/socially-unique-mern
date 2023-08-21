@@ -35,6 +35,7 @@ const PostImage: FC<PostImageProps> = ({ images }) => {
 						<img
 							className="w-full rounded-2xl"
 							src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${image}`}
+							alt='post content'
 						/>
 					</a>
 				))}

@@ -12,6 +12,7 @@ export default function useUser() {
 	const fetchUser = async () => {
 		const data = await getUser();
 		if (!data || !data.status) return;
+
 		setUser(data.data);
 	};
 

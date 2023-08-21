@@ -9,6 +9,7 @@ module.exports = {
 			},
 			fontFamily: {
 				sans: ["Roboto, sans-serif"],
+				monsterrat: ["Monsterrat", "sans-serif"],
 			},
 		},
 	},

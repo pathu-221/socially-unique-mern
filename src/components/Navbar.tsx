@@ -4,12 +4,15 @@ import useUser from "@/hooks/useUser";
 import { GoHome } from "react-icons/go";
 import type { FC } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { getProfileImageUrl } from "@/common/getImageUrl";
 
 interface NavbarProps {}
 
 const Navbar: FC<NavbarProps> = () => {
 	const { user, refreshUser } = useUser();
-	
+	const router = useRouter();
+
 	return (
 		<nav className="h-16 sticky top-0 left-0 w-full bg-dark-focus md:px-40 sm:px-14 z-10">
 			<ul className="flex w-full h-full items-center justify-between text-lg">
@@ -27,7 +30,7 @@ const Navbar: FC<NavbarProps> = () => {
 								Your Posts
 							</Link>
 						) : (
-							<Link href={"/login"} className="link link-hover">
+							<Link href={"/login"} className="btn btn-ghost">
 								Login
 							</Link>
 						)}
@@ -37,10 +40,11 @@ const Navbar: FC<NavbarProps> = () => {
 							<label tabIndex={0} className="btn btn-ghost btn-circle avatar">
 								<div className="w-10 rounded-full">
 									<img
-										src={
+										src={getProfileImageUrl(
 											user?.photoUrl ||
-											"https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=600&q=60"
-										}
+												"https://e7.pngegg.com/pngimages/753/432/png-clipart-user-profile-2018-in-sight-user-conference-expo-business-default-business-angle-service.png"
+										)}
+										alt="user profile"
 									/>
 								</div>
 							</label>
@@ -49,18 +53,25 @@ const Navbar: FC<NavbarProps> = () => {
 									tabIndex={0}
 									className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
 								>
-									<li>
-										<a className="justify-between">Profile</a>
-									</li>
-									<li>
-										<a>Settings</a>
-									</li>
-									<li onClick={async () => {
-										localStorage.removeItem('token');
-										await refreshUser();
-										//router.refresh();
-									}}>
-										<a>Logout</a>
+									{user.username && (
+										<li>
+											<Link
+												href={`/user/${user._id}`}
+												className="justify-between"
+											>
+												Profile
+											</Link>
+										</li>
+									)}
+
+									<li
+										onClick={async () => {
+											localStorage.removeItem("token");
+											router.push("/");
+											window.location.reload();
+										}}
+									>
+										<p>Logout</p>
 									</li>
 								</ul>
 							)}

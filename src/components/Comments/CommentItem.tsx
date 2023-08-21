@@ -11,6 +11,7 @@ import { AiTwotoneEdit, AiFillDelete } from "react-icons/ai";
 import CommentForm from "./CommentForm";
 import { BsReplyFill } from "react-icons/bs";
 import { showToast } from "@/common/showToast";
+import { getProfileImageUrl } from "@/common/getImageUrl";
 interface CommentItemProps {
 	comment: ThreadComments;
 	level: number;
@@ -91,7 +92,7 @@ const CommentItem: FC<CommentItemProps> = ({
 			<div className="flex gap-2 items-center">
 				<img
 					className="h-8 w-8 rounded-full"
-					src={comment.user.photoUrl}
+					src={getProfileImageUrl(comment.user.photoUrl)}
 					alt="comment"
 				/>
 				<div>

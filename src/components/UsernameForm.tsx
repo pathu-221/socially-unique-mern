@@ -6,15 +6,18 @@ import { FC, useEffect, useState } from "react";
 // import { showToast } from "@/common/toast";
 import { useRouter } from "next/navigation";
 import useUser from "@/hooks/useUser";
+import { getProfileImageUrl } from "@/common/getImageUrl";
+import { showToast } from "@/common/showToast";
 
 interface UsernameFormProps {}
 
 const UsernameForm: FC<UsernameFormProps> = () => {
-	const router = useRouter();
 	const { user } = useUser();
 	const [username, setUsername] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [res, setRes] = useState<any>(null);
+
+	if (!user) return showToast("Error message", "error");
 
 	const submitUsername = async () => {
 		if (res.status === 1) {
@@ -52,7 +55,7 @@ const UsernameForm: FC<UsernameFormProps> = () => {
 		<main className="main-page flex items-center h-[calc(100vh-66px)]">
 			<div className="card flex flex-col items-center justify-center gap-5 p-5 rounded-lg">
 				<img
-					src={user?.photoUrl}
+					src={getProfileImageUrl(user.photoUrl)}
 					className="rounded-full w-28 h-28"
 					alt="User Avatar"
 				/>

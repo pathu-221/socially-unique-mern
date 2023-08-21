@@ -1,13 +1,13 @@
 "use client";
 
-import useUser from "@/hooks/useUser";
 import { register } from "@/apis/auth.api";
+import useUser from "@/hooks/useUser";
 // import { showToast } from "@/common/toast";
+import { showToast } from "@/common/showToast";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
-import { showToast } from "@/common/showToast";
 
 interface formFields {
 	email: string;
@@ -68,73 +68,79 @@ function SignUpPage() {
 		router.push("/login");
 	};
 	return (
-		<main className="min-h-screen bg-dark flex flex-col gap-8 p-8 justify-center items-center">
-			{" "}
-			<title>Register</title>
-			<section className="w-[60%] p-4 card shadow-xl bg-dark-focus rounded-2xl flex flex-col gap-2 ">
-				<h1 className="mb-5 text-3xl">Create Account</h1>
-				<form ref={formRef} onSubmit={onSubmit} className="flex flex-col gap-2">
-					<div className="flex flex-col gap-2">
+		<main className="relative p-3 flex flex-col items-center justify-center h-screen overflow-hidden">
+			<Head>
+				<title>Register</title>
+			</Head>
+			<section className="w-full m-3 md:m-2 p-6 bg-dark-focus text-white border-t-4 border-primary rounded-2xl shadow-md border-top lg:max-w-lg">
+				<h1 className="text-3xl font-semibold text-center text-gray-300">
+					Login
+				</h1>
+				<form className="space-y-4" onSubmit={onSubmit}>
+					<div>
 						<label className="label">
-							<span className="label-text text-lg">Email*: </span>
+							<span className="text-base label-text">Email</span>
 						</label>
 						<input
 							type="email"
+							required
 							name="email"
 							onChange={onChange}
-							required
-							placeholder="JohnDoe@gmail.com"
-							className="input input-bordered w-full"
+							placeholder="Email Address"
+							className="w-full input input-bordered"
 						/>
 					</div>
-					<div className="flex flex-col gap-1">
+					<div>
 						<label className="label">
-							<span className="label-text text-lg">Profile Picture: </span>
+							<span className="text-base label-text">Profile</span>
 						</label>
 						<input
 							type="file"
+							name="email"
 							onChange={handleFileChange}
-							accept=".jpeg, .jpg, .png"
-							placeholder="John Doe"
-							className="file-input file-input-bordered w-full"
+							placeholder="Choose a profile picture"
+							className="w-full file-input file-input-bordered"
 						/>
 					</div>
-					<div className="flex flex-col gap-2">
+					<div>
 						<label className="label">
-							<span className="label-text text-lg">Password*: </span>
+							<span className="text-base label-text">Password</span>
 						</label>
 						<input
-							required
+							type="password"
+							onChange={onChange}
 							name="password"
-							onChange={onChange}
-							type="password"
-							placeholder="Your Password"
-							className="input input-bordered w-full"
+							placeholder="Enter Password"
+							className="w-full input input-bordered"
 						/>
 					</div>
-					<div className="flex flex-col gap-2">
+					<div>
 						<label className="label">
-							<span className="label-text text-lg">Confirm Password*: </span>
+							<span className="text-base label-text">Password</span>
 						</label>
 						<input
-							required
-							name="confirmPassword"
-							onChange={onChange}
 							type="password"
-							placeholder="Your Password"
-							className="input input-bordered w-full"
+							onChange={onChange}
+							name="confirmPassword"
+							placeholder="Confirm Password"
+							className="w-full input input-bordered"
 						/>
 					</div>
-					<span className="text-md ">
-						Already Have an Account?
-						<Link className="underline hover:no-underline" href="/login">
+					<span className="text-xs text-gray-400">
+						Already have an account?{" "}
+						<Link
+							href={"/login"}
+							className="600 hover:underline hover:text-blue-600"
+						>
 							{" "}
 							Login
 						</Link>
 					</span>
-					<button disabled={loading} type="submit" className="btn btn-primary">
-						{loading ? "Saving..." : "Create Account"}
-					</button>
+					<div>
+						<button className="btn btn-block btn-primary">
+							{loading ? "Please wait..." : "Register"}
+						</button>
+					</div>
 				</form>
 			</section>
 		</main>

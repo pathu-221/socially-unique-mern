@@ -3,42 +3,57 @@
 import useUser from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
 import type { FC } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import PostEditModal from "./PostEditModal";
 import { showToast } from "@/common/showToast";
+import UsernameModal from "./UsernameModal";
+import { getProfileImageUrl } from "@/common/getImageUrl";
 
 interface PostCreateProps {}
 
 const PostCreate: FC<PostCreateProps> = () => {
+	const router = useRouter();
 	const { user } = useUser();
 	const [showAddPostModal, setshowAddPostModal] = useState(false);
 
 	if (!user) return null;
-
-	if (!user.username)
-		<span>
-			<p>You need to choose a username first</p>
-			<button className="btn btn-primary">Choose</button>
-		</span>;
-
+	//if (!user.username)
+	//useEffect(() => {}, [user]);
 	return (
-		<div className="flex items-center justify-between self-start p-4 rounded-2xl my-[-25px]">
-			<button
-				className="bg-primary text-white flex items-center px-4 py-2 rounded-lg"
-				onClick={() => setshowAddPostModal(true)}
-			>
-				<AiOutlinePlus className="mr-2" />
-				<p>Add Post</p>
-			</button>
-			{showAddPostModal && (
-				<PostEditModal
-					isOpen={showAddPostModal}
-					onClose={() => setshowAddPostModal(false)}
-					close={() => setshowAddPostModal(false)}
-					onUpdate={() => {}}
+		<div className="flex items-center justify-between self-start p-4 rounded-2xl md:my-[-25px] justify-self-start gap-3 bg-dark-focus w-full">
+			<img
+				src={getProfileImageUrl(user.photoUrl)}
+				className="rounded-full h-12 aspect-square"
+				alt="user profile"
+			/>
+			<span className="flex-grow">
+				<input
+					placeholder="What's on your mind?"
+					className="w-full cursor-pointer hover:bg-gray-700 input input-bordered"
+					onClick={() => {
+						if (!user?.username)
+							showToast("You need to choose a username first!", "warning");
+						setshowAddPostModal(true);
+					}}
 				/>
-			)}
+			</span>
+			{showAddPostModal &&
+				(user?.username ? (
+					<PostEditModal
+						isOpen={showAddPostModal}
+						onClose={() => setshowAddPostModal(false)}
+						close={() => setshowAddPostModal(false)}
+						onUpdate={() => {
+							router.refresh();
+						}}
+					/>
+				) : (
+					<UsernameModal
+						isOpen={showAddPostModal}
+						onClose={() => setshowAddPostModal(false)}
+					/>
+				))}
 		</div>
 	);
 };

@@ -6,6 +6,7 @@ import { BsChat, BsViewList } from "react-icons/bs";
 import Link from "next/link";
 import LightGallery from "./LightGallery";
 import PostImage from "./PostImage";
+import { getProfileImageUrl } from "@/common/getImageUrl";
 
 interface PostContentProps {
 	post: Post;
@@ -29,11 +30,13 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin, editPost }) => {
 			{/** card header */}
 			<span className="flex gap-2.5 justify-between items-center max-w-full">
 				<span className="flex gap-2.5 max-w-full">
-					<img
-						className="h-10 w-10 rounded-full"
-						src={post.user.photoUrl}
-						alt={post.title}
-					/>
+					<Link href={`/user/${post.user._id}`}>
+						<img
+							className="h-10 w-10 rounded-full"
+							src={getProfileImageUrl(post.user.photoUrl)}
+							alt={post.title}
+						/>
+					</Link>
 					<span className="flex flex-col">
 						<p className="font-semibold text-[15px]">{post.user.username}</p>
 						<p className="text-[12px]">{uploadDate}</p>
@@ -53,7 +56,7 @@ const PostContent: FC<PostContentProps> = ({ post, isAdmin, editPost }) => {
 			</span>
 			{/** post body */}
 			<span className="text-[.9rem] py-4 gap-2 flex flex-col">
-				<p>{post.content}</p>
+				<p>{post.title}</p>
 				{post.picture && <PostImage images={post.picture} />}
 				{!isAdmin && (
 					<div className="flex justify-between items-center w-full pt-3">

@@ -1,7 +1,7 @@
 export default function Loading() {
 	return (
-		<main className="min-h-screen bg-dark flex flex-col gap-8 p-8 justify-center items-center">
-			<div className="w-[60%] p-4 card shadow-xl bg-dark-focus min-h-[500px] rounded-2xl flex flex-col gap-2 animate-pulse ">
+		<main className="min-h-screen bg-dark flex flex-col gap-8 md:p-8 p-4 justify-center items-center">
+			<div className="w-full md:w-[60%] p-4 card shadow-xl bg-dark-focus min-h-[500px] rounded-2xl flex flex-col gap-2 animate-pulse">
 				<title>Loading</title>
 				<span className="flex items-center">
 					<span className="bg-slate-700 rounded-full  h-10 aspect-square w-10"></span>
@@ -23,4 +23,3 @@ export default function Loading() {
 }
 
 export const fetchCache = "only-no-store";
-

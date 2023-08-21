@@ -7,6 +7,7 @@ import { useState } from "react";
 import { BsFillCameraFill } from "react-icons/bs";
 import { RxCross1 } from "react-icons/rx";
 import Modal from "@/components/ReactResponsiveModal";
+import { showToast } from "@/common/showToast";
 
 interface PostEditModalProps {
 	post?: Post;
@@ -87,23 +88,20 @@ const PostEditModal: FC<PostEditModalProps> = ({
 		const response = post
 			? await savePost(formData, post._id)
 			: await newPost(formData);
-		console.log({ response, post });
 		await onUpdate();
+		if (!response.status) return showToast(response.msg, "error");
+		showToast(response.msg, "success");
 		setSaving(false);
 		close();
-
-		if (!response.status) return;
 	};
 
 	return (
 		<Modal
 			styles={{
 				modal: {
-					margin: 0,
 					padding: 0,
 					backgroundColor: "#2F3B50",
 					borderRadius: "12px",
-					minWidth: "512px",
 				},
 			}}
 			closeOnEsc
@@ -112,7 +110,10 @@ const PostEditModal: FC<PostEditModalProps> = ({
 			onClose={onClose}
 			center
 		>
-			<form onSubmit={onSubmit} className="rounded-xl p-5 max-w-full">
+			<form
+				onSubmit={onSubmit}
+				className="rounded-xl p-5 max-w-full min-w-screen md:min-w-[512px]"
+			>
 				<p className="font-bold text-lg mb-3">
 					{post ? "Edit post" : "Create a post"}
 				</p>
@@ -133,10 +134,10 @@ const PostEditModal: FC<PostEditModalProps> = ({
 						value={postFormValue.content}
 						placeholder="Text (optional)"
 					/>
-					<div className="grid grid-cols-3 max-w-full gap-2 pt-1">
+					<div className="grid md:grid-cols-3 grid-cols-2 max-w-full gap-2 pt-1">
 						{postFormValue.picture.length > 0 &&
 							postFormValue?.picture?.map((image) => (
-								<div key={image} className="indicator">
+								<div key={image} className="indicator max-w-[1/3] rounded-2xl">
 									<span
 										className="indicator-item badge badge-primary rounded-full h-7 w-7 p-1 cursor-pointer hover:bg-blue-500"
 										onClick={() => removeExistingImage(image)}
@@ -144,7 +145,7 @@ const PostEditModal: FC<PostEditModalProps> = ({
 										<RxCross1 />
 									</span>
 									<img
-										className="w-[140px] h-20 rounded-lg height-auto"
+										className="w-[140px]  h-20 rounded-lg height-auto"
 										src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${image}`}
 										alt={`Image ${post?.title}`}
 									/>
