@@ -253,7 +253,7 @@ router.get("/user/:userId", async (req: IRequest, res: Response) => {
 		});
 	} catch (error) {
 		console.error(error);
-		res.end({
+		res.send({
 			status: 0,
 			msg: "Something went wrong!",
 		});

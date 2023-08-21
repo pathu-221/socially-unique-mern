@@ -1,5 +1,4 @@
 import { UploadedFile } from "express-fileupload";
-import { ObjectId } from "mongodb";
 
 export function uploadPostPictures(
 	files: UploadedFile,

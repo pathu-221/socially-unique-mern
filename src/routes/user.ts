@@ -5,6 +5,7 @@ import { User } from "../Models/User";
 import { plainToClass } from "class-transformer";
 import { CreateUsernameDto } from "../dto/username.dto";
 import { validate } from "class-validator";
+import { UploadedFile } from "express-fileupload";
 
 const router = Router();
 
@@ -81,7 +82,29 @@ router.post("/username", authenticate, async (req: IRequest, res: Response) => {
 });
 
 router.post("/", authenticate, async (req: IRequest, res: Response) => {
-	if (req.files) {	}
+	try {
+		if (req.files) {
+			const file: UploadedFile = req.files["photo"];
+			const user = await User.findOne({ _id: req.user._id });
+
+			if (!user) res.json({ status: 0, msg: "Something went wrong!" });
+
+			const filePath = `uploads/profile/${req.user._id}/${file.name}`;
+			file.mv(`public/${filePath}`);
+
+			await User.updateOne({ _id: req.user._id }, { photoUrl: filePath });
+
+			return res
+				.status(200)
+				.send({ status: 1, msg: "Profile updated successfully!" });
+		}
+	} catch (err) {
+		console.error({ err });
+		res.send({
+			status: 0,
+			msg: "Something went wrong",
+		});
+	}
 });
 
 export default router;
