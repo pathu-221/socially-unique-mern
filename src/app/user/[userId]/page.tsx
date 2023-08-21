@@ -42,7 +42,8 @@ const UserProfilePage: FC<UserProfilePageProps> = async ({ params }) => {
 				<h4 className="text-xl">@{user.username}</h4>
 			</section>
 			<section className="main-page-content">
-				{posts && posts.map((post) => <PostContent post={post} />)}
+				{posts &&
+					posts.map((post) => <PostContent key={post._id} post={post} />)}
 			</section>
 		</main>
 	);

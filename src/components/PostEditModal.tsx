@@ -110,7 +110,10 @@ const PostEditModal: FC<PostEditModalProps> = ({
 			onClose={onClose}
 			center
 		>
-			<form onSubmit={onSubmit} className="rounded-xl p-5 max-w-full min-w-screen md:min-w-[512px]">
+			<form
+				onSubmit={onSubmit}
+				className="rounded-xl p-5 max-w-full min-w-screen md:min-w-[512px]"
+			>
 				<p className="font-bold text-lg mb-3">
 					{post ? "Edit post" : "Create a post"}
 				</p>
@@ -131,10 +134,10 @@ const PostEditModal: FC<PostEditModalProps> = ({
 						value={postFormValue.content}
 						placeholder="Text (optional)"
 					/>
-					<div className="grid grid-cols-3 max-w-full gap-2 pt-1">
+					<div className="grid md:grid-cols-3 grid-cols-2 max-w-full gap-2 pt-1">
 						{postFormValue.picture.length > 0 &&
 							postFormValue?.picture?.map((image) => (
-								<div key={image} className="indicator">
+								<div key={image} className="indicator max-w-[1/3] rounded-2xl">
 									<span
 										className="indicator-item badge badge-primary rounded-full h-7 w-7 p-1 cursor-pointer hover:bg-blue-500"
 										onClick={() => removeExistingImage(image)}
@@ -142,7 +145,7 @@ const PostEditModal: FC<PostEditModalProps> = ({
 										<RxCross1 />
 									</span>
 									<img
-										className="w-[140px] h-20 rounded-lg height-auto"
+										className="w-[140px]  h-20 rounded-lg height-auto"
 										src={`${process.env.NEXT_PUBLIC_API_ADDRESS}/${image}`}
 										alt={`Image ${post?.title}`}
 									/>
