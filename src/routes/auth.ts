@@ -89,7 +89,7 @@ router.post("/register", async (req: Request, res: Response) => {
 			: req.files["photo"];
 
 		imageUrl = `uploads/profile/${id}/${file.name}`;
-		file.mv(imageUrl);
+		file.mv(`public/${imageUrl}`);
 	}
 
 	try {
