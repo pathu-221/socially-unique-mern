@@ -74,7 +74,7 @@ function SignUpPage() {
 			</Head>
 			<section className="w-full m-3 md:m-2 p-6 bg-dark-focus text-white border-t-4 border-primary rounded-2xl shadow-md border-top lg:max-w-lg">
 				<h1 className="text-3xl font-semibold text-center text-gray-300">
-					Login
+					Register
 				</h1>
 				<form className="space-y-4" onSubmit={onSubmit}>
 					<div>
