@@ -21,7 +21,7 @@ export default async function Home() {
 		<main className="main-page">
 			<section className="main-page-content">
 				<PostCreate />
-				{posts ? (
+				{posts.length > 0 ? (
 					posts.map((post) => <PostContent key={post._id} post={post} />)
 				) : (
 					<div className="flex w-full items-start justify-start justify-self-start self-start bg-dark-focus p-4 rounded-2xl">
